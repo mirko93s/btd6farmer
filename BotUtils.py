@@ -16,6 +16,7 @@ import re
 import mss
 
 import ctypes
+from collections import defaultdict
 
 class BotUtils:
     def __init__(self):
@@ -76,8 +77,6 @@ class BotUtils:
         return Path(__file__).resolve().parent/path
 
     def getRound(self):
-        self.locate_round_area()
-
         # Change to https://stackoverflow.com/questions/66334737/pytesseract-is-very-slow-for-real-time-ocr-any-way-to-optimise-my-code 
         # or https://www.reddit.com/r/learnpython/comments/kt5zzw/how_to_speed_up_pytesseract_ocr_processing/
 
@@ -85,23 +84,32 @@ class BotUtils:
 
         # If round area is not located yet
         if self.round_area is None:
-            area = self.locate_round_area()
+    
+            self.round_area = defaultdict()
+            self.round_area["width"] = 225
+            self.round_area["height"] = 65
+
+            area = self.locate_round_area() # Search for round text
             
             # If it cant find anything
             if area == None:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
-                self.round_area = self._scaling([35, 1850]) # Use default values
+                scaled_values = self._scaling([35, 1850]) # Use default values
+                self.round_area["top"] = scaled_values[0]
+                self.round_area["left"] = scaled_values[1]
             else:
                 # set round area to the found area + offset
                 x, y, roundwidth, roundheight = area
                 
-                widthOffset, heightOffset = ((roundwidth + 35), int(roundheight * 2) - 15)
-                self.round_area = (x - widthOffset, y + heightOffset)
-
-        roundarea_width, roundarea_length = [225, 65]
+                xOffset, yOffset = ((roundwidth + 35), int(roundheight * 2) - 15)
+                self.round_area["top"] = y + yOffset
+                self.round_area["left"] = x - xOffset
         
-        monitor = {'top': self.round_area[1], 'left': self.round_area[0], 'width': roundarea_width, 'height': roundarea_length}
+                self.round_area["width"] = 225 
+                self.round_area["height"] = 65 
+        # Setting up screen capture area
+        monitor = {'top': self.round_area["top"], 'left': self.round_area["left"], 'width': self.round_area["width"], 'height': self.round_area["height"]}
         # print("region", monitor)
 
         # Take Screenshot
@@ -253,7 +261,7 @@ class BotUtils:
         x = x + self._padding() # Add's the pad to to the curent x position variable
 
         if self.DEBUG:
-            self.log("Scaling: {} -> {}".format(pos_list, (x, y)))
+            self.log("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
 
         return (int(x), int(y))
         # return (x,y)
@@ -389,9 +397,12 @@ if __name__ == "__main__":
     import time
 
     inst = BotUtils()
-    print("sleeping for 2 secs")
+    inst.log = print
+    inst.DEBUG = True
     time.sleep(2)
-    
 
-    res = inst._locate(inst._image_path("obyn"), confidence=0.9)
-    print(res)
+
+    print(inst.getRound())
+
+    # res = inst._locate(inst._image_path("obyn"), confidence=0.9)
+    # print(res)
