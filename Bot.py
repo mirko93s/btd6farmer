@@ -258,7 +258,7 @@ class Bot(BotCore):
     # select hero if not selected
     def hero_select(self):
         if not self.hero_check(self.settings["HERO"]):
-            self.log(f"Selecting {self.settings['hero']}")
+            self.log(f"Selecting {self.settings['HERO']}")
             self.click("HERO_SELECT")
             self.click(self.settings["HERO"])
             self.click("CONFIRM_HERO")
