@@ -287,7 +287,7 @@ class Bot(BotCore):
         self.click("BEGINNER_SELECTION") # goto first page
 
         # click to the right page
-        self.click("RIGHT_ARROW_SELECTION", amount=(map_page))
+        self.click("RIGHT_ARROW_SELECTION", amount=(map_page-1))
 
         self.click("MAP_INDEX_" + str(map_index)) # Click correct map
         self.click(self.settings["DIFFICULTY"]) # Select Difficulty
