@@ -84,6 +84,13 @@ class BotUtils:
             mouse.press(button='left')
             time.sleep(0.075) # https://www.reddit.com/r/AskTechnology/comments/4ne2tv/how_long_does_a_mouse_click_last/ TLDR; DONT CLICK TO FAST as shit will break
             mouse.release(button='left')
+            """
+            We don't need to apply cooldown and slow down the bot on single clicks
+            So we only apply the .1 delay if the bot has to click on the same spot multiple times
+            This is currently used for level selection and levelup screen
+            """
+            if amount > 1:
+                time.sleep(0.1)
             # mouse.click(button="left")
             
 
