@@ -174,7 +174,14 @@ class BotUtils:
             mouse.press(button='left')
             time.sleep(press_time) # https://www.reddit.com/r/AskTechnology/comments/4ne2tv/how_long_does_a_mouse_click_last/ TLDR; dont click too fast otherwise shit will break
             mouse.release(button='left')
-            time.sleep(timeout)
+            
+            """
+                We don't need to apply cooldown and slow down the bot on single clicks
+                So we only apply the .1 delay if the bot has to click on the same spot multiple times
+                This is currently used for level selection and levelup screen
+            """
+            if amount > 1:
+                time.sleep(timeout)
 
     def press_key(self, key, timeout=0.1, amount=1):
         for _ in range(amount):
