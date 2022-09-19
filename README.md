@@ -85,6 +85,12 @@ __*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT O
 
 __*I also have plans for the future to make it easier to create gameplans so if you want to wait until you create yours you can wait too*__
 
+<a name="roadmap"/>
+
+### Roadmap
+
+<!-- 
+
 <a name="setup_file"/>
 
 ### setup.py
@@ -331,4 +337,4 @@ TODO
 
 </details>
 
-
+ -->
