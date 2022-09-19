@@ -4,7 +4,11 @@
 \
 v1.0.0-pre_release
 
+IF for any reason you are having issue with the current state of the bot. You can use [this](https://github.com/linus-jansson/btd6farmer/releases/tag/v0.9-fallback) release of the bot.
+
 NOTE: Since this is a ***"pre release"*** of the bot. I have yet not tested the functionallty of the bot on anything else than a 1440p monitor. This may have a impact on the new current round system, I have however, added a fallback method to use the old method of finding the current round if the new way fails. If you have any issues with the bot, find any bugs or have any suggestions for improvements, please create an issue or create a pull request!
+
+
 
 This python bot will farm a level (dark castle on hard mode by default) in Bloons TD 6. It uses tesseract to find the current level and is able to navigate autonomously after starting it.
 
