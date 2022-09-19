@@ -2,7 +2,9 @@
 #### Inspired from [RavingSmurfGB](https://github.com/RavingSmurfGB/Py_AutoBloons), some functions is taken from that repository.
 [![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml)
 \
-v1.0.0
+v1.0.0-pre_release
+
+NOTE: Since this is a ***"pre release"*** of the bot. I have yet not tested the functionallty of the bot on anything else than a 1440p monitor. This may have a impact on the new current round system, I have however, added a fallback method to use the old method of finding the current round if the new way fails. If you have any issues with the bot, find any bugs or have any suggestions for improvements, please create an issue or create a pull request!
 
 This python bot will farm a level (dark castle on hard mode by default) in Bloons TD 6. It uses tesseract to find the current level and is able to navigate autonomously after starting it.
 
@@ -16,6 +18,7 @@ Feel free to make a pull request if you find any improvements or create a issue 
 - [Dependencies](#dependenices) 
 - [Installation](#installation)
 - [Running the bot](#running)
+- [Roadmap](#roadmap)
 - [Having issues?](#issues)
 - [Creating your own gameplan](#contributing)
     - [Setup file](#setup_file)
@@ -70,6 +73,15 @@ or running `Install_Requirements.bat`
 - `--sandbox` -
 - `--gameplan_path` - the path to the gameplan directory
 
+<a name="roadmap"/>
+
+### Roadmap
+At the moment the major parts of being able to create own gameplans are done. Current things that needs to be done is:
+- [ ] Support for different hero abilities
+- [ ] Easier way to create gameplans
+
+
+
 
 <a name="issues"/>
 
@@ -85,9 +97,10 @@ __*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT O
 
 __*I also have plans for the future to make it easier to create gameplans so if you want to wait until you create yours you can wait too*__
 
-<a name="roadmap"/>
 
-### Roadmap
+
+
+
 
 <!-- 
 
