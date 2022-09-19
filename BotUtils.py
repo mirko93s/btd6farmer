@@ -57,7 +57,7 @@ class BotUtils:
         self.width, self.height = get_display_size()
         """
 
-        self.support_dir = self.get_resource_dir("Support_files_Dev")
+        self.support_dir = self.get_resource_dir("assets")
 
         # Defing a lamda function that can be used to get a path to a specific image
         # self._image_path = lambda image, root_dir=self.support_dir, height=self.height : root_dir/f"{height}_{image}.png"
