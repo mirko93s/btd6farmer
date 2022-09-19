@@ -1,27 +1,68 @@
 import sys
-import pyautogui
 import time
 import keyboard
 import mouse
 import static
-import os
+from pathlib import Path
 
 import numpy as np
 import cv2
 import pytesseract
+
+if sys.platform == "win32":
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
 import re
+import mss
+
+import ctypes
+from collections import defaultdict
 
 class BotUtils:
     def __init__(self):
-        self.width, self.height = pyautogui.size()
+        # Gets the main monitor resolution
+        # TODO: get monitor res for linux for linux support
+        # self.width, self.height = (5120, 1440) 
+        # try:
+        #     mon = {mon: 1}
+        #     with mss.mss() as sct:
+        #         screen = sct.grab(mon)
+        #         print("mss screen size:", screen.size())
+        # except Exception as e:
+        #     print(e)
 
-        self.Support_files_path = "Support_files\\" if sys.platform == "win32" else "Support_files/"
-        
-        self.support_dir = self.get_resource_dir(self.Support_files_path)
+        try:
+            if sys.platform == "win32":
+                self.width, self.height = ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1)
+                # self.width, self.height = (1920, 1080)
+            else:
+                raise Exception("Platform not supported yet")
+        except Exception as e:
+            raise Exception("Could not retrieve monitor resolution the system")
+
+
+        """
+        # Platform independent code to get monitor resolution?
+        # https://stackoverflow.com/a/66248631
+        import tkinter
+        def get_display_size():
+            root = tkinter.Tk()
+            root.update_idletasks()
+            root.attributes('-fullscreen', True)
+            root.state('iconic')
+            height = root.winfo_screenheight()
+            width = root.winfo_screenwidth()
+            root.destroy()
+            return height, width
+        self.width, self.height = get_display_size()
+        """
+
+        self.support_dir = self.get_resource_dir("assets")
 
         # Defing a lamda function that can be used to get a path to a specific image
-    
-        self.__image_path = lambda image, root_dir=self.support_dir, height=self.height : f"{root_dir}{height}_{image}.png" if sys.platform == "win32" else f"{root_dir}{height}_{image}.png"
+        # self._image_path = lambda image, root_dir=self.support_dir, height=self.height : root_dir/f"{height}_{image}.png"
+        self._image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
+
 
         # Resolutions for for padding
         self.reso_16 = [
@@ -30,47 +71,96 @@ class BotUtils:
             { "width": 2560, "height": 1440 },
             { "width": 3840, "height": 2160 }
         ]
+        self.round_area = None
 
     def get_resource_dir(self, path):
-        return os.path.join(os.path.dirname(__file__), path)
+        return Path(__file__).resolve().parent/path
 
     def getRound(self):
         # Change to https://stackoverflow.com/questions/66334737/pytesseract-is-very-slow-for-real-time-ocr-any-way-to-optimise-my-code 
         # or https://www.reddit.com/r/learnpython/comments/kt5zzw/how_to_speed_up_pytesseract_ocr_processing/
 
-        top, left = self._scaling([1850, 35])
-        width, height = [225, 65]
-        
-        # TODO: change to mss
-        img = pyautogui.screenshot(region=(top, left, width, height))
+        # The screen part to capture
 
-        numpyImage = np.array(img)
-
-        # Make image grayscale using opencv
-        greyImage = cv2.cvtColor(numpyImage, cv2.COLOR_BGR2GRAY)
-
-        # Threasholding
-        final_image = cv2.threshold(greyImage, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+        # If round area is not located yet
+        if self.round_area is None:
     
-        # Get current round from image with tesseract
-        text = pytesseract.image_to_string(final_image,  config='--psm 7').replace("\n", "")
+            self.round_area = defaultdict()
+            self.round_area["width"] = 225
+            self.round_area["height"] = 65
 
-        # if self.DEBUG:
-            # print(f"Found round text: {text}")
+            area = self.locate_round_area() # Search for round text
+            
+            # If it cant find anything
+            if area == None:
+                if self.DEBUG:
+                    self.log("Could not find round area, setting default values")
+                scaled_values = self._scaling([35, 1850]) # Use default values
+                self.round_area["top"] = scaled_values[0]
+                self.round_area["left"] = scaled_values[1]
+            else:
+                # set round area to the found area + offset
+                x, y, roundwidth, roundheight = area
+                
+                xOffset, yOffset = ((roundwidth + 35), int(roundheight * 2) - 15)
+                self.round_area["top"] = y + yOffset
+                self.round_area["left"] = x - xOffset
+        
+                self.round_area["width"] = 225 
+                self.round_area["height"] = 65 
+        # Setting up screen capture area
+        monitor = {'top': self.round_area["top"], 'left': self.round_area["left"], 'width': self.round_area["width"], 'height': self.round_area["height"]}
+        # print("region", monitor)
 
-        # regex to look for format [[:digit:]]/[[:digit:]] if not its not round, return None
-        if re.search(r"(\d+/\d+)", text):
-            return int(text.split("/")[0])
-        else:
-            return None
+        # Take Screenshot
+        with mss.mss() as sct:
+            sct_image = sct.grab(monitor)
+            screenshot = np.array(sct_image, dtype=np.uint8)
+            
+            # Load the image as a opencv object
+            gray_scale_image = self._load_img(screenshot) 
 
-    def __move_mouse(self, location):
-        pyautogui.moveTo(location)
-        time.sleep(0.1)
+            # https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
+            # We do this to hopefully improve the OCR accuracy
+            final_image = cv2.threshold(gray_scale_image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
 
-    def click(self, location: tuple | tuple, amount=1):
+            # Get current round from screenshot with tesseract
+            found_text = pytesseract.image_to_string(final_image,  config='--psm 7').replace("\n", "")
+            
+            # TODO: REMOVE EVERYTHING THAT IS NOT A NUMBER OR A SLASH
+            # found_text = found_text.replace("|", "")            
+
+            if re.search(r"(\d+/\d+)", found_text):
+                return int(found_text.split("/")[0])
+            else:
+                if self.DEBUG:
+                    self.log("Found text '{}' does not match regex requirements".format(found_text))
+                    self.save_file(data=mss.tools.to_png(sct_image.rgb, sct_image.size), _file_name="get_current_round_failed.png")
+                    self.log("Saved screenshot of what was found")
+
+                return None
+    
+    def save_file(self, data=format(0, 'b'), _file_name="noname", folder="DEBUG", ):
+        directory = Path(__file__).resolve().parent/folder
+        
+        if not directory.exists():
+            Path.mkdir(directory)
+
+        with open(directory/_file_name, "wb") as output_file:
+            output_file.write(data)
+
+    def _move_mouse(self, location, move_timeout=0.1):
+        mouse.move(x=location[0], y=location[1])
+        time.sleep(move_timeout)
+
+    def click(self, location: tuple | tuple, amount=1, timeout=0.1, move_timeout=0.1, press_time=0.075):        
         """
             Method to click on a specific location on the screen
+            @param location: The location to click on
+            @param amount: amount of clicks to be performed
+            @param timeout: time to wait between clicks
+            @param move_timeout: time to wait between move and click
+            @param press_time: time to wait between press and release
         """
 
         # If location is a string then assume that its a static button
@@ -78,129 +168,78 @@ class BotUtils:
             location = static.button_positions[location]
         
         # Move mouse to location
-        self.__move_mouse(self._scaling(location))
+        self._move_mouse(self._scaling(location), move_timeout)
 
         for _ in range(amount):
             mouse.press(button='left')
-            time.sleep(0.075) # https://www.reddit.com/r/AskTechnology/comments/4ne2tv/how_long_does_a_mouse_click_last/ TLDR; DONT CLICK TO FAST as shit will break
+            time.sleep(press_time) # https://www.reddit.com/r/AskTechnology/comments/4ne2tv/how_long_does_a_mouse_click_last/ TLDR; dont click too fast otherwise shit will break
             mouse.release(button='left')
+            
             """
-            We don't need to apply cooldown and slow down the bot on single clicks
-            So we only apply the .1 delay if the bot has to click on the same spot multiple times
-            This is currently used for level selection and levelup screen
+                We don't need to apply cooldown and slow down the bot on single clicks
+                So we only apply the .1 delay if the bot has to click on the same spot multiple times
+                This is currently used for level selection and levelup screen
             """
             if amount > 1:
-                time.sleep(0.1)
-            # mouse.click(button="left")
-            
-
-        time.sleep(0.5)
+                time.sleep(timeout)
 
     def press_key(self, key, timeout=0.1, amount=1):
         for _ in range(amount):
             keyboard.send(key)
             time.sleep(timeout)
 
-    # TODO: Stop using pyautogui
-    def locate(self, template_path, confidence=0.9, tries=1):
-        """
-            Method to match a template to a image.
-            
-            @template_path - Path to the template image
-            @confidence - A threshold value between {> 0.0f & < 1.0f} (Defaults to 0.9f)
-
-            Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
-        """
-        # sc tool: https://pypi.org/project/mss/
-
-        # Take a screenshot of the screen and save to a temporary variable
-        screenshot = pyautogui.screenshot()
-        screenshot = np.array(screenshot)
-        # using opencv, find the img on the screen using the template
-
-        template = cv2.imread(template_path)
-        template = np.array(template)
-        
-        # width & height of the template
-        w = template.shape[0]
-        h = template.shape[1]
-        
-        result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)    # heatmap of the template and the screenshot"
-
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result) # find the max value and location of the heatmap
-        
-        cv2.rectangle(screenshot, max_loc, (max_loc[0] + w, max_loc[1] + h), (0, 0, 255), 1) # draw on image for debugging
-
-        # Find all the matches
-        locations = np.where(result >= confidence) 
-        
-        print(f"max_loc {max_loc}, max_val {max_val}")
-        # print(f"threshold {confidence}, template match result -> \n {result}")
-        print(f"len(yloc) = {len(locations[0])}, \nlen(xloc) = {len(locations[1])}, \nlista på kordinater: {[ [x,y] for x, y in zip(*locations[::-1]) ]}") # längden och listan på resulterande kordinater
-    
-        # DBUG: ritar ut rektanglar på bild objektet
-        # VARFÖR RITAR DEN BARA UT EN REKTANGEL? på fel ställe??????
-        # for x, y in zip(*locations[::-1]):
-        #     cv2.rectangle(screenshot, (x, y), (x + w, y + h), (0, 0, 255), 1)
-
-        # Visar bild objektet med utritad rektangel
-        self.debug_result(screenshot, template, result)
-
-        # return the cords of the image if found (middle by default) else None
-        if locations is not None:
-            return [ (x, y, w, h) for x, y, w, h in zip(*locations[::-1]) ]
-        else:
-            return None
-    
-    def debug_result(self, imgObj, templateObj, result):
-        # cv2.imshow("resulting heatmap of image and template", result) # DEBUG
-
-        cv2.imshow("Image", imgObj)
-        # cv2.imshow("Template", templateObj)
-
-        cv2.waitKey()
-        cv2.destroyAllWindows()
-
-    # Generic function to see if something is present on the screen
-    def __find(self, path, confidence=0.9, return_cords=False):
-        try:
-            if return_cords:
-                cords = pyautogui.locateOnScreen(path, confidence=confidence)
-                if cords is not None:
-                    left, top, width, height = cords
-                    return (left + width // 2, top + height // 2) # Return middle of found image   
-                else:
-                    return None
-
-            return True if pyautogui.locateOnScreen(path, confidence=confidence) is not None else False
-        except Exception as e:
-            raise Exception(e)
-
-    # Different methods for different checks all wraps over __find()
+    # Different methods for different checks all wraps over _find()
     def menu_check(self):
-        return self.__find( self.__image_path("menu") )
+        return self._find( self._image_path("menu") )
 
     def insta_monkey_check(self):
-        return self.__find( self.__image_path("instamonkey") )
+        return self._find( self._image_path("instamonkey") )
+
+    def monkey_knowledge_check(self):
+        return self._find( self._image_path("monkey_knowledge") )
 
     def victory_check(self):
-        return self.__find( self.__image_path("victory") )
+        return self._find( self._image_path("victory") )
 
     def defeat_check(self):
-        return self.__find( self.__image_path("defeat") )
+        return self._find( self._image_path("defeat") )
 
     def levelup_check(self):
-        return self.__find( self.__image_path("levelup") )
+        return self._find( self._image_path("levelup") )
 
     def hero_check(self, heroString):
-        return self.__find( self.__image_path(heroString)  )
+        return self._find( self._image_path(heroString)  )
+
+    def loading_screen_check(self):
+        return self._find( self._image_path("loading_screen") )
 
     def collection_event_check(self):
-        return self.__find(self.__image_path("diamond_case") )
+        return self._find(self._image_path("diamond_case") )
 
     def locate_static_target_button(self):
-        return self.__find(self.__image_path("set_target_button"), return_cords=True)
+        return self._find(self._image_path("set_target_button"), return_cords=True)
+    
+    def locate_round_area(self):
+        return self._find(self._image_path("round_area"), return_cords=True, center_on_found=False)
 
+    # Generic function to see if something is present on the screen
+    def _find(self, path, confidence=0.9, return_cords=False, center_on_found=True):
+
+        try:
+            if return_cords:
+                cords = self._locate(path, confidence=confidence)
+                if cords is not None:
+                    left, top, width, height = cords
+                    if center_on_found:
+                        return (left + width // 2, top + height // 2) # Return middle of found image   
+                    else:
+                        return (left, top, width, height)
+                else:
+                    return None
+            return True if self._locate(path, confidence=confidence) is not None else False
+
+        except Exception as e:
+            raise Exception(e)
 
     # Scaling functions for different resolutions support
     def _scaling(self, pos_list):
@@ -210,7 +249,8 @@ class BotUtils:
 
             do_padding -- this is used during start 
         """
-
+        # TODO: DIVIDING NY 1440 and 2560 PROBABLY NEEDING TO CHANGE TO self.settings["original resolution"] 
+        # for those how don't have a 2560x1440 resolution that create a gameplan
         reso_21 = False
         for x in self.reso_16: 
             if self.height == x['height']:
@@ -225,11 +265,16 @@ class BotUtils:
         
         y = pos_list[1]/1440
         y = y * self.height
-        x = x + self.__padding() # Add's the pad to to the curent x position variable
+        x = x + self._padding() # Add's the pad to to the curent x position variable
 
-        return (x, y)
+        if self.DEBUG:
+            self.log("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
 
-    def __padding(self):
+        return (int(x), int(y))
+        # return (x,y)
+
+
+    def _padding(self):
         """
             Get's width and height of current resolution
             we iterate through reso_16 for heights, if current resolution height matches one of the entires 
@@ -250,15 +295,121 @@ class BotUtils:
 
         return padding
 
+    def _load_img(self, img):
+        """
+        TODO
+        """
+        # load images if given Path, or convert as needed to opencv
+        # Alpha layer just causes failures at this point, so flatten to RGB.
+        # RGBA: load with -1 * cv2.CV_LOAD_IMAGE_COLOR to preserve alpha
+        # to matchTemplate, need template and image to be the same wrt having alpha
+        
+        if isinstance(img, Path):
+            # The function imread loads an image from the specified file and
+            # returns it. If the image cannot be read (because of missing
+            # file, improper permissions, unsupported or invalid format),
+            # the function returns an empty matrix
+            # http://docs.opencv.org/3.0-beta/modules/imgcodecs/doc/reading_and_writing_images.html
+            img_cv = cv2.imread(str(img), cv2.IMREAD_GRAYSCALE)
+            if img_cv is None:
+                raise IOError(f"Failed to read {img} because file is missing, has improper permissions, or is an unsupported or invalid format")
+        elif isinstance(img, np.ndarray):
+            img_cv = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            # don't try to convert an already-gray image to gray
+            # if grayscale and len(img.shape) == 3:  # and img.shape[2] == 3:
+            # else:
+            #     img_cv = img
+        elif hasattr(img, 'convert'):
+            # assume its a PIL.Image, convert to cv format
+            img_array = np.array(img.convert('RGB'))
+            img_cv = img_array[:, :, ::-1].copy()  # -1 does RGB -> BGR
+            img_cv = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
+        else:
+            raise TypeError('expected an image filename, OpenCV numpy array, or PIL image')
+        
+        return img_cv
+
+
+    def _locate_all(self, template_path, confidence=0.9, limit=100, region=None):
+        """
+            Template matching a method to match a template to a screenshot taken with mss.
+            
+            @template_path - Path to the template image
+            @confidence - A threshold value between {> 0.0f & < 1.0f} (Defaults to 0.9f)
+
+            credit: https://github.com/asweigart/pyscreeze/blob/b693ca9b2c964988a7e924a52f73e15db38511a8/pyscreeze/__init__.py#L184
+
+            Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
+
+            TODO: Resize image to match resolution of current screen if neeeded
+                - https://stackoverflow.com/questions/48121916/numpy-resize-rescale-image/48121983#48121983
+        """
+
+        monitor = {'top': 0, 'left': 0, 'width': self.width, 'height': self.height} if region is None else region
+
+        if  0.0 > confidence <= 1.0:
+            raise ValueError("Confidence must be a value between 0.0 and 1.0")
+
+        with mss.mss() as sct:
+
+            # Load the taken screenshot into a opencv img object
+            img = np.array(sct.grab(monitor))
+            screenshot = self._load_img(img) 
+
+            if region:
+                screenshot = screenshot[region[1]:region[1]+region[3],
+                                        region[0]:region[0]+region[2]
+                                        ]
+            else:
+                region = (0, 0)
+            # Load the template image
+            template = self._load_img(template_path)
+
+            confidence = float(confidence)
+
+            # width & height of the template
+            templateHeight, templateWidth = template.shape[:2]
+
+            # Find all the matches
+            # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
+            result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)    # heatmap of the template and the screenshot"
+            match_indices = np.arange(result.size)[(result > confidence).flatten()]
+            matches = np.unravel_index(match_indices[:limit], result.shape)
+            
+            # Defining the coordinates of the matched region
+            matchesX = matches[1] * 1 + region[0]
+            matchesY = matches[0] * 1 + region[1]
+
+            # for x, y in zip(matchesX, matchesY):
+            #     cv2.rectangle(screenshot, (x, y), (x + templateWidth, y + templateHeight), (0, 0, 255), 10)
+            # cv2.imshow("Image", screenshot)
+            # cv2.imshow("Template", template)
+            # cv2.waitKey()
+            # cv2.destroyAllWindows()
+
+            if len(matches[0]) == 0:
+                return None
+            else:
+                return [ (x, y, templateWidth, templateHeight) for x, y in zip(matchesX, matchesY) ]
+
+    def _locate(self, template_path, confidence=0.9, tries=1):
+        """
+            Locates a template on the screen.
+        """
+        result = self._locate_all(template_path, confidence)
+        return result[0] if result is not None else None
 
 
 if __name__ == "__main__":
     import time
 
     inst = BotUtils()
-    print("sleeping for 5 secs")
-    time.sleep(5)
-    
+    inst.log = print
+    inst.DEBUG = True
+    time.sleep(2)
 
-    res = inst.locate(inst.print_hero('obyn'))
-    print(res)
+
+    print(inst.getRound())
+
+    # res = inst._locate(inst._image_path("obyn"), confidence=0.9)
+    # print(res)

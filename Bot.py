@@ -1,36 +1,19 @@
-import pyautogui
 import time
-import numpy as np
-import sys
 
-# Temporary until handleInstrucion is fixed
-import mouse
-
-import pytesseract
-
-if sys.platform == "win32":
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
+from numpy import isin
 import static
-
 from BotCore import BotCore
 
 class Bot(BotCore):
     def __init__(self, instruction_path, debug_mode=False, verbose_mode=False):
         super().__init__(instruction_path)
         
-        # Change to current Directory
-        # Change to: https://github.com/rr-/screeninfo
-        self.width, self.height = pyautogui.size()
-
         self.start_time = time.time()
         self.running = True
         self.DEBUG = debug_mode
         self.VERBOSE = verbose_mode
         self.game_start_time = time.time()
-
-        # When mouse is moved to (0, 0)
-        pyautogui.FAILSAFE = True
+        self.fast_forward = True
 
     def initilize(self):
         if self.DEBUG:
@@ -55,6 +38,8 @@ class Bot(BotCore):
             # Check for levelup or insta monkey (level 100)
             if self.levelup_check() or self.insta_monkey_check():
                 self.click(middle_of_screen, amount=2)
+            elif self.monkey_knowledge_check():
+                self.click(middle_of_screen, amount=1)
 
             # Check for finished or failed game
             if self.defeat_check():
@@ -78,7 +63,7 @@ class Bot(BotCore):
                 finished = True
                 self.reset_game_plan()
                 continue
-
+            
             current_round = self.getRound()
 
             if current_round != None:
@@ -98,7 +83,14 @@ class Bot(BotCore):
                     # Handle all instructions in current round
                     for instruction in self.game_plan[str(current_round)]:
                         if not "DONE" in instruction:
-                            self.handleInstruction(instruction)
+
+                            if self._game_plan_version == "1":
+                                print(instruction)
+                                self.v1_handleInstruction(instruction)
+                                
+                            else:
+                                raise Exception("Game plan version {} not supported".format(self._game_plan_version))
+
                             instruction["DONE"] = True
 
                             if self.DEBUG:
@@ -111,13 +103,15 @@ class Bot(BotCore):
         self.press_key(keybind) # press keybind
         self.click(tower_position) # click on decired location
 
+
     def upgrade_tower(self, tower_position, upgrade_path):
-        # TODO: add Latest upgrade to game plan when upgrading, so it doesn't need to be in the json file
+        if not any(isinstance(path, int) for path in upgrade_path) or len(upgrade_path) != 3:
+            raise Exception("Upgrade path must be a list of integers", upgrade_path)
+
         self.click(tower_position)
-        
+
         # Convert upgrade_path to something usable
-        upgrade_path = upgrade_path.split("-")
-        top, middle, bottom = tuple(map(int, upgrade_path))
+        top, middle, bottom = upgrade_path
         
         for _ in range(top):
             self.press_key(static.upgrade_keybinds["top"])
@@ -130,9 +124,15 @@ class Bot(BotCore):
         
         self.press_key("esc")
 
-    def change_target(self, tower_name, tower_position, targets):
-        # target_array = targets.split(", ")
-        
+    def change_target(self, tower_type, tower_position, targets: str | list, delay: int | float | list | tuple = 3):
+        if not isinstance(targets, (tuple, list)):
+            targets = [targets]
+
+        if isinstance(targets, (list, tuple)) and isinstance(delay, (tuple, list)):
+            # check if delay and targets are the same length
+            if len(targets) != len(delay):
+                raise Exception("Number of targets and number of delays needs to be the same")
+
         self.click(tower_position)
 
         current_target_index = 0
@@ -141,7 +141,7 @@ class Bot(BotCore):
         for i in targets:
             
             # Math to calculate the difference between current target index and next target index
-            if "SPIKE" in tower_name:
+            if "SPIKE" in tower_type:
                 target_diff = abs((static.target_order_spike.index(i)) - current_target_index)
             else:
                 target_diff = abs((static.target_order_regular.index(i)) - current_target_index)
@@ -152,10 +152,17 @@ class Bot(BotCore):
                 current_target_index = n
                 self.press_key("tab")
 
-            # Used for microing if length of target array is longer than 1 
-            # and the last item of the array is not == to current target
-            if len(targets) > 1 and targets[-1] != i:
-                time.sleep(3) # TODO: specify this in the game plan
+            
+
+            # If delay is an int sleep for delay for each target
+            if isinstance(delay, (int, float)):
+                # If the bot is on the last target  in targets list, dont sleep
+                if targets[-1] != i: # 
+                    time.sleep(delay)   
+            # If delay is a list sleep for respective delay for each target
+            elif isinstance(delay, (list, tuple)):
+                time.sleep(delay.pop(-1))
+            
 
         self.press_key("esc")
 
@@ -169,58 +176,100 @@ class Bot(BotCore):
 
         self.press_key("esc")
 
-    def handleInstruction(self, instruction):
-        upgrade_path = instruction["UPGRADE_DIFF"]
-        monkey_position = instruction["POSITION"]
-        target = instruction["TARGET"]
-        keybind = static.tower_keybinds[instruction["TOWER"]]
+    def remove_tower(self, position):
+        self.click(position)
+        self.press_key("backspace")
+        self.press_key("esc")
 
-        # if upgrade_path is None the tower isn't placed yet, so place it
-        if upgrade_path is None:
-            self.place_tower(monkey_position, keybind)
-
-            if self.DEBUG:
-                self.log("Tower placed:", instruction["TOWER"])
+    def v1_handleInstruction(self, instruction):
+        """
+            Handles instructions for version 1 of the game plan 
             
-        else:
-            self.upgrade_tower(monkey_position, upgrade_path)
+        """
 
-            if self.DEBUG:
-                self.log("Upgrading {} to {}; change {}".format(instruction['TOWER'], instruction['UPGRADE'], instruction['UPGRADE_DIFF']))
+        instruction_type = instruction["INSTRUCTION_TYPE"]
 
-        # If target position is not None
-        # Special case for mortars and towers with static targeting
-        if instruction["TARGET_POS"]:
-            self.set_static_target(monkey_position, instruction["TARGET_POS"])
+        if instruction_type == "PLACE_TOWER":
+            tower = instruction["ARGUMENTS"]["MONKEY"]
+            position = instruction["ARGUMENTS"]["LOCATION"]
+
+            keybind = static.tower_keybinds[tower]
+
+            self.place_tower(position, keybind)
+
+            if self.DEBUG or self.VERBOSE:
+                self.log("Tower placed:", tower)
             
-            if self.DEBUG:
-                self.log("Monkey static target change", instruction["TOWER"])
-
-        if instruction["ROUND_START"]:
-            self.log("Starting first round")
-            self.press_key("space", amount=2)
-            self.game_start_time = time.time()
-
-        # Change monkey to target (eg strong)
-        if target:
-            self.change_target(instruction["TOWER"], monkey_position, target)
-
-            if self.DEBUG:
-                self.log(f"{instruction['TOWER']} target change to {target}")
-
+        elif instruction_type == "REMOVE_TOWER":
+            self.remove_tower(instruction["ARGUMENTS"]["LOCATION"])
+            
+            if self.DEBUG or self.VERBOSE:
+                self.log("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
         
-        if self.DEBUG:
+        # Upgrade tower
+        elif instruction_type == "UPGRADE_TOWER":
+            position = instruction["ARGUMENTS"]["LOCATION"]
+            upgrade_path = instruction["ARGUMENTS"]["UPGRADE_PATH"]
+
+            self.upgrade_tower(position, upgrade_path)
+
+            if self.DEBUG or self.VERBOSE:
+                self.log("Tower upgraded at position:", instruction["ARGUMENTS"]["LOCATION"], "with the upgrade path:", instruction["ARGUMENTS"]["UPGRADE_PATH"])
+        
+        # Change tower target
+        elif instruction_type == "CHANGE_TARGET":
+            target_type = instruction["ARGUMENTS"]["TYPE"]
+            position = instruction["ARGUMENTS"]["LOCATION"]
+            target = instruction["ARGUMENTS"]["TARGET"]
+
+            if "DELAY" in instruction["ARGUMENTS"]:
+                delay = instruction["ARGUMENTS"]["DELAY"] 
+                self.change_target(target_type, position, target, delay)
+            else:
+                self.change_target(target_type, position, target)
+            
+
+        # Set static target of a tower
+        elif instruction_type == "SET_STATIC_TARGET":
+            position = instruction["ARGUMENTS"]["LOCATION"]
+            target_position = instruction["ARGUMENTS"]["TARGET"]
+
+            self.set_static_target(position, target_position)
+        
+        elif instruction_type == "START":
+            if "ARGUMENTS" in instruction and "FAST_FORWARD " in instruction["ARGUMENTS"]:
+                self.fast_forward = instruction["ARGUMENTS"]["FASTFORWARD"]
+                
+            self.start_first_round()
+
+            if self.DEBUG or self.VERBOSE:
+                self.log("First Round Started")
+        
+        else:
+            # Maybe raise exception or just ignore?
+            raise Exception("Instruction type {} is not a valid type".format(instruction_type))
+
+        if self.DEBUG or self.VERBOSE:
             self.log(f"executed instruction:\n{instruction}")
 
 
-    def abilityAvaliabe(self, last_used, cooldown, fast_forward=True):
+    def abilityAvaliabe(self, last_used, cooldown):
         # TODO: Store if the game is speeded up or not. If it is use the constant (true by default)
         m = 1
-        if fast_forward:
+
+        if self.fast_forward:
             m = 3
 
         return (time.time() - last_used) >= (cooldown / m)
-  
+
+    def start_first_round(self):
+        if self.fast_forward:
+            self.press_key("space", amount=2)
+        else:
+            self.press_key("space", amount=1)
+
+        self.game_start_time = time.time()
+
     def check_for_collection_crates(self):
         if self.collection_event_check():
             if self.DEBUG:
@@ -260,7 +309,7 @@ class Bot(BotCore):
         if not self.hero_check(self.settings["HERO"]):
             self.log(f"Selecting {self.settings['HERO']}")
             self.click("HERO_SELECT")
-            self.click(self.settings["HERO"])
+            self.click(self.settings["HERO"], move_timeout=0.2)
             self.click("CONFIRM_HERO")
             self.press_key("esc")
 
@@ -272,8 +321,8 @@ class Bot(BotCore):
         else:
             self.click("DEFEAT_HOME")
             time.sleep(2)
-
-        time.sleep(4)
+        
+        self.wait_for_loading() # wait for loading screen
 
     def select_map(self):
         map_page = static.maps[self.settings["MAP"]][0]
@@ -287,27 +336,40 @@ class Bot(BotCore):
         self.click("BEGINNER_SELECTION") # goto first page
 
         # click to the right page
-        self.click("RIGHT_ARROW_SELECTION", amount=(map_page-1))
+        self.click("RIGHT_ARROW_SELECTION", amount=(map_page - 1), timeout=0.1)
 
         self.click("MAP_INDEX_" + str(map_index)) # Click correct map
         self.click(self.settings["DIFFICULTY"]) # Select Difficulty
         self.click(self.settings["GAMEMODE"]) # Select Gamemode
         self.click("OVERWRITE_SAVE")
 
+        self.wait_for_loading() # wait for loading screen
+
         # Only need to press confirm button if we play chimps or impoppable
         if self.settings["GAMEMODE"] == "CHIMPS" or self.settings["GAMEMODE"] == "IMPOPPABLE":
-            time.sleep(3) # wait for loading screen
             self.click(self.settings["DIFFICULTY"])
             self.click("CONFIRM_CHIMPS")
+    
+    def wait_for_loading(self):
+        still_loading = True
+
+        while still_loading:
+            if self.DEBUG:
+                self.log("Waiting for loading screen..")
+            
+            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+            still_loading = self.loading_screen_check()
 
 if __name__ == "__main__":
     # For testing purposes; open sandbox on dark castle and run Bot.py will place every tower
-    import time
+    import time, sys
+    from pathlib import Path
     time.sleep(2)
-    b = Bot(instruction_path=".\\Instructions\\Dark_Castle_Hard_Standard")
+    gameplan_path = (Path(__file__).resolve().parent/sys.argv[sys.argv.index("--gameplan_path") + 1]) if "--gameplan_path" in sys.argv else exit(0)
+    b = Bot(instruction_path=gameplan_path)
     for round, instruction_list in b.game_plan.items():
         print(round, instruction_list)
         for instruction in instruction_list:
-            b.handleInstruction(instruction)    
+            b.v1_handleInstruction(instruction)    
             
         

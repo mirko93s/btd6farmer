@@ -1,40 +1,34 @@
 import json
 import copy
+from pathlib import Path
 from BotLog import BotLog
 from BotUtils import BotUtils
 
 class BotCore(BotLog, BotUtils):
-    def __init__(self, instruction_path=r".\Instructions\Dark_Castle_Hard_Standard", game_plan_filename="instructions.json", game_settings_filename="setup.json"):
-        self.settings = self.__load_settings(instruction_path + "\\" + game_settings_filename)
-        self.game_plan = self.__load_plan(instruction_path + "\\" + game_plan_filename)
+    def __init__(self, instruction_path=Path.cwd()/"Instructions"/"Dark_Castle_Hard_Standard", game_plan_filename="instructions.json", game_settings_filename="setup.json"):
         
-        self.__game_plan_copy = copy.deepcopy(self.game_plan)
+        # TODO: ADD FAILSAFE
+        # When mouse is moved to (0, 0)
+        # pyautogui.FAILSAFE = True
 
-        self.__game_plan_version = self.game_plan.pop("VERSION")
+        self.settings = self._load_json(instruction_path / game_settings_filename)
+        self.game_plan = self._load_json(instruction_path / game_plan_filename)
+        
+        self._game_plan_copy = copy.deepcopy(self.game_plan)
+
+        self._game_plan_version = self.settings.pop("VERSION")
 
         BotLog.__init__(self)
         BotUtils.__init__(self)
 
-    def __load_settings(self, path):
+    def _load_json(self, path):
         """
-            Will read the @file_path as a json file load into a dictionary
+            Will read the @path as a json file load into a dictionary.
         """
-        data = []
-        with open(path, 'r', encoding="utf-8") as game_setup:
-            data = json.load(game_setup)
-        return data
-
-    def __load_plan(self, path):
-        """
-            Will read the @file_path as a json file load into a dictionary
-        """
-        data = []
-        with open(path, 'r', encoding="utf-8") as game_plan:
-            data = json.load(game_plan)
-        
-        # data.sort()
-
+        data = {}
+        with path.open('r', encoding="utf-8") as f:
+            data = json.load(f)
         return data
     
     def reset_game_plan(self):
-        self.game_plan = copy.deepcopy(self.__game_plan_copy)
+        self.game_plan = copy.deepcopy(self._game_plan_copy)

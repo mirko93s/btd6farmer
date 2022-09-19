@@ -1,29 +1,28 @@
-import os
 import time
 import sys
-import pathlib
+from pathlib import Path
 from Bot import Bot
  
 if __name__ == "__main__":
-    current_directory = ""
 
-    # Verify that a valid path was fed to the script to find instructions
-    if len(sys.argv) >= 1:
-        # Verify that one of the arguments is a directory
-        for arguments in sys.argv:
-            directory = str(pathlib.Path().resolve()) + arguments
-            if os.path.isdir(directory):
-                current_directory = directory
+    def no_gameplan_exception():
+        raise Exception("No valid argument for directory.. 'python main.py --gameplan_path <directory to gameplan>'")
 
-    # Verify directory exist, if not close the program with Exception
-    if current_directory == "":
-        raise Exception("No valid argument for directory.. 'python main.py <directory to gameplan>'")
+    # Retrives the gameplan from the command line and makes a Path object out of it
+    gameplan_path = (Path(__file__).resolve().parent/sys.argv[sys.argv.index("--gameplan_path") + 1]) if "--gameplan_path" in sys.argv else no_gameplan_exception()
+
+    # Verify directory exist.
+    if not gameplan_path.exists():
+        print("No directory found at: " + str(gameplan_path))
+        no_gameplan_exception()
+    # Verify that it is a directory
+    if not gameplan_path.is_dir():
+        print("Not a directory")
+        no_gameplan_exception()
     
-    # TODO: Move all these prints to verbose only mode
-
-    bot = Bot(instruction_path=current_directory, debug_mode=("--debug" in sys.argv), verbose_mode=("--verbose" in sys.argv))
-
+    bot = Bot(instruction_path=gameplan_path, debug_mode=("--debug" in sys.argv), verbose_mode=("--verbose" in sys.argv))
     print("Setting up Bot...")
+    print("Using gameplan located in: " + str(gameplan_path))
     
     bot.initilize() # Initialize the bot (presses alt, etc)
 
