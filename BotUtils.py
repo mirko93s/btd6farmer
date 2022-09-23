@@ -372,6 +372,10 @@ class BotUtils:
             # width & height of the template
             templateHeight, templateWidth = template.shape[:2]
 
+            # scale template
+            if self.width != 2560 or self.height != 1440:
+                template = cv2.resize(template, dsize=(int(templateWidth/(2560/self.width)), int(templateHeight/(1440/self.height))), interpolation=cv2.INTER_CUBIC)
+
             # Find all the matches
             # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
             result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)    # heatmap of the template and the screenshot"
