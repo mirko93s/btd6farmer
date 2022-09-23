@@ -153,7 +153,7 @@ class BotUtils:
         mouse.move(x=location[0], y=location[1])
         time.sleep(move_timeout)
 
-    def click(self, location: tuple | tuple, amount=1, timeout=0.1, move_timeout=0.1, press_time=0.075):        
+    def click(self, location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, press_time=0.075):        
         """
             Method to click on a specific location on the screen
             @param location: The location to click on
