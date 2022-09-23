@@ -146,7 +146,7 @@ class Bot(BotCore):
         for i in targets:
 
             if target_order.index(i) < current_target_index:
-                target_diff = abs(current_target_index - 3 + target_order.index(i) + 1)
+                target_diff = abs(current_target_index - 3) + target_order.index(i) + 1
             else:
                 target_diff = target_order.index(i) - current_target_index
             current_target_index = target_order.index(i)
