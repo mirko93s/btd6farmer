@@ -156,8 +156,6 @@ class Bot(BotCore):
             # Change target until on correct target
             self.press_key("tab", amount = target_diff)
 
-            
-
             # If delay is an int sleep for delay for each target
             if isinstance(delay, (int, float)):
                 # If the bot is on the last target  in targets list, dont sleep
@@ -350,7 +348,7 @@ class Bot(BotCore):
         self.wait_for_loading() # wait for loading screen
 
         # Only need to press confirm button if we play chimps or impoppable
-        if self.settings["GAMEMODE"] == "CHIMPS" or self.settings["GAMEMODE"] == "IMPOPPABLE":
+        if self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "IMPOPPABLE":
             self.click(self.settings["DIFFICULTY"])
             self.click("CONFIRM_CHIMPS")
     
