@@ -40,22 +40,7 @@ button_positions = { # Creates a dictionary of all positions needed for monkeys 
     "RESTART_CONFIRM": [1515, 964],
     "RESTART_DEFEAT": [1103, 1083],
     "RESTART_DEFEAT_CHIMPS": [1280, 1094],
-    "CONFIRM_CHIMPS" : [1281, 980],
-    # Move this to hero_positions
-    "OBYN" : [106, 532],
-    "CAPTAIN_CHURCHILL" : [506, 532],
-    "STRIKER_JONES" : [506, 232],
-    "GWENDOLIN" : [306, 232],
-    "QUINCY" : [106, 232],
-    "PAT_FUSTY" : [506, 832],
-    "EZILI" : [306, 832],
-    "BENJAMIN" : [106, 832],
-    "ETIENNE" : [506, 1132],
-    "ADMIRAL_BRICKELL" : [306, 1132],
-    "ADORA" : [106, 1132],
-    "SAUDA" : [106, 1332],
-    "PSI" : [306, 1332],
-    "GERALDO": [333, 533]
+    "CONFIRM_CHIMPS" : [1281, 980]
 }
 
 hero_positions = {

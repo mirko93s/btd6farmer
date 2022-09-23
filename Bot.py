@@ -322,7 +322,7 @@ class Bot(BotCore):
         if not self.hero_check(self.settings["HERO"]):
             self.log(f"Selecting {self.settings['HERO']}")
             self.click("HERO_SELECT")
-            self.click(self.settings["HERO"], move_timeout=0.2)
+            self.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
             self.click("CONFIRM_HERO")
             self.press_key("esc")
 
