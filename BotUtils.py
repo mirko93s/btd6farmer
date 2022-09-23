@@ -127,12 +127,11 @@ class BotUtils:
 
             # Get current round from screenshot with tesseract
             found_text = pytesseract.image_to_string(final_image,  config='--psm 7').replace("\n", "")
-            
-            # TODO: REMOVE EVERYTHING THAT IS NOT A NUMBER OR A SLASH
-            # found_text = found_text.replace("|", "")            
 
+            # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
-                return int(found_text.split("/")[0])
+                found_text = re.search(r"(\d+)", found_text)
+                return int(found_text.group(0))
 
             else:
                 if self.DEBUG:
