@@ -5,13 +5,14 @@ import static
 from BotCore import BotCore
 
 class Bot(BotCore):
-    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False):
+    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False):
         super().__init__(instruction_path)
         
         self.start_time = time.time()
         self.running = True
         self.DEBUG = debug_mode
         self.VERBOSE = verbose_mode
+        self.RESTART = restart_mode
         self.game_start_time = time.time()
         self.fast_forward = True
 
@@ -47,8 +48,10 @@ class Bot(BotCore):
                 if self.DEBUG:
                     print("Defeat detected on round {}; exiting level".format(current_round))
                     self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
-
-                self.exit_level(won=False)
+                if self.RESTART:
+                    self.restart_level(won=False)
+                else:
+                    self.exit_level(won=False)
                 finished = True
                 self.reset_game_plan()
                 continue
@@ -58,8 +61,10 @@ class Bot(BotCore):
                 if self.DEBUG:
                     print("Victory detected; exiting level") 
                     self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
-                
-                self.exit_level(won=True)
+                if self.RESTART:
+                    self.restart_level(won=True)
+                else:
+                    self.exit_level(won=True)
                 finished = True
                 self.reset_game_plan()
                 continue
@@ -331,6 +336,28 @@ class Bot(BotCore):
             time.sleep(2)
         else:
             self.click("DEFEAT_HOME")
+            time.sleep(2)
+        
+        self.wait_for_loading() # wait for loading screen
+    
+    def restart_level(self, won=True):
+        if won:
+            self.click("VICTORY_CONTINUE")
+            time.sleep(2)
+            self.click("FREEPLAY")
+            self.click("OK_MIDDLE")
+            time.sleep(1)
+            self.press_key("esc")
+            time.sleep(1)
+            self.click("RESTART_WIN")
+            self.click("RESTART_CONFIRM")
+        elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
+            self.click("RESTART_DEFEAT_CHIMPS")
+            self.click("RESTART_CONFIRM")
+            time.sleep(2)
+        else:
+            self.click("RESTART_DEFEAT")
+            self.click("RESTART_CONFIRM")
             time.sleep(2)
         
         self.wait_for_loading() # wait for loading screen

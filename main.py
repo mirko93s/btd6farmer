@@ -20,7 +20,7 @@ if __name__ == "__main__":
         print("Not a directory")
         no_gameplan_exception()
     
-    bot = Bot(instruction_path=gameplan_path, debug_mode=("--debug" in sys.argv), verbose_mode=("--verbose" in sys.argv))
+    bot = Bot(instruction_path=gameplan_path, debug_mode=("--debug" in sys.argv), verbose_mode=("--verbose" in sys.argv), restart_mode=("--restart" in sys.argv))
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
     
@@ -32,13 +32,18 @@ if __name__ == "__main__":
     # Check for obyn
     bot.hero_select()
 
+    if bot.RESTART:
+        print("selecting map")
+        bot.select_map()
+
     # Make sure we haven't exited by using the stop key.
     while bot.running:
         bot.check_for_collection_crates()
 
-        print("selecting map")
-        # Choose map
-        bot.select_map()   
+        if not bot.RESTART:
+            print("selecting map")
+            # Choose map
+            bot.select_map()   
 
         print("Game start")
 

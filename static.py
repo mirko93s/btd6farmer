@@ -36,7 +36,10 @@ button_positions = { # Creates a dictionary of all positions needed for monkeys 
     "ABILLITY_TWO": [369, 1377],
     "FREEPLAY" : [1611, 1112],
     "OK_MIDDLE" : [1280, 1003],
-    "RESTART": [1413, 1094],
+    "RESTART_WIN": [1413, 1094],
+    "RESTART_CONFIRM": [1515, 964],
+    "RESTART_DEFEAT": [1103, 1083],
+    "RESTART_DEFEAT_CHIMPS": [1280, 1094],
     "CONFIRM_CHIMPS" : [1281, 980],
     # Move this to hero_positions
     "OBYN" : [106, 532],
