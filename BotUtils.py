@@ -95,7 +95,7 @@ class BotUtils:
             if area == None:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
-                scaled_values = self._scaling([35, 1850]) # Use default values
+                scaled_values = self._scaling([1850, 35]) # Use default values
                 self.round_area["top"] = scaled_values[0]
                 self.round_area["left"] = scaled_values[1]
             else:
