@@ -182,6 +182,8 @@ class BotUtils:
             """
             if amount > 1:
                 time.sleep(timeout)
+        
+        time.sleep(0.5)
 
     def press_key(self, key, timeout=0.1, amount=1):
         for _ in range(amount):
