@@ -135,8 +135,6 @@ class Bot(BotCore):
 
         self.click(tower_position)
 
-        current_target_index = 0
-
         if "SPIKE" in tower_type:
             target_order = static.target_order_spike
         else:
@@ -238,6 +236,7 @@ class Bot(BotCore):
 
             self.set_static_target(position, target_position)
         
+        # Start game
         elif instruction_type == "START":
             if "ARGUMENTS" in instruction and "FAST_FORWARD " in instruction["ARGUMENTS"]:
                 self.fast_forward = instruction["ARGUMENTS"]["FASTFORWARD"]
@@ -246,6 +245,13 @@ class Bot(BotCore):
 
             if self.DEBUG or self.VERBOSE:
                 self.log("First Round Started")
+
+        # Wait a given time
+        elif instruction_type == "WAIT":
+            time.sleep(instruction["ARGUMENTS"]["TIME"])
+
+            if self.DEBUG or self.VERBOSE:
+                self.log("Waiting for ", instruction["ARGUMENTS"]["TIME"], "second(s)")
         
         else:
             # Maybe raise exception or just ignore?
