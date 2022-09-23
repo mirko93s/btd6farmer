@@ -26,8 +26,16 @@ if __name__ == "__main__":
     
     bot.initilize() # Initialize the bot (presses alt, etc)
 
-    print("Waiting for 5 seconds... Please select the Bloons TD 6 window during this time.")
-    time.sleep(5)
+    print("Waiting for Home screen. Please switch to Bloons TD 6 window.")
+
+    # Wait for btd6 home screen
+    waiting_for_home = False
+
+    while waiting_for_home is False:
+        if bot.DEBUG:
+            print("Waiting for loading screen..")
+        time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+        waiting_for_home = bot.home_menu_check()
 
     # Check for obyn
     bot.hero_select()

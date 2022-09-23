@@ -215,6 +215,9 @@ class BotUtils:
     def loading_screen_check(self):
         return self._find( self._image_path("loading_screen") )
 
+    def home_menu_check(self):
+        return self._find( self._image_path("play") )
+
     def collection_event_check(self):
         return self._find(self._image_path("diamond_case") )
 
