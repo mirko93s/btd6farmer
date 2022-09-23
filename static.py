@@ -40,7 +40,6 @@ button_positions = { # Creates a dictionary of all positions needed for monkeys 
     "CONFIRM_CHIMPS" : [1281, 980],
     # Move this to hero_positions
     "OBYN" : [106, 532],
-    "GERALDO" : [306, 532],
     "CAPTAIN_CHURCHILL" : [506, 532],
     "STRIKER_JONES" : [506, 232],
     "GWENDOLIN" : [306, 232],
@@ -58,7 +57,6 @@ button_positions = { # Creates a dictionary of all positions needed for monkeys 
 
 hero_positions = {
     "OBYN" : [106, 532],
-    "GERALDO" : [306, 532],
     "CAPTAIN_CHURCHILL" : [506, 532],
     "STRIKER_JONES" : [506, 232],
     "GWENDOLIN" : [306, 232],
