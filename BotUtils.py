@@ -96,8 +96,11 @@ class BotUtils:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
                 scaled_values = self._scaling([1850, 35]) # Use default values
-                self.round_area["top"] = scaled_values[0]
-                self.round_area["left"] = scaled_values[1]
+
+                # left = x
+                # top = y
+                self.round_area["left"] = scaled_values[0]
+                self.round_area["top"] = scaled_values[1]
             else:
                 # set round area to the found area + offset
                 x, y, roundwidth, roundheight = area
@@ -106,8 +109,6 @@ class BotUtils:
                 self.round_area["top"] = y + yOffset
                 self.round_area["left"] = x - xOffset
         
-                self.round_area["width"] = 225 
-                self.round_area["height"] = 65 
         # Setting up screen capture area
         monitor = {'top': self.round_area["top"], 'left': self.round_area["left"], 'width': self.round_area["width"], 'height': self.round_area["height"]}
         # print("region", monitor)
@@ -132,6 +133,7 @@ class BotUtils:
 
             if re.search(r"(\d+/\d+)", found_text):
                 return int(found_text.split("/")[0])
+
             else:
                 if self.DEBUG:
                     self.log("Found text '{}' does not match regex requirements".format(found_text))
@@ -180,8 +182,8 @@ class BotUtils:
                 So we only apply the .1 delay if the bot has to click on the same spot multiple times
                 This is currently used for level selection and levelup screen
             """
-            if amount > 1:
-                time.sleep(timeout)
+            # if amount > 1:
+            time.sleep(timeout)
 
     def press_key(self, key, timeout=0.1, amount=1):
         for _ in range(amount):
