@@ -320,6 +320,9 @@ class Bot(BotCore):
             self.click("VICTORY_CONTINUE")
             time.sleep(2)
             self.click("VICTORY_HOME")
+        elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
+            self.click("DEFEAT_HOME_CHIMPS")
+            time.sleep(2)
         else:
             self.click("DEFEAT_HOME")
             time.sleep(2)

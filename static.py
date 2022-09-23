@@ -19,6 +19,7 @@ button_positions = { # Creates a dictionary of all positions needed for monkeys 
     "VICTORY_CONTINUE" : [1283, 1215],
     "VICTORY_HOME" : [939, 1124],
     "DEFEAT_HOME" : [754, 1083],
+    "DEFEAT_HOME_CHIMPS" : [930, 1083],
     "EASTER_COLLECTION" : [1279, 911],
     "F_LEFT_INSTA" : [868, 722],
     "F_RIGHT_INSTA" : [1680, 722],
@@ -36,7 +37,7 @@ button_positions = { # Creates a dictionary of all positions needed for monkeys 
     "FREEPLAY" : [1611, 1112],
     "OK_MIDDLE" : [1280, 1003],
     "RESTART": [1413, 1094],
-    "CONFIRM_CHIMPS" : [1481, 980],
+    "CONFIRM_CHIMPS" : [1281, 980],
     # Move this to hero_positions
     "OBYN" : [106, 532],
     "GERALDO" : [306, 532],
