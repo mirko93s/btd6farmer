@@ -137,20 +137,24 @@ class Bot(BotCore):
 
         current_target_index = 0
 
+        if "SPIKE" in tower_type:
+            target_order = static.target_order_spike
+        else:
+            target_order = static.target_order_regular
+
+        current_target_index = 0
+
         # for each target in target list
         for i in targets:
-            
-            # Math to calculate the difference between current target index and next target index
-            if "SPIKE" in tower_type:
-                target_diff = abs((static.target_order_spike.index(i)) - current_target_index)
+
+            if target_order.index(i) < current_target_index:
+                target_diff = abs(current_target_index - 3 + target_order.index(i) + 1)
             else:
-                target_diff = abs((static.target_order_regular.index(i)) - current_target_index)
-                # self.log("Target diff", target_diff)
+                target_diff = target_order.index(i) - current_target_index
+            current_target_index = target_order.index(i)
 
             # Change target until on correct target
-            for n in range(1, target_diff + 1):
-                current_target_index = n
-                self.press_key("tab")
+            self.press_key("tab", amount = target_diff)
 
             
 
