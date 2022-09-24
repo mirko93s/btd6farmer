@@ -95,7 +95,7 @@ class BotUtils:
             if area == None:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
-                scaled_values = self._scaling([1850, 35]) # Use default values
+                scaled_values = self._scaling([0.72265625, 0.0243055555555556]) # Use default values 2560x1440
 
                 # left = x
                 # top = y
@@ -264,11 +264,9 @@ class BotUtils:
                     break
 
         if reso_21 != True:
-            x = pos_list[0]/2560 
-            x = x * self.width
+            x = pos_list[0] * self.width
         
-        y = pos_list[1]/1440
-        y = y * self.height
+        y = pos_list[1] * self.height
         x = x + self._padding() # Add's the pad to to the curent x position variable
 
         if self.DEBUG:
