@@ -1,4 +1,4 @@
-button_positions = { # Creates a dictionary of all positions needed for monkeys (positions mapped to 2160 x 1440 resolution)
+button_positions = { # Creates a dictionary of all relative positions needed for monkeys
     "HOME_MENU_START"           : [ 0.438671875 , 0.8666666666666667 ],
     "EXPERT_SELECTION"          : [ 0.69453125 , 0.9055555555555556 ],
     "BEGINNER_SELECTION"        : [ 0.30390625 , 0.9055555555555556 ],

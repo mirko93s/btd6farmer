@@ -95,7 +95,7 @@ class BotUtils:
             if area == None:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
-                scaled_values = self._scaling([0.72265625, 0.0243055555555556]) # Use default values 2560x1440
+                scaled_values = self._scaling([0.72265625, 0.0243055555555556]) # Use default values
 
                 # left = x
                 # top = y
@@ -253,8 +253,7 @@ class BotUtils:
 
             do_padding -- this is used during start 
         """
-        # TODO: DIVIDING NY 1440 and 2560 PROBABLY NEEDING TO CHANGE TO self.settings["original resolution"] 
-        # for those how don't have a 2560x1440 resolution that create a gameplan
+
         reso_21 = False
         for x in self.reso_16: 
             if self.height == x['height']:
