@@ -1,10 +1,11 @@
 import time
 import sys
+import mouse
 from pathlib import Path
 from Bot import Bot
+from threading import Thread
  
-if __name__ == "__main__":
-
+def main():
     def no_gameplan_exception():
         raise Exception("No valid argument for directory.. 'python main.py --gameplan_path <directory to gameplan>'")
 
@@ -58,3 +59,8 @@ if __name__ == "__main__":
         # main game loop
         bot.ingame_loop()
 
+Thread(target=main, daemon=True).start()
+# Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
+while mouse.get_position() != (0,0):
+    time.sleep(0.2)
+sys.exit("FAILSAFE EXIT")
