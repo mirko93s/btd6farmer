@@ -3,6 +3,7 @@ import time
 import keyboard
 import mouse
 import static
+import tkinter
 from pathlib import Path
 
 import numpy as np
@@ -20,25 +21,14 @@ from collections import defaultdict
 
 class BotUtils:
     def __init__(self):
-        # Gets the main monitor resolution
-        # TODO: get monitor res for linux for linux support
-        # self.width, self.height = (5120, 1440) 
-        # try:
-        #     mon = {mon: 1}
-        #     with mss.mss() as sct:
-        #         screen = sct.grab(mon)
-        #         print("mss screen size:", screen.size())
-        # except Exception as e:
-        #     print(e)
 
         try:
             if sys.platform == "win32":
-                self.width, self.height = ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1)
-                # self.width, self.height = (1920, 1080)
-            else:
-                raise Exception("Platform not supported yet")
+                ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
+            tk = tkinter.Tk()
+            self.width, self.height = tk.winfo_screenwidth(), tk.winfo_screenheight()
         except Exception as e:
-            raise Exception("Could not retrieve monitor resolution the system")
+            raise Exception("Could not retrieve monitor resolution")
 
 
         """
@@ -341,9 +331,6 @@ class BotUtils:
             credit: https://github.com/asweigart/pyscreeze/blob/b693ca9b2c964988a7e924a52f73e15db38511a8/pyscreeze/__init__.py#L184
 
             Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
-
-            TODO: Resize image to match resolution of current screen if neeeded
-                - https://stackoverflow.com/questions/48121916/numpy-resize-rescale-image/48121983#48121983
         """
 
         monitor = {'top': 0, 'left': 0, 'width': self.width, 'height': self.height} if region is None else region
