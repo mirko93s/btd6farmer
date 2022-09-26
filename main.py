@@ -59,8 +59,11 @@ def main():
         # main game loop
         bot.ingame_loop()
 
-Thread(target=main, daemon=True).start()
-# Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
-while mouse.get_position() != (0,0):
-    time.sleep(0.2)
-sys.exit("FAILSAFE EXIT")
+
+if __name__ == "__main__":
+    Thread(target=main, daemon=True).start()
+    # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
+    while mouse.get_position() != (0,0):
+        time.sleep(0.2)
+    
+    sys.exit("FAILSAFE EXIT")
