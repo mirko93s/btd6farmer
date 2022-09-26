@@ -1,16 +1,21 @@
+from email import parser
 import time
 import sys
 import mouse
+import argparse
 from pathlib import Path
 from Bot import Bot
 from threading import Thread
- 
-def main():
+
+
+def main(arg_parser):
     def no_gameplan_exception():
         raise Exception("No valid argument for directory.. 'python main.py --gameplan_path <directory to gameplan>'")
 
+    args = vars(arg_parser.parse_args())
+
     # Retrives the gameplan from the command line and makes a Path object out of it
-    gameplan_path = (Path(__file__).resolve().parent/sys.argv[sys.argv.index("--gameplan_path") + 1]) if "--gameplan_path" in sys.argv else no_gameplan_exception()
+    gameplan_path = (Path(__file__).resolve().parent / Path(args["path"]) )
 
     # Verify directory exist.
     if not gameplan_path.exists():
@@ -21,7 +26,7 @@ def main():
         print("Not a directory")
         no_gameplan_exception()
     
-    bot = Bot(instruction_path=gameplan_path, debug_mode=("--debug" in sys.argv), verbose_mode=("--verbose" in sys.argv), restart_mode=("--restart" in sys.argv))
+    bot = Bot(instruction_path=Path(args["path"]), debug_mode=(args['debug']), verbose_mode=(args['verbose']), restart_mode=(args['restart']))
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
     
@@ -61,7 +66,16 @@ def main():
 
 
 if __name__ == "__main__":
-    Thread(target=main, daemon=True).start()
+    parser = argparse.ArgumentParser(description='A bot that plays the game bloons td 6')
+
+    parser.add_argument('-p', '--path', '--gameplan_path', type=str, help='Path to the gameplan directory', required=True)
+    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug mode')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode')
+    parser.add_argument('-r', '--restart', action='store_true', help='automatically restarts the game when finished, instead of going to home screen')
+    
+    # Start the bot on a seperate thread
+    Thread(target=main, args=(parser,), daemon=True).start()
+
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
     while mouse.get_position() != (0,0):
         time.sleep(0.2)
