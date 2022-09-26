@@ -26,7 +26,12 @@ def main(arg_parser):
         print("Not a directory")
         no_gameplan_exception()
     
-    bot = Bot(instruction_path=Path(args["path"]), debug_mode=(args['debug']), verbose_mode=(args['verbose']), restart_mode=(args['restart']))
+    bot = Bot(instruction_path=Path(args["path"]), 
+            debug_mode=(args['debug']), 
+            verbose_mode=(args['verbose']), 
+            restart_mode=(args['restart'])
+        )
+        
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
     
