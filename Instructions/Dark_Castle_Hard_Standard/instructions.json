@@ -507,7 +507,7 @@
                     0.475
                 ],
                 "TARGET": "CLOSE",
-                "TYPE": "REGULAR"
+                "TYPE": "SPIKE"
             }
         }
     ],
