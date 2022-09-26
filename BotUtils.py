@@ -171,8 +171,10 @@ class BotUtils:
                 So we only apply the .1 delay if the bot has to click on the same spot multiple times
                 This is currently used for level selection and levelup screen
             """
-            # if amount > 1:
-            time.sleep(timeout)
+            if amount > 1:
+                time.sleep(timeout)
+        
+        time.sleep(timeout)
 
     def press_key(self, key, timeout=0.1, amount=1):
         for _ in range(amount):
