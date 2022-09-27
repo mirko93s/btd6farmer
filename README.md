@@ -1,20 +1,14 @@
 # btd6farmer - a bot for Bloons Td 6
-#### Inspired from [RavingSmurfGB](https://github.com/RavingSmurfGB/Py_AutoBloons), some functions is taken from that repository.
+##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
 [![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml)
 \
 v1.0.0-pre_release
 
 IF for any reason you are having issue with the current state of the bot. You can use [this](https://github.com/linus-jansson/btd6farmer/releases/tag/v0.9-fallback) release of the bot.
 
-NOTE: Since this is a ***"pre release"*** of the bot. I have yet not tested the functionallty of the bot on anything else than a 1440p monitor. This may have a impact on the new current round system, I have however, added a fallback method to use the old method of finding the current round if the new way fails. If you have any issues with the bot, find any bugs or have any suggestions for improvements, please create an issue or create a pull request!
-
-
-
 This python bot will farm a level (dark castle on hard mode by default) in Bloons TD 6. It uses tesseract to find the current level and is able to navigate autonomously after starting it.
 
 *The script is made for 1440p screen resolutions but should also work with 1080p thanks to RacingSmurfGB* =)
-
-*Currently there is no support for linux and proton*
 
 Feel free to make a pull request if you find any improvements or create a issue if something isn't working correctly!
 
@@ -22,6 +16,7 @@ Feel free to make a pull request if you find any improvements or create a issue 
 - [Dependencies](#dependenices) 
 - [Installation](#installation)
 - [Running the bot](#running)
+- [Gameplans](#gameplans)
 - [Roadmap](#roadmap)
 - [Having issues?](#issues)
 - [Creating your own gameplan](#contributing)
@@ -54,9 +49,9 @@ pytesseract==0.3.9
 
 ## Installation of dependencies:
 The script relies on tesseract which can be installed using this [this](https://github.com/UB-Mannheim/tesseract/wiki) guide. 
-(*If by any chance the tesseract installation directory is different from the directory specified in bot.py you need to manually change that in the script. Otherwise the bot will not work!*)
+(*If by any chance the tesseract installation directory is different from the directory specified in Bot.py you need to manually change that in the script. Otherwise the bot will not work!*)
 
-default path:
+default path (all users tesseract installation):
 ```py
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 ```
@@ -68,14 +63,24 @@ or running `Install_Requirements.bat`
 <a name="running"/>
 
 ## Running the bot
-1. Open up BTD 6 and run the main.py script in the command line with `py <location of script>/main.py <directory to gameplan>` or run `run.bat` to run with the default settings and gameplan.
-2. Navigate to the homescreen of BTD 6 within 5 seconds of starting the script.
+1. Open up BTD 6
+2. run the main.py script in the command line with `py <location of script>/main.py --path <directory to gameplan>` or run `run.bat` to run with the default settings and gameplan.
+2. Navigate to the homescreen of BTD 6.
 
 ### Bot Launch options
 - `--debug` -
 - `--verbose` -
-- `--sandbox` -
+- `--sandbox` - test gameplan in sandbox version of the map (NOT DONE)
 - `--gameplan_path` - the path to the gameplan directory
+
+<a name="gameplans"/>
+
+## Current Gameplans
+|Map|Difficulty|Gamemode|Location|
+|:---:|:---:|:---:|:---:|
+|Dark Castle|Hard|Standard|`./Instructions/Dark_Castle_Hard_Standard`|
+|Dark Castle|Hard|Chimps|`./Instructions/Dark_Castle_Hard_Chimps`|
+
 
 <a name="roadmap"/>
 
@@ -101,13 +106,6 @@ __*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT O
 
 __*I also have plans for the future to make it easier to create gameplans so if you want to wait until you create yours you can wait too*__
 
-
-
-
-
-
-<!-- 
-
 <a name="setup_file"/>
 
 ### setup.py
@@ -122,7 +120,7 @@ It should be named `setup.py` and be placed in the same directory as the gamepla
     "DIFFICULTY": "HARD_MODE",
     "GAMEMODE": "STANDARD_GAME_MODE",
     "OPTIONS": { // TODO: Add options
-        "COLLECT_BANANAS": true,
+        "COLLECT_BANANAS": true, 
         "OPEN_CHEST": true,
     }
 }
@@ -187,7 +185,31 @@ The gameplan is a json file that contains the round as a key and the value as an
 
 An instruction array in a round can have multiple objects that will be executed after each other. for example:
 ```json
-
+    ...
+    [
+        {
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "DRUID",
+                "LOCATION": [ 0.399609375, 0.35347222222222224 ]
+            }
+        },
+        {
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "DRUID",
+                "LOCATION": [ 0.43984375, 0.35555555555555557 ]
+            }
+        },
+        {
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "DRUID",
+                "LOCATION": [ 0.479296875, 0.35833333333333334 ]
+            }
+        }
+    ]
+    ...
 ```
 
 #### Creating the gameplan in excel and converting to json
@@ -196,9 +218,15 @@ TODO
 An easy way to get the position of the tower or the target you want, is to use the following code:
 ```py
 import mouse, time
+import tkinter
 
+tk = tkinter.Tk()
+width, height = tk.winfo_screenwidth(), tk.winfo_screenheight()
 while True:
-    print(mouse.get_position())
+    
+    x, y = mouse.get_position()
+    w_norm, h_norm = x / width, y / height
+    print(f"x: {w_norm} y: {h_norm}")
     time.sleep(0.1)
 ```
 Run it in a terminal and copy the decired position into the gameplan.
@@ -354,4 +382,4 @@ TODO
 
 </details>
 
- -->
+
