@@ -1,11 +1,11 @@
-from email import parser
 import time
 import sys
-import mouse
 import argparse
 from pathlib import Path
 from Bot import Bot
 from threading import Thread
+from Failsafe import FailSafe
+import mouse
 
 
 def main(arg_parser):
@@ -75,15 +75,23 @@ if __name__ == "__main__":
 
     parser.add_argument('-p', '--path', '--gameplan_path', type=str, help='Path to the gameplan directory', required=True)
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug mode')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode (not done)')
     parser.add_argument('-r', '--restart', action='store_true', help='automatically restarts the game when finished, instead of going to home screen')
+    parser.add_argument('-s', '--sandbox', action='store_true', help='Try put gameplan in sandbox mode without waiting for specific rounds (not done)')
     
     # Start the bot on a seperate thread
-    t1 = Thread(target=main, args=(parser,), daemon=True)
-    t1.start()
+    bot_thread = Thread(target=main, args=(parser,), daemon=True)
+    bot_thread.start()
 
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
-    while mouse.get_position() != (0,0) and t1.is_alive():
-        time.sleep(0.2)
+    try:
+        while mouse.get_position() != (0,0) and bot_thread.is_alive():
+            time.sleep(0.1)
+        
+        if mouse.get_position() == (0, 0):
+            raise FailSafe()
+
+    except FailSafe as exeption_message:
+        print(exeption_message)
+        sys.exit(1)
     
-    sys.exit("FAILSAFE EXIT")
