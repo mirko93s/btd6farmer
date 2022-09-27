@@ -150,15 +150,11 @@ class Bot(BotCore):
         # for each target in target list
         for i in targets:
 
-            if target_order.index(i) < current_target_index:
-                # 3 is the max index (we have 4 targets in the arrays) and +1 because arrays start at 0.
-                target_diff = abs(current_target_index - 3) + target_order.index(i) + 1
-            else:
-                target_diff = target_order.index(i) - current_target_index
-            current_target_index = target_order.index(i)
-
-            # Change target until on correct target
-            self.press_key("tab", amount = target_diff)
+            while current_target_index != target_order.index(i):
+                self.press_key("tab")
+                current_target_index+=1
+                if current_target_index > 3:
+                    current_target_index = 0
 
             # If delay is an int sleep for delay for each target
             if isinstance(delay, (int, float)):
