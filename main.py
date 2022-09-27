@@ -79,10 +79,11 @@ if __name__ == "__main__":
     parser.add_argument('-r', '--restart', action='store_true', help='automatically restarts the game when finished, instead of going to home screen')
     
     # Start the bot on a seperate thread
-    Thread(target=main, args=(parser,), daemon=True).start()
+    t1 = Thread(target=main, args=(parser,), daemon=True)
+    t1.start()
 
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
-    while mouse.get_position() != (0,0):
+    while mouse.get_position() != (0,0) and t1.is_alive():
         time.sleep(0.2)
     
     sys.exit("FAILSAFE EXIT")
