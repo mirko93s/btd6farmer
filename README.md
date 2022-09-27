@@ -32,7 +32,6 @@ Feel free to make a pull request if you find any improvements or create a issue 
 <a name="dependenices"/>
 
 ## Requirements & Dependencies
-- Windows
 - Tesseract v5.0+
 - Python 3.10+
 
