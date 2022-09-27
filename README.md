@@ -1,14 +1,13 @@
 # btd6farmer - a bot for Bloons Td 6
-##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
-[![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml)
+[![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml) 
 \
 v1.0.0-pre_release
+##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
+
 
 IF for any reason you are having issue with the current state of the bot. You can use [this](https://github.com/linus-jansson/btd6farmer/releases/tag/v0.9-fallback) release of the bot.
 
-This python bot will farm a level (dark castle on hard mode by default) in Bloons TD 6. It uses tesseract to find the current level and is able to navigate autonomously after starting it.
-
-*The script is made for 1440p screen resolutions but should also work with 1080p thanks to RacingSmurfGB* =)
+This python bot will farm a level in Bloons TD 6. It uses template matching and OCR to navigate autonomously.
 
 Feel free to make a pull request if you find any improvements or create a issue if something isn't working correctly!
 
@@ -56,27 +55,32 @@ default path (all users tesseract installation):
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 ```
 
-After installing tesseract the other requirments can be installed with\
-`python -m pip install -r requirements.txt` \
-or running `Install_Requirements.bat`
+The python library requirments can be installed using `python -m pip install -r requirements.txt` or by running `Install_Requirements.bat`
 
 <a name="running"/>
 
 ## Running the bot
 1. Open up BTD 6
-2. run the main.py script in the command line with `py <location of script>/main.py --path <directory to gameplan>` or run `run.bat` to run with the default settings and gameplan.
+2. Run main.py in the command line with `py <location of script>/main.py --path <directory to gameplan>` or start `run.bat` to run with the default settings and gameplan.
 2. Navigate to the homescreen of BTD 6.
 
 ### Bot Launch options
-- `--debug` -
-- `--verbose` -
-- `--sandbox` - test gameplan in sandbox version of the map (NOT DONE)
-- `--gameplan_path` - the path to the gameplan directory
+```
+>> py main.py --help
+options:
+  -h, --help            show this help message and exit
+  -p PATH, --path PATH, --gameplan_path PATH
+                        Path to the gameplan directory
+  -d, --debug           Enable debug mode
+  -v, --verbose         Enable verbose mode (not done)
+  -r, --restart         automatically restarts the game when finished, instead of going to home screen
+  -s, --sandbox         Try put gameplan in sandbox mode without waiting for specific rounds (not done)
+```
 
 <a name="gameplans"/>
 
-## Current Gameplans
-|Map|Difficulty|Gamemode|Location|
+#### Current Gameplans
+|Map|Difficulty|Gamemode|Directory location|
 |:---:|:---:|:---:|:---:|
 |Dark Castle|Hard|Standard|`./Instructions/Dark_Castle_Hard_Standard`|
 |Dark Castle|Hard|Chimps|`./Instructions/Dark_Castle_Hard_Chimps`|
@@ -89,9 +93,6 @@ At the moment the major parts of being able to create own gameplans are done. Cu
 - [ ] Support for different hero abilities
 - [ ] Easier way to create gameplans
 
-
-
-
 <a name="issues"/>
 
 ## Having issues with the bot?
@@ -102,9 +103,8 @@ If you have any issues with the bot, find any bugs or have any suggestions for i
 ## Creating your own gameplans
 You are really welcome to create your own gameplans using your own stratergies and submiting them to the repo with a pull request. I will add it to the repository after testing!
 
-__*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT OF THE GAMEPLAN IN THE FUTURE FOR EASE OF USE.*__
+__*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT OF THE GAMEPLAN IN THE FUTURE FOR EASE OF USE. ALSO SOME FREATURES SPECIFIED IN THE DOCS ARE NOT YET IMPLEMENTED BUT ARE PLANNED TO*__
 
-__*I also have plans for the future to make it easier to create gameplans so if you want to wait until you create yours you can wait too*__
 
 <a name="setup_file"/>
 
@@ -217,6 +217,10 @@ TODO
 ### Getting the position of a tower or the target position.
 An easy way to get the position of the tower or the target you want, is to use the following code:
 ```py
+"""
+    Cordinates with this bot are normalized to work on all resolutions.
+"""
+
 import mouse, time
 import tkinter
 
