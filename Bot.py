@@ -151,6 +151,7 @@ class Bot(BotCore):
         for i in targets:
 
             if target_order.index(i) < current_target_index:
+                # 3 is the max index (we have 4 targets in the arrays) and +1 because arrays start at 0.
                 target_diff = abs(current_target_index - 3) + target_order.index(i) + 1
             else:
                 target_diff = target_order.index(i) - current_target_index
