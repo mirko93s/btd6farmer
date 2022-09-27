@@ -30,23 +30,6 @@ class BotUtils:
         except Exception as e:
             raise Exception("Could not retrieve monitor resolution")
 
-
-        """
-        # Platform independent code to get monitor resolution?
-        # https://stackoverflow.com/a/66248631
-        import tkinter
-        def get_display_size():
-            root = tkinter.Tk()
-            root.update_idletasks()
-            root.attributes('-fullscreen', True)
-            root.state('iconic')
-            height = root.winfo_screenheight()
-            width = root.winfo_screenwidth()
-            root.destroy()
-            return height, width
-        self.width, self.height = get_display_size()
-        """
-
         self.support_dir = self.get_resource_dir("assets")
 
         # Defing a lamda function that can be used to get a path to a specific image
@@ -376,13 +359,6 @@ class BotUtils:
             matchesX = matches[1] * 1 + region[0]
             matchesY = matches[0] * 1 + region[1]
 
-            # for x, y in zip(matchesX, matchesY):
-            #     cv2.rectangle(screenshot, (x, y), (x + templateWidth, y + templateHeight), (0, 0, 255), 10)
-            # cv2.imshow("Image", screenshot)
-            # cv2.imshow("Template", template)
-            # cv2.waitKey()
-            # cv2.destroyAllWindows()
-
             if len(matches[0]) == 0:
                 return None
             else:
@@ -391,6 +367,8 @@ class BotUtils:
     def _locate(self, template_path, confidence=0.9, tries=1):
         """
             Locates a template on the screen.
+
+            Note: @tries does not do anything at the moment
         """
         result = self._locate_all(template_path, confidence)
         return result[0] if result is not None else None
