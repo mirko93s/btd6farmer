@@ -1,7 +1,7 @@
 # btd6farmer - a bot for Bloons Td 6
 [![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml) 
 \
-v1.0.0-pre_release
+v1.0.0-pre_release-2
 ##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
 
 
