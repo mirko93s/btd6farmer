@@ -5,8 +5,8 @@
             "ARGUMENTS": {
                 "MONKEY": "SUBMARINE",
                 "LOCATION": [
-                    1454,
-                    578
+                    0.56796875,
+                    0.4013888888888889
                 ]
             }
         },
@@ -15,8 +15,8 @@
             "ARGUMENTS": {
                 "MONKEY": "DART",
                 "LOCATION": [
-                    773,
-                    658
+                    0.301953125,
+                    0.45694444444444443
                 ]
             }
         },
@@ -30,8 +30,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    773,
-                    658
+                    0.301953125,
+                    0.45694444444444443
                 ],
                 "TARGET": [
                     "LAST",
@@ -48,8 +48,8 @@
             "ARGUMENTS": {
                 "MONKEY": "DART",
                 "LOCATION": [
-                    785,
-                    814
+                    0.306640625,
+                    0.5652777777777778
                 ]
             }
         },
@@ -57,8 +57,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    785,
-                    814
+                    0.306640625,
+                    0.5652777777777778
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -71,8 +71,8 @@
             "ARGUMENTS": {
                 "MONKEY": "SUBMARINE",
                 "LOCATION": [
-                    1452,
-                    922
+                    0.5671875,
+                    0.6402777777777777
                 ]
             }
         }
@@ -83,8 +83,8 @@
             "ARGUMENTS": {
                 "MONKEY": "HERO",
                 "LOCATION": [
-                    1345,
-                    598
+                    0.525390625,
+                    0.4152777777777778
                 ]
             }
         }
@@ -94,8 +94,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1452,
-                    922
+                    0.5671875,
+                    0.6402777777777777
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -110,8 +110,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1452,
-                    922
+                    0.5671875,
+                    0.6402777777777777
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -126,8 +126,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1452,
-                    922
+                    0.5671875,
+                    0.6402777777777777
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -142,8 +142,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1452,
-                    922
+                    0.5671875,
+                    0.6402777777777777
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -158,8 +158,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    773,
-                    658
+                    0.301953125,
+                    0.45694444444444443
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -175,8 +175,8 @@
             "ARGUMENTS": {
                 "MONKEY": "ALCHEMIST",
                 "LOCATION": [
-                    1353,
-                    901
+                    0.528515625,
+                    0.6256944444444444
                 ]
             }
         },
@@ -184,8 +184,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1353,
-                    901
+                    0.528515625,
+                    0.6256944444444444
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -197,8 +197,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1452,
-                    922
+                    0.5671875,
+                    0.6402777777777777
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -213,8 +213,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1353,
-                    901
+                    0.528515625,
+                    0.6256944444444444
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -229,8 +229,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1353,
-                    901
+                    0.528515625,
+                    0.6256944444444444
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -245,8 +245,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1454,
-                    578
+                    0.56796875,
+                    0.4013888888888889
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -261,8 +261,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1454,
-                    578
+                    0.56796875,
+                    0.4013888888888889
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -277,8 +277,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1454,
-                    578
+                    0.56796875,
+                    0.4013888888888889
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -294,8 +294,8 @@
             "ARGUMENTS": {
                 "MONKEY": "SUPER",
                 "LOCATION": [
-                    1216,
-                    579
+                    0.475,
+                    0.40208333333333335
                 ]
             }
         }
@@ -306,8 +306,8 @@
             "ARGUMENTS": {
                 "MONKEY": "VILLAGE",
                 "LOCATION": [
-                    1144,
-                    358
+                    0.446875,
+                    0.24861111111111112
                 ]
             }
         },
@@ -315,8 +315,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1144,
-                    358
+                    0.446875,
+                    0.24861111111111112
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -332,8 +332,8 @@
             "ARGUMENTS": {
                 "MONKEY": "VILLAGE",
                 "LOCATION": [
-                    1007,
-                    430
+                    0.393359375,
+                    0.2986111111111111
                 ]
             }
         },
@@ -341,8 +341,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1007,
-                    430
+                    0.393359375,
+                    0.2986111111111111
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -357,8 +357,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1216,
-                    579
+                    0.475,
+                    0.40208333333333335
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -373,8 +373,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1216,
-                    579
+                    0.475,
+                    0.40208333333333335
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -389,8 +389,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1216,
-                    579
+                    0.475,
+                    0.40208333333333335
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -405,8 +405,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1216,
-                    579
+                    0.475,
+                    0.40208333333333335
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -420,8 +420,8 @@
             "ARGUMENTS": {
                 "MONKEY": "ALCHEMIST",
                 "LOCATION": [
-                    1154,
-                    468
+                    0.45078125,
+                    0.325
                 ]
             }
         }
@@ -431,8 +431,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1154,
-                    468
+                    0.45078125,
+                    0.325
                 ],
                 "UPGRADE_PATH": [
                     4,
@@ -445,8 +445,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1144,
-                    358
+                    0.446875,
+                    0.24861111111111112
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -461,8 +461,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1216,
-                    579
+                    0.475,
+                    0.40208333333333335
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -478,8 +478,8 @@
             "ARGUMENTS": {
                 "MONKEY": "SPIKE",
                 "LOCATION": [
-                    2027,
-                    684
+                    0.791796875,
+                    0.475
                 ]
             }
         }
@@ -489,8 +489,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2027,
-                    684
+                    0.791796875,
+                    0.475
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -503,11 +503,11 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2027,
-                    684
+                    0.791796875,
+                    0.475
                 ],
                 "TARGET": "CLOSE",
-                "TYPE": "REGULAR"
+                "TYPE": "SPIKE"
             }
         }
     ],
@@ -516,8 +516,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2027,
-                    684
+                    0.791796875,
+                    0.475
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -532,8 +532,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2027,
-                    684
+                    0.791796875,
+                    0.475
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -546,8 +546,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2027,
-                    684
+                    0.791796875,
+                    0.475
                 ],
                 "UPGRADE_PATH": [
                     0,
@@ -563,8 +563,8 @@
             "ARGUMENTS": {
                 "MONKEY": "VILLAGE",
                 "LOCATION": [
-                    2078,
-                    570
+                    0.81171875,
+                    0.3958333333333333
                 ]
             }
         },
@@ -572,8 +572,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2078,
-                    570
+                    0.81171875,
+                    0.3958333333333333
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -589,8 +589,8 @@
             "ARGUMENTS": {
                 "MONKEY": "ALCHEMIST",
                 "LOCATION": [
-                    2132,
-                    691
+                    0.8328125,
+                    0.4798611111111111
                 ]
             }
         },
@@ -598,8 +598,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2132,
-                    691
+                    0.8328125,
+                    0.4798611111111111
                 ],
                 "UPGRADE_PATH": [
                     4,
@@ -615,8 +615,8 @@
             "ARGUMENTS": {
                 "MONKEY": "SPIKE",
                 "LOCATION": [
-                    2032,
-                    785
+                    0.79375,
+                    0.5451388888888888
                 ]
             }
         },
@@ -624,8 +624,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    2032,
-                    785
+                    0.79375,
+                    0.5451388888888888
                 ],
                 "UPGRADE_PATH": [
                     3,
@@ -641,8 +641,8 @@
             "ARGUMENTS": {
                 "MONKEY": "SNIPER",
                 "LOCATION": [
-                    1150,
-                    207
+                    0.44921875,
+                    0.14375
                 ]
             }
         },
@@ -650,8 +650,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1150,
-                    207
+                    0.44921875,
+                    0.14375
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -661,8 +661,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1150,
-                    207
+                    0.44921875,
+                    0.14375
                 ],
                 "UPGRADE_PATH": [
                     3,
@@ -677,8 +677,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1150,
-                    207
+                    0.44921875,
+                    0.14375
                 ],
                 "UPGRADE_PATH": [
                     1,
@@ -694,8 +694,8 @@
             "ARGUMENTS": {
                 "MONKEY": "BOOMERANG",
                 "LOCATION": [
-                    1083,
-                    578
+                    0.423046875,
+                    0.4013888888888889
                 ]
             }
         },
@@ -703,8 +703,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1083,
-                    578
+                    0.423046875,
+                    0.4013888888888889
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -714,8 +714,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1083,
-                    578
+                    0.423046875,
+                    0.4013888888888889
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -731,8 +731,8 @@
             "ARGUMENTS": {
                 "MONKEY": "BOOMERANG",
                 "LOCATION": [
-                    981,
-                    562
+                    0.383203125,
+                    0.3902777777777778
                 ]
             }
         },
@@ -740,8 +740,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    981,
-                    562
+                    0.383203125,
+                    0.3902777777777778
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -751,8 +751,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    981,
-                    562
+                    0.383203125,
+                    0.3902777777777778
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -768,8 +768,8 @@
             "ARGUMENTS": {
                 "MONKEY": "GLUE",
                 "LOCATION": [
-                    899,
-                    481
+                    0.351171875,
+                    0.33402777777777776
                 ]
             }
         },
@@ -777,8 +777,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    899,
-                    481
+                    0.351171875,
+                    0.33402777777777776
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -788,8 +788,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    899,
-                    481
+                    0.351171875,
+                    0.33402777777777776
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -805,8 +805,8 @@
             "ARGUMENTS": {
                 "MONKEY": "BOOMERANG",
                 "LOCATION": [
-                    1257,
-                    884
+                    0.491015625,
+                    0.6138888888888889
                 ]
             }
         },
@@ -814,8 +814,8 @@
             "INSTRUCTION_TYPE": "CHANGE_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1257,
-                    884
+                    0.491015625,
+                    0.6138888888888889
                 ],
                 "TARGET": "STRONG",
                 "TYPE": "REGULAR"
@@ -825,8 +825,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    1257,
-                    884
+                    0.491015625,
+                    0.6138888888888889
                 ],
                 "UPGRADE_PATH": [
                     2,
@@ -842,8 +842,8 @@
             "ARGUMENTS": {
                 "MONKEY": "MORTAR",
                 "LOCATION": [
-                    959,
-                    244
+                    0.374609375,
+                    0.16944444444444445
                 ]
             }
         },
@@ -851,12 +851,12 @@
             "INSTRUCTION_TYPE": "SET_STATIC_TARGET",
             "ARGUMENTS": {
                 "LOCATION": [
-                    959,
-                    244
+                    0.374609375,
+                    0.16944444444444445
                 ],
                 "TARGET": [
-                    1011,
-                    725
+                    0.394921875,
+                    0.5034722222222222
                 ]
             }
         },
@@ -864,8 +864,8 @@
             "INSTRUCTION_TYPE": "UPGRADE_TOWER",
             "ARGUMENTS": {
                 "LOCATION": [
-                    959,
-                    244
+                    0.374609375,
+                    0.16944444444444445
                 ],
                 "UPGRADE_PATH": [
                     0,

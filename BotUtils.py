@@ -3,6 +3,7 @@ import time
 import keyboard
 import mouse
 import static
+import tkinter
 from pathlib import Path
 
 import numpy as np
@@ -20,42 +21,14 @@ from collections import defaultdict
 
 class BotUtils:
     def __init__(self):
-        # Gets the main monitor resolution
-        # TODO: get monitor res for linux for linux support
-        # self.width, self.height = (5120, 1440) 
-        # try:
-        #     mon = {mon: 1}
-        #     with mss.mss() as sct:
-        #         screen = sct.grab(mon)
-        #         print("mss screen size:", screen.size())
-        # except Exception as e:
-        #     print(e)
 
         try:
             if sys.platform == "win32":
-                self.width, self.height = ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1)
-                # self.width, self.height = (1920, 1080)
-            else:
-                raise Exception("Platform not supported yet")
+                ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
+            tk = tkinter.Tk()
+            self.width, self.height = tk.winfo_screenwidth(), tk.winfo_screenheight()
         except Exception as e:
-            raise Exception("Could not retrieve monitor resolution the system")
-
-
-        """
-        # Platform independent code to get monitor resolution?
-        # https://stackoverflow.com/a/66248631
-        import tkinter
-        def get_display_size():
-            root = tkinter.Tk()
-            root.update_idletasks()
-            root.attributes('-fullscreen', True)
-            root.state('iconic')
-            height = root.winfo_screenheight()
-            width = root.winfo_screenwidth()
-            root.destroy()
-            return height, width
-        self.width, self.height = get_display_size()
-        """
+            raise Exception("Could not retrieve monitor resolution")
 
         self.support_dir = self.get_resource_dir("assets")
 
@@ -95,7 +68,7 @@ class BotUtils:
             if area == None:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
-                scaled_values = self._scaling([1850, 35]) # Use default values
+                scaled_values = self._scaling([0.72265625, 0.0243055555555556]) # Use default values
 
                 # left = x
                 # top = y
@@ -127,12 +100,11 @@ class BotUtils:
 
             # Get current round from screenshot with tesseract
             found_text = pytesseract.image_to_string(final_image,  config='--psm 7').replace("\n", "")
-            
-            # TODO: REMOVE EVERYTHING THAT IS NOT A NUMBER OR A SLASH
-            # found_text = found_text.replace("|", "")            
 
+            # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
-                return int(found_text.split("/")[0])
+                found_text = re.search(r"(\d+)", found_text)
+                return int(found_text.group(0))
 
             else:
                 if self.DEBUG:
@@ -155,7 +127,7 @@ class BotUtils:
         mouse.move(x=location[0], y=location[1])
         time.sleep(move_timeout)
 
-    def click(self, location: tuple | tuple, amount=1, timeout=0.1, move_timeout=0.1, press_time=0.075):        
+    def click(self, location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, press_time=0.075):        
         """
             Method to click on a specific location on the screen
             @param location: The location to click on
@@ -182,8 +154,10 @@ class BotUtils:
                 So we only apply the .1 delay if the bot has to click on the same spot multiple times
                 This is currently used for level selection and levelup screen
             """
-            # if amount > 1:
-            time.sleep(timeout)
+            if amount > 1:
+                time.sleep(timeout)
+        
+        time.sleep(timeout)
 
     def press_key(self, key, timeout=0.1, amount=1):
         for _ in range(amount):
@@ -210,10 +184,15 @@ class BotUtils:
         return self._find( self._image_path("levelup") )
 
     def hero_check(self, heroString):
-        return self._find( self._image_path(heroString)  )
+        return self._find( self._image_path(heroString) ) or \
+            self._find( self._image_path(heroString + "_2") ) or \
+            self._find( self._image_path(heroString + "_3") )
 
     def loading_screen_check(self):
         return self._find( self._image_path("loading_screen") )
+
+    def home_menu_check(self):
+        return self._find( self._image_path("play") )
 
     def collection_event_check(self):
         return self._find(self._image_path("diamond_case") )
@@ -251,8 +230,7 @@ class BotUtils:
 
             do_padding -- this is used during start 
         """
-        # TODO: DIVIDING NY 1440 and 2560 PROBABLY NEEDING TO CHANGE TO self.settings["original resolution"] 
-        # for those how don't have a 2560x1440 resolution that create a gameplan
+
         reso_21 = False
         for x in self.reso_16: 
             if self.height == x['height']:
@@ -262,11 +240,9 @@ class BotUtils:
                     break
 
         if reso_21 != True:
-            x = pos_list[0]/2560 
-            x = x * self.width
+            x = pos_list[0] * self.width
         
-        y = pos_list[1]/1440
-        y = y * self.height
+        y = pos_list[1] * self.height
         x = x + self._padding() # Add's the pad to to the curent x position variable
 
         if self.DEBUG:
@@ -342,9 +318,6 @@ class BotUtils:
             credit: https://github.com/asweigart/pyscreeze/blob/b693ca9b2c964988a7e924a52f73e15db38511a8/pyscreeze/__init__.py#L184
 
             Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
-
-            TODO: Resize image to match resolution of current screen if neeeded
-                - https://stackoverflow.com/questions/48121916/numpy-resize-rescale-image/48121983#48121983
         """
 
         monitor = {'top': 0, 'left': 0, 'width': self.width, 'height': self.height} if region is None else region
@@ -372,6 +345,10 @@ class BotUtils:
             # width & height of the template
             templateHeight, templateWidth = template.shape[:2]
 
+            # scale template
+            if self.width != 2560 or self.height != 1440:
+                template = cv2.resize(template, dsize=(int(templateWidth/(2560/self.width)), int(templateHeight/(1440/self.height))), interpolation=cv2.INTER_CUBIC)
+
             # Find all the matches
             # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
             result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)    # heatmap of the template and the screenshot"
@@ -382,13 +359,6 @@ class BotUtils:
             matchesX = matches[1] * 1 + region[0]
             matchesY = matches[0] * 1 + region[1]
 
-            # for x, y in zip(matchesX, matchesY):
-            #     cv2.rectangle(screenshot, (x, y), (x + templateWidth, y + templateHeight), (0, 0, 255), 10)
-            # cv2.imshow("Image", screenshot)
-            # cv2.imshow("Template", template)
-            # cv2.waitKey()
-            # cv2.destroyAllWindows()
-
             if len(matches[0]) == 0:
                 return None
             else:
@@ -397,6 +367,8 @@ class BotUtils:
     def _locate(self, template_path, confidence=0.9, tries=1):
         """
             Locates a template on the screen.
+
+            Note: @tries does not do anything at the moment
         """
         result = self._locate_all(template_path, confidence)
         return result[0] if result is not None else None

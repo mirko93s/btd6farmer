@@ -5,13 +5,14 @@ import static
 from BotCore import BotCore
 
 class Bot(BotCore):
-    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False):
+    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False):
         super().__init__(instruction_path)
         
         self.start_time = time.time()
         self.running = True
         self.DEBUG = debug_mode
         self.VERBOSE = verbose_mode
+        self.RESTART = restart_mode
         self.game_start_time = time.time()
         self.fast_forward = True
 
@@ -47,8 +48,10 @@ class Bot(BotCore):
                 if self.DEBUG:
                     print("Defeat detected on round {}; exiting level".format(current_round))
                     self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
-
-                self.exit_level(won=False)
+                if self.RESTART:
+                    self.restart_level(won=False)
+                else:
+                    self.exit_level(won=False)
                 finished = True
                 self.reset_game_plan()
                 continue
@@ -58,8 +61,10 @@ class Bot(BotCore):
                 if self.DEBUG:
                     print("Victory detected; exiting level") 
                     self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
-                
-                self.exit_level(won=True)
+                if self.RESTART:
+                    self.restart_level(won=True)
+                else:
+                    self.exit_level(won=True)
                 finished = True
                 self.reset_game_plan()
                 continue
@@ -135,24 +140,21 @@ class Bot(BotCore):
 
         self.click(tower_position)
 
+        if "SPIKE" in tower_type:
+            target_order = static.target_order_spike
+        else:
+            target_order = static.target_order_regular
+
         current_target_index = 0
 
         # for each target in target list
         for i in targets:
-            
-            # Math to calculate the difference between current target index and next target index
-            if "SPIKE" in tower_type:
-                target_diff = abs((static.target_order_spike.index(i)) - current_target_index)
-            else:
-                target_diff = abs((static.target_order_regular.index(i)) - current_target_index)
-                # self.log("Target diff", target_diff)
 
-            # Change target until on correct target
-            for n in range(1, target_diff + 1):
-                current_target_index = n
+            while current_target_index != target_order.index(i):
                 self.press_key("tab")
-
-            
+                current_target_index+=1
+                if current_target_index > 3:
+                    current_target_index = 0
 
             # If delay is an int sleep for delay for each target
             if isinstance(delay, (int, float)):
@@ -236,6 +238,7 @@ class Bot(BotCore):
 
             self.set_static_target(position, target_position)
         
+        # Start game
         elif instruction_type == "START":
             if "ARGUMENTS" in instruction and "FAST_FORWARD " in instruction["ARGUMENTS"]:
                 self.fast_forward = instruction["ARGUMENTS"]["FASTFORWARD"]
@@ -244,6 +247,13 @@ class Bot(BotCore):
 
             if self.DEBUG or self.VERBOSE:
                 self.log("First Round Started")
+
+        # Wait a given time
+        elif instruction_type == "WAIT":
+            time.sleep(instruction["ARGUMENTS"]["TIME"])
+
+            if self.DEBUG or self.VERBOSE:
+                self.log("Waiting for ", instruction["ARGUMENTS"]["TIME"], "second(s)")
         
         else:
             # Maybe raise exception or just ignore?
@@ -309,7 +319,7 @@ class Bot(BotCore):
         if not self.hero_check(self.settings["HERO"]):
             self.log(f"Selecting {self.settings['HERO']}")
             self.click("HERO_SELECT")
-            self.click(self.settings["HERO"], move_timeout=0.2)
+            self.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
             self.click("CONFIRM_HERO")
             self.press_key("esc")
 
@@ -318,8 +328,33 @@ class Bot(BotCore):
             self.click("VICTORY_CONTINUE")
             time.sleep(2)
             self.click("VICTORY_HOME")
+        elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
+            self.click("DEFEAT_HOME_CHIMPS")
+            time.sleep(2)
         else:
             self.click("DEFEAT_HOME")
+            time.sleep(2)
+        
+        self.wait_for_loading() # wait for loading screen
+    
+    def restart_level(self, won=True):
+        if won:
+            self.click("VICTORY_CONTINUE")
+            time.sleep(2)
+            self.click("FREEPLAY")
+            self.click("OK_MIDDLE")
+            time.sleep(1)
+            self.press_key("esc")
+            time.sleep(1)
+            self.click("RESTART_WIN")
+            self.click("RESTART_CONFIRM")
+        elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
+            self.click("RESTART_DEFEAT_CHIMPS")
+            self.click("RESTART_CONFIRM")
+            time.sleep(2)
+        else:
+            self.click("RESTART_DEFEAT")
+            self.click("RESTART_CONFIRM")
             time.sleep(2)
         
         self.wait_for_loading() # wait for loading screen
@@ -346,7 +381,7 @@ class Bot(BotCore):
         self.wait_for_loading() # wait for loading screen
 
         # Only need to press confirm button if we play chimps or impoppable
-        if self.settings["GAMEMODE"] == "CHIMPS" or self.settings["GAMEMODE"] == "IMPOPPABLE":
+        if self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "IMPOPPABLE":
             self.click(self.settings["DIFFICULTY"])
             self.click("CONFIRM_CHIMPS")
     
