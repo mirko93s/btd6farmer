@@ -1,7 +1,10 @@
 # btd6farmer - a bot for Bloons Td 6
-[![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml) 
-\
 v1.0.0-pre_release-2
+\
+\
+[![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml) 
+
+Join the [Discord](https://discord.gg/qyKT6bzqZQ) for support, updates and sharing gameplans.
 ##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
 
 
@@ -61,7 +64,9 @@ The python library requirments can be installed using `python -m pip install -r 
 ## Running the bot
 1. Open up BTD 6
 2. Run main.py in the command line with `py <location of script>/main.py --path <directory to gameplan>` or start `run.bat` to run with the default settings and gameplan.
-2. Navigate to the homescreen of BTD 6.
+3. Navigate to the homescreen of BTD 6.
+
+**_note: make sure that you use the english version of the game, as the bot needs the english text to work properly._**
 
 ### Bot Launch options
 ```
