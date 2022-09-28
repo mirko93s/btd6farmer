@@ -1,18 +1,13 @@
-# btd6farmer - a bot for Bloons Td 6
-v1.0.0-pre_release-2
-\
-\
+# btd6farmer - a bot for Bloons Td 6 
+#### v1.0.0-pre_release-2
+
+##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
+
 [![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml) 
 
 Join the [Discord](https://discord.gg/qyKT6bzqZQ) for support, updates and sharing gameplans.
-##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
 
-
-IF for any reason you are having issue with the current state of the bot. You can use [this](https://github.com/linus-jansson/btd6farmer/releases/tag/v0.9-fallback) release of the bot.
-
-This python bot will farm a level in Bloons TD 6. It uses template matching and OCR to navigate autonomously.
-
-Feel free to make a pull request if you find any improvements or create a issue if something isn't working correctly!
+Feel free to make a pull request if you have any improvements or create a issue if something isn't working correctly!
 
 ## Table Of Contents
 - [Dependencies](#dependenices) 
