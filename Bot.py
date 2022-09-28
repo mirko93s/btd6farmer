@@ -28,6 +28,7 @@ class Bot(BotCore):
         current_round = -1
         ability_one_timer = time.time()
         ability_two_timer = time.time()
+        ability_three_timer = time.time()
         
         finished = False
 
@@ -73,14 +74,22 @@ class Bot(BotCore):
 
             if current_round != None:
                 # Saftey net; use abilites
-                # TODO: Make this more general to support more gameplans
-                if current_round >= 39 and self.abilityAvaliabe(ability_one_timer, 35):
-                    self.press_key("1")
-                    ability_one_timer = time.time()
-                
-                if current_round >= 51 and self.abilityAvaliabe(ability_two_timer, 90):
-                    self.press_key("2")
-                    ability_two_timer = time.time()
+                # TODO: Calculate round dynamically, base on which round hero has been placed.
+                if self.settings["HERO"] != "GERALDO": # geraldo doesn't any ability
+                    cooldowns = static.hero_cooldowns[self.settings["HERO"]]
+
+                    if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
+                        self.press_key("1")
+                        ability_one_timer = time.time()
+                    
+                    # skip if ezili or adora, their lvl 7 ability is useless
+                    if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]) and (self.settings["HERO"] != "EZILI" and "ADORA"):
+                        self.press_key("2")
+                        ability_two_timer = time.time()
+
+                    if current_round >= 53 and self.abilityAvaliabe(ability_three_timer, cooldowns[2]) and len(cooldowns) == 3:
+                        self.press_key("3")
+                        ability_three_timer = time.time()
 
                 # Check for round in game plan
                 if str(current_round) in self.game_plan:
