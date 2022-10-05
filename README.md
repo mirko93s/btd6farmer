@@ -7,7 +7,7 @@
 
 Join the [Discord](https://discord.gg/qyKT6bzqZQ) for support, updates and sharing gameplans.
 
-Feel free to make a pull request if you have any improvements or create a issue if something isn't working correctly!
+Feel free to make a pull request if you have any improvements or create a issue if something isn't working correctly! 
 
 ## Table Of Contents
 - [Dependencies](#dependenices) 
@@ -101,6 +101,9 @@ If you have any issues with the bot, find any bugs or have any suggestions for i
 
 ## Creating your own gameplans
 You are really welcome to create your own gameplans using your own stratergies and submiting them to the repo with a pull request. I will add it to the repository after testing!
+
+## Contributing to the project
+If you find any issues with the bot or have any suggestions for improvements, please create an issue. If you have any changes you would like to contribute with you can also create a pull request to the development branch!
 
 __*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT OF THE GAMEPLAN IN THE FUTURE FOR EASE OF USE. ALSO SOME FREATURES SPECIFIED IN THE DOCS ARE NOT YET IMPLEMENTED BUT ARE PLANNED TO*__
 
