@@ -30,14 +30,14 @@ class Bot(BotCore):
         
         finished = False
 
-        middle_of_screen = self.width//2, self.height//2
+        middle_of_screen = ((self.width // 2) // self.width), (( self.height // 2 ) // self.height)
 
         # main ingame loop
         while not finished:
 
             # Check for levelup or insta monkey (level 100)
             if self.levelup_check() or self.insta_monkey_check():
-                self.click(middle_of_screen, amount=2)
+                self.click(middle_of_screen, amount=3)
             elif self.monkey_knowledge_check():
                 self.click(middle_of_screen, amount=1)
 
