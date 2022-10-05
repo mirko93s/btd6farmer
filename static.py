@@ -74,6 +74,24 @@ hero_positions = {
     "GERALDO"           : [ 0.11953125 , 0.36944444444444446 ]
 }
 
+#   "HERO"              : [1, 2, 3]         cooldown changes with level-ups..............           notes
+hero_cooldowns = {
+    "QUINCY"            : [60, 70],         # L15 [45,70]     L18 [45,55]
+    "GWENDOLIN"         : [40, 60],         
+    "STRIKER_JONES"     : [16, 80],         # L15 [11,80]
+    "OBYN"              : [35, 90],         
+    "CAPTAIN_CHURCHILL" : [30, 60],         # L20 [30,30]
+    "BENJAMIN"          : [30, 65],         
+    "EZILI"             : [60, 90, 60],     # L12 [45,90,60]  L20 [45,90,40]                        2n ability useless???
+    "PAT_FUSTY"         : [45, 20],         
+    "ADORA"             : [45, 10, 60],     #                                                       2n ability useless???
+    "ADMIRAL_BRICKELL"  : [50, 60, 60],     # L13 [50,60,50]  L18 [50,60,40]
+    "ETIENNE"           : [70, 90],         # L6 [55,90]      L13 [55,75]       L16 [50,75]
+    "SAUDA"             : [30, 45],         
+    "PSI"               : [40, 60],         
+    "GERALDO"           : []                
+}
+
 tower_keybinds = {
     "DART" : "q",
     "BOOMERANG" : "w",
