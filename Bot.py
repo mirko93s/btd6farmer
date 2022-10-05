@@ -390,7 +390,10 @@ class Bot(BotCore):
         self.wait_for_loading() # wait for loading screen
 
         # Only need to press confirm button if we play chimps or impoppable
-        if self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "IMPOPPABLE":
+        if self.settings["GAMEMODE"] == "CHIMPS_MODE" or \
+           self.settings["GAMEMODE"] == "IMPOPPABLE"  or \
+           self.settings["GAMEMODE"] == "DEFLATION":
+
             self.click(self.settings["DIFFICULTY"])
             self.click("CONFIRM_CHIMPS")
     
