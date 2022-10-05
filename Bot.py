@@ -1,6 +1,4 @@
 import time
-
-from numpy import isin
 import static
 from BotCore import BotCore
 
