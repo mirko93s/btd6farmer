@@ -84,10 +84,11 @@ class Bot(BotCore):
                     if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]) and (self.settings["HERO"] != "EZILI" and "ADORA"):
                         self.press_key("2")
                         ability_two_timer = time.time()
-
-                    if current_round >= 53 and self.abilityAvaliabe(ability_three_timer, cooldowns[2]) and len(cooldowns) == 3:
-                        self.press_key("3")
-                        ability_three_timer = time.time()
+                    
+                    if len(cooldowns) == 3:
+                        if current_round >= 53 and self.abilityAvaliabe(ability_three_timer, cooldowns[2]):
+                            self.press_key("3")
+                            ability_three_timer = time.time()
 
                 # Check for round in game plan
                 if str(current_round) in self.game_plan:
@@ -390,10 +391,12 @@ class Bot(BotCore):
         # Only need to press confirm button if we play chimps or impoppable
         if self.settings["GAMEMODE"] == "CHIMPS_MODE" or \
            self.settings["GAMEMODE"] == "IMPOPPABLE"  or \
-           self.settings["GAMEMODE"] == "DEFLATION":
-
-            self.click(self.settings["DIFFICULTY"])
-            self.click("CONFIRM_CHIMPS")
+           self.settings["GAMEMODE"] == "DEFLATION"   or \
+           self.settings["GAMEMODE"] == "APOPALYPSE"  or \
+           self.settings["GAMEMODE"] == "HALF_CASH":
+            self.press_key("esc", timeout=1)
+            # self.click(self.settings["DIFFICULTY"])
+            # self.click("CONFIRM_CHIMPS")
     
     def wait_for_loading(self):
         still_loading = True
