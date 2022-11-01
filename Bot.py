@@ -354,15 +354,15 @@ class Bot(BotCore):
             time.sleep(1)
             self.press_key("esc")
             time.sleep(1)
-            self.click("RESTART_WIN")
-            self.click("RESTART_CONFIRM")
+            self.click("WIN_RESTART")
+            self.click("CONFIRM_RESTART")
         elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
-            self.click("RESTART_DEFEAT_CHIMPS")
-            self.click("RESTART_CONFIRM")
+            self.click("DEFEAT_RESTART_CHIMPS")
+            self.click("CONFIRM_RESTART")
             time.sleep(2)
         else:
-            self.click("RESTART_DEFEAT")
-            self.click("RESTART_CONFIRM")
+            self.click("DEFEAT_RESTART")
+            self.click("CONFIRM_RESTART")
             time.sleep(2)
         
         self.wait_for_loading() # wait for loading screen
