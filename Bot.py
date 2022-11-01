@@ -396,8 +396,9 @@ class Bot(BotCore):
            self.settings["GAMEMODE"] == "HALF_CASH":
             """
             todo: change to something like wait_for_loading
+            apopalypse different screen
             """
-            time.sleep(2)
+            self.wait_for_confirm_mode()
             self.press_key("esc", timeout=1)
     
     def wait_for_loading(self):
@@ -409,6 +410,16 @@ class Bot(BotCore):
             
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             still_loading = self.loading_screen_check()
+    
+    def wait_for_confirm_mode(self):
+        still_loading = True
+
+        while still_loading:
+            if self.DEBUG:
+                self.log("Waiting for confirm screen..")
+            
+            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+            still_loading = self.confirm_mode_check()
 
 if __name__ == "__main__":
     # For testing purposes; open sandbox on dark castle and run Bot.py will place every tower

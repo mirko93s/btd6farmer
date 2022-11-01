@@ -193,6 +193,10 @@ class BotUtils:
     def loading_screen_check(self):
         return self._find( self._image_path("loading_screen") )
 
+    def confirm_mode_check(self):
+        return self._find( self._image_path("confirm_chimps") ) or \
+            self._find( self._image_path("confirm_apopalypse") )
+
     def home_menu_check(self):
         return self._find( self._image_path("play") )
 
