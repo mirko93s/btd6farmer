@@ -5,7 +5,7 @@ from BotLog import BotLog
 from BotUtils import BotUtils
 
 class BotCore(BotLog, BotUtils):
-    def __init__(self, instruction_path=Path.cwd()/"Instructions"/"Dark_Castle_Hard_Standard", game_plan_filename="instructions.json", game_settings_filename="setup.json"):
+    def __init__(self, instruction_path=Path.cwd()/"Instructions"/"Dark_Castle_Hard_Chimps", game_plan_filename="instructions.json", game_settings_filename="setup.json"):
 
         self.settings = self._load_json(instruction_path / game_settings_filename)
         self.game_plan = self._load_json(instruction_path / game_plan_filename)
