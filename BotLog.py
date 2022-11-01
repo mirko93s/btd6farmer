@@ -39,10 +39,10 @@ class BotLog:
                     data = json.loads(str_file)
                 # Catch if file format is invalid for json (eg empty file)
                 except json.decoder.JSONDecodeError:
-                    print("invalid stats file")
+                    print("invalid stats file\n")
         # Catch if the file does not exist
         except IOError:
-            print("file does not exist")
+            print("file does not exist\n")
 
 
         if did_win:
@@ -79,4 +79,4 @@ class BotLog:
         return data
 
     def log(self, *kargs):
-        print(*kargs)
+        print(*kargs,end='\n\n')

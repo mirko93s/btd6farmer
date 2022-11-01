@@ -19,11 +19,11 @@ def main(arg_parser):
 
     # Verify directory exist.
     if not gameplan_path.exists():
-        print("No directory found at: " + str(gameplan_path))
+        bot.log("No directory found at: " + str(gameplan_path))
         no_gameplan_exception()
     # Verify that it is a directory
     if not gameplan_path.is_dir():
-        print("Not a directory")
+        bot.log("Not a directory")
         no_gameplan_exception()
     
     bot = Bot(instruction_path=Path(args["path"]), 
@@ -32,19 +32,19 @@ def main(arg_parser):
             restart_mode=(args['restart'])
         )
         
-    print("Setting up Bot...")
-    print("Using gameplan located in: " + str(gameplan_path))
+    bot.log("Setting up Bot...")
+    bot.log("Using gameplan located in: " + str(gameplan_path))
     
     bot.initilize() # Initialize the bot (presses alt, etc)
 
-    print("Waiting for Home screen. Please switch to Bloons TD 6 window.")
+    bot.log("Waiting for Home screen. Please switch to Bloons TD 6 window.")
 
     # Wait for btd6 home screen
     waiting_for_home = False
 
     while waiting_for_home is False:
         if bot.DEBUG:
-            print("Waiting for loading screen..")
+            bot.log("Waiting for loading screen..")
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_home = bot.home_menu_check()
 
@@ -52,7 +52,7 @@ def main(arg_parser):
     bot.hero_select()
 
     if bot.RESTART:
-        print("selecting map")
+        bot.log("selecting map")
         bot.select_map()
 
     # Make sure we haven't exited by using the stop key.
@@ -60,11 +60,11 @@ def main(arg_parser):
         bot.check_for_collection_crates()
 
         if not bot.RESTART:
-            print("selecting map")
+            bot.log("selecting map")
             # Choose map
             bot.select_map()   
 
-        print("Game start")
+        bot.log("Game start")
 
         # main game loop
         bot.ingame_loop()

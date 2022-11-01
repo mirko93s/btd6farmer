@@ -45,7 +45,7 @@ class Bot(BotCore):
             if self.defeat_check():
                 
                 if self.DEBUG:
-                    print("Defeat detected on round {}; exiting level".format(current_round))
+                    self.log("Defeat detected on round {}; exiting level".format(current_round))
                     self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
                 if self.RESTART:
                     self.restart_level(won=False)
@@ -58,7 +58,7 @@ class Bot(BotCore):
             elif self.victory_check():
 
                 if self.DEBUG:
-                    print("Victory detected; exiting level") 
+                    self.log("Victory detected; exiting level") 
                     self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
                 if self.RESTART:
                     self.restart_level(won=True)
@@ -98,7 +98,7 @@ class Bot(BotCore):
                         if not "DONE" in instruction:
 
                             if self._game_plan_version == "1":
-                                print(instruction)
+                                self.log(instruction)
                                 self.v1_handleInstruction(instruction)
                                 
                             else:
@@ -418,7 +418,7 @@ if __name__ == "__main__":
     gameplan_path = (Path(__file__).resolve().parent/sys.argv[sys.argv.index("--gameplan_path") + 1]) if "--gameplan_path" in sys.argv else exit(0)
     b = Bot(instruction_path=gameplan_path)
     for round, instruction_list in b.game_plan.items():
-        print(round, instruction_list)
+        b.log(round, instruction_list)
         for instruction in instruction_list:
             b.v1_handleInstruction(instruction)    
             

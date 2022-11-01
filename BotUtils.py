@@ -203,13 +203,12 @@ class BotUtils:
         return self._find(self._image_path("set_target_button"), return_cords=True)
     
     def locate_round_area(self):
-        if self.DEBUG:
-            self.log("Finding round area image")
         return self._find(self._image_path("round_area"), return_cords=True, center_on_found=False)
 
     # Generic function to see if something is present on the screen
     def _find(self, path, confidence=0.9, return_cords=False, center_on_found=True):
-
+        if self.DEBUG:
+            self.log("Finding image: "+re.sub(r"(.+\\)",'',str(path)))
         try:
             if return_cords:
                 cords = self._locate(path, confidence=confidence)
@@ -221,7 +220,13 @@ class BotUtils:
                         return (left, top, width, height)
                 else:
                     return None
-            return True if self._locate(path, confidence=confidence) is not None else False
+            if self._locate(path, confidence=confidence) is not None:
+                self.log("Found image: "+re.sub(r"(.+\\)",'',str(path)))
+                return True
+            else:
+                self.log("Not found image: "+re.sub(r"(.+\\)",'',str(path)))
+                return False
+
 
         except Exception as e:
             raise Exception(e)
