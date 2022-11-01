@@ -75,6 +75,8 @@ class BotUtils:
                 self.round_area["left"] = scaled_values[0]
                 self.round_area["top"] = scaled_values[1]
             else:
+                if self.DEBUG:
+                    self.log("Found round area")
                 # set round area to the found area + offset
                 x, y, roundwidth, roundheight = area
                 
@@ -201,6 +203,8 @@ class BotUtils:
         return self._find(self._image_path("set_target_button"), return_cords=True)
     
     def locate_round_area(self):
+        if self.DEBUG:
+            self.log("Finding round area image")
         return self._find(self._image_path("round_area"), return_cords=True, center_on_found=False)
 
     # Generic function to see if something is present on the screen
