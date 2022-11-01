@@ -225,7 +225,7 @@ class BotUtils:
     # Scaling functions for different resolutions support
     def _scaling(self, pos_list):
         """
-            This function will dynamically calculate the differance between current resolution and designed for 2560x1440
+            This function will dynamically calculate the coordinates for the current resolution given the normalized ones in static.py
             it will also add any padding needed to positions to account for 21:9 
 
             do_padding -- this is used during start 
@@ -346,8 +346,8 @@ class BotUtils:
             templateHeight, templateWidth = template.shape[:2]
 
             # scale template
-            if self.width != 2560 or self.height != 1440:
-                template = cv2.resize(template, dsize=(int(templateWidth/(2560/self.width)), int(templateHeight/(1440/self.height))), interpolation=cv2.INTER_CUBIC)
+            if self.width != 1920 or self.height != 1080:
+                template = cv2.resize(template, dsize=(int(templateWidth/(1920/self.width)), int(templateHeight/(1080/self.height))), interpolation=cv2.INTER_CUBIC)
 
             # Find all the matches
             # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
