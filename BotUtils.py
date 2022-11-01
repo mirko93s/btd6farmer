@@ -200,6 +200,9 @@ class BotUtils:
     def home_menu_check(self):
         return self._find( self._image_path("play") )
 
+    def language_check(self):
+        return self._find( self._image_path("english") )
+
     def collection_event_check(self):
         return self._find(self._image_path("diamond_case") )
 
