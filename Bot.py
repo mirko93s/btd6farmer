@@ -394,9 +394,11 @@ class Bot(BotCore):
            self.settings["GAMEMODE"] == "DEFLATION"   or \
            self.settings["GAMEMODE"] == "APOPALYPSE"  or \
            self.settings["GAMEMODE"] == "HALF_CASH":
+            """
+            todo: change to something like wait_for_loading
+            """
+            time.sleep(2)
             self.press_key("esc", timeout=1)
-            # self.click(self.settings["DIFFICULTY"])
-            # self.click("CONFIRM_CHIMPS")
     
     def wait_for_loading(self):
         still_loading = True
