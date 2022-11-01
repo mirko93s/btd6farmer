@@ -48,6 +48,14 @@ def main(arg_parser):
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_home = bot.home_menu_check()
 
+    if bot.language_check() is False:
+        if bot.DEBUG:
+            bot.log("Setting game to english")
+        bot.click("SETTINGS")
+        bot.click("LANGUAGE")
+        bot.click("ENGLISH")
+        bot.press_key("esc", timeout=0.5, amount=2)
+
     # Check for obyn
     bot.hero_select()
 
