@@ -59,8 +59,9 @@ class BotUtils:
         if self.round_area is None:
     
             self.round_area = defaultdict()
-            self.round_area["width"] = 200
-            self.round_area["height"] = 42
+            rectangle = self._scaling([0.1041666666666667, 0.0388888888888889])
+            self.round_area["width"] = rectangle[0] #200
+            self.round_area["height"] = rectangle[1] #42
 
             area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
             
