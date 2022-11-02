@@ -181,7 +181,7 @@ The gameplan is a json file that contains the round as a key and the value as an
     - `LOCATION` - [x, y] location of the tower
 - `SET_STATIC_TARGET`
     - `LOCATION` - [x, y] location of tower
-    - `TARGET_LOCATION` - [x, y] location of target
+    - `TARGET` - [x, y] location of target
 - `END` - (OPTIONAL) Finished instructions
 
 
