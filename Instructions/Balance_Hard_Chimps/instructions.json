@@ -1,0 +1,311 @@
+{
+	"6": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "HERO",
+                "LOCATION": [
+                    0.436458,
+                    0.347222
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "START",
+            "ARGUMENTS": {
+                "FAST_FORWARD": true
+            }
+        }
+	],
+	"8": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "TACK",
+                "LOCATION": [
+                    0.435937,
+                    0.525000
+                ]
+            }
+        }
+	],
+	"9": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.435937,
+                    0.525000
+                ],
+                "UPGRADE_PATH": [
+                    1,
+                    0,
+                    0
+                ]
+            }
+        }
+	],
+	"11": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.435937,
+                    0.525000
+                ],
+                "UPGRADE_PATH": [
+                    1,
+                    0,
+                    2
+                ]
+            }
+        }
+	],
+	"14": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.435937,
+                    0.525000
+                ],
+                "UPGRADE_PATH": [
+                    1,
+                    0,
+                    0
+                ]
+            }
+        }
+	],
+	"28": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.435937,
+                    0.525000
+                ],
+                "UPGRADE_PATH": [
+                    1,
+                    0,
+                    0
+                ]
+            }
+        }
+	],
+	"29": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "ALCHEMIST",
+                "LOCATION": [
+                    0.509375,
+                    0.366667
+                ]
+            }
+        }
+	],
+	"34": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.509375,
+                    0.366667
+                ],
+                "UPGRADE_PATH": [
+                    3,
+                    0,
+                    0
+                ]
+            }
+        }
+	],
+	"38": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.509375,
+                    0.366667
+                ],
+                "UPGRADE_PATH": [
+                    1,
+                    0,
+                    1
+                ]
+            }
+        }
+	],
+	"39": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "VILLAGE",
+                "LOCATION": [
+                    0.512500,
+                    0.508333
+                ]
+            }
+        }
+	],
+	"40": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.512500,
+                    0.508333
+                ],
+                "UPGRADE_PATH": [
+                    2,
+                    0,
+                    0
+                ]
+            }
+        }
+	],
+	"42": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.512500,
+                    0.508333
+                ],
+                "UPGRADE_PATH": [
+                    0,
+                    2,
+                    0
+                ]
+            }
+        }
+	],
+	"70": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.435937,
+                    0.525000
+                ],
+                "UPGRADE_PATH": [
+                    1,
+                    0,
+                    0
+                ]
+            }
+        }
+	],
+	"71": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "DRUID",
+                "LOCATION": [
+                    0.536458,
+                    0.653704
+                ]
+            }
+        }
+	],
+	"85": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.536458,
+                    0.653704
+                ],
+                "UPGRADE_PATH": [
+                    2,
+                    5,
+                    0
+                ]
+            }
+        }
+	],
+	"87": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.512500,
+                    0.508333
+                ],
+                "UPGRADE_PATH": [
+                    0,
+                    1,
+                    0
+                ]
+            }
+        }
+	],
+	"88": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "ALCHEMIST",
+                "LOCATION": [
+                    0.366146,
+                    0.492593
+                ]
+            }
+        }
+	],
+	"90": [
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.366146,
+                    0.492593
+                ],
+                "UPGRADE_PATH": [
+                    4,
+                    2,
+                    0
+                ]
+            }
+        }
+	],
+	"94": [
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "SNIPER",
+                "LOCATION": [
+                    0.557813,
+                    0.833333
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "CHANGE_TARGET",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.557813,
+                    0.833333
+                ],
+                "TARGET": [
+                    "STRONG"
+                ],
+                "TYPE": "REGULAR"
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.557813,
+                    0.833333
+                ],
+                "UPGRADE_PATH": [
+                    4,
+                    2,
+                    0
+                ]
+            }
+        }
+	]
+}
