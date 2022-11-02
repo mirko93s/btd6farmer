@@ -59,16 +59,16 @@ class BotUtils:
         if self.round_area is None:
     
             self.round_area = defaultdict()
-            self.round_area["width"] = 225
-            self.round_area["height"] = 65
+            self.round_area["width"] = 200
+            self.round_area["height"] = 42
 
-            area = self.locate_round_area() # Search for round text
+            area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
             
             # If it cant find anything
             if area == None:
                 if self.DEBUG:
                     self.log("Could not find round area, setting default values")
-                scaled_values = self._scaling([0.72265625, 0.0243055555555556]) # Use default values
+                scaled_values = self._scaling([0.7083333333333333, 0.0277777777777778]) # Use default values, (1360,30) on 1080p
 
                 # left = x
                 # top = y
@@ -78,7 +78,7 @@ class BotUtils:
                 # set round area to the found area + offset
                 x, y, roundwidth, roundheight = area
                 
-                xOffset, yOffset = ((roundwidth + 35), int(roundheight * 2) - 15)
+                xOffset, yOffset = ((roundwidth + 55), int(roundheight * 2) - 5)
                 self.round_area["top"] = y + yOffset
                 self.round_area["left"] = x - xOffset
         
@@ -90,13 +90,58 @@ class BotUtils:
         with mss.mss() as sct:
             sct_image = sct.grab(monitor)
             screenshot = np.array(sct_image, dtype=np.uint8)
-            
-            # Load the image as a opencv object
-            gray_scale_image = self._load_img(screenshot) 
-
-            # https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
-            # We do this to hopefully improve the OCR accuracy
-            final_image = cv2.threshold(gray_scale_image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+            # Get local maximum:
+            kernelSize = 5
+            maxKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernelSize, kernelSize))
+            localMax = cv2.morphologyEx(screenshot, cv2.MORPH_CLOSE, maxKernel, None, None, 1, cv2.BORDER_REFLECT101)
+            # Perform gain division
+            gainDivision = np.where(localMax == 0, 0, (screenshot/localMax))
+            # Clip the values to [0,255]
+            gainDivision = np.clip((255 * gainDivision), 0, 255)
+            # Convert the mat type from float to uint8:
+            gainDivision = gainDivision.astype("uint8")
+            # Convert RGB to grayscale:
+            grayscaleImage = cv2.cvtColor(gainDivision, cv2.COLOR_BGR2GRAY)
+            # Resize image to improve the quality
+            grayscaleImage = cv2.resize(grayscaleImage,(0,0), fx=3.0, fy=3.0)
+            # Get binary image via Otsu:
+            _, final_image = cv2.threshold(grayscaleImage, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+            # Set kernel (structuring element) size:
+            kernelSize = 3
+            # Set morph operation iterations:
+            opIterations = 1
+            # Get the structuring element:
+            morphKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernelSize, kernelSize))
+            # Perform closing:
+            final_image = cv2.morphologyEx( final_image, cv2.MORPH_CLOSE, morphKernel, None, None, opIterations, cv2.BORDER_REFLECT101 )
+            # Flood fill (white + black):
+            cv2.floodFill(final_image, mask=None, seedPoint=(int(0), int(0)), newVal=(255))
+            # Invert image so target blobs are colored in white:
+            final_image = 255 - final_image
+            # Find the blobs on the binary image:
+            contours, hierarchy = cv2.findContours(final_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            # Process the contours:
+            for i, c in enumerate(contours):
+                # Get contour hierarchy:
+                currentHierarchy = hierarchy[0][i][3]
+                # Look only for children contours (the holes):
+                if currentHierarchy != -1:
+                    # Get the contour bounding rectangle:
+                    boundRect = cv2.boundingRect(c)
+                    # Get the dimensions of the bounding rect:
+                    rectX = boundRect[0]
+                    rectY = boundRect[1]
+                    rectWidth = boundRect[2]
+                    rectHeight = boundRect[3]
+                    # Get the center of the contour the will act as
+                    # seed point to the Flood-Filling:
+                    fx = rectX + 0.5 * rectWidth
+                    fy = rectY + 0.5 * rectHeight
+                    # Fill the hole:
+                    cv2.floodFill(final_image, mask=None, seedPoint=(int(fx), int(fy)), newVal=(0))
+            # Write result to disk:
+            if self.DEBUG:
+                cv2.imwrite("./DEBUG/round.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
             # Get current round from screenshot with tesseract
             found_text = pytesseract.image_to_string(final_image,  config='--psm 7').replace("\n", "")
@@ -209,6 +254,8 @@ class BotUtils:
         try:
             if return_cords:
                 cords = self._locate(path, confidence=confidence)
+                if self.DEBUG:
+                    self.log(cords)
                 if cords is not None:
                     left, top, width, height = cords
                     if center_on_found:
