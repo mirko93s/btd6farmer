@@ -231,9 +231,16 @@ class BotUtils:
         return self._find( self._image_path("levelup") )
 
     def hero_check(self, heroString):
-        return self._find( self._image_path(heroString) ) or \
-            self._find( self._image_path(heroString + "_2") ) or \
-            self._find( self._image_path(heroString + "_3") )
+        if self._find( self._image_path(heroString) ):
+            return True
+        elif self._image_path(heroString + "_2") is not None:
+            if self._find( self._image_path(heroString + "_2") ):
+                return True
+        elif self._image_path(heroString + "_3") is not None:
+            if self._find( self._image_path(heroString + "_3") ):
+                return True
+        else:
+            return False
 
     def loading_screen_check(self):
         return self._find( self._image_path("loading_screen") )
