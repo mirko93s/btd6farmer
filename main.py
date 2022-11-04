@@ -31,6 +31,11 @@ def main(arg_parser):
             verbose_mode=(args['verbose']), 
             restart_mode=(args['restart'])
         )
+
+    if 'delay' in args:
+        delay = int(args['delay'])
+        print(f"Starting in {delay} seconds")
+        time.sleep(delay)
         
     bot.log("Setting up Bot...")
     bot.log("Using gameplan located in: " + str(gameplan_path))
@@ -70,7 +75,7 @@ def main(arg_parser):
         if not bot.RESTART:
             bot.log("selecting map")
             # Choose map
-            bot.select_map()   
+            bot.select_map()
 
         bot.log("Game start")
 
@@ -86,6 +91,7 @@ if __name__ == "__main__":
     parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode (not done)')
     parser.add_argument('-r', '--restart', action='store_true', help='automatically restarts the game when finished, instead of going to home screen')
     parser.add_argument('-s', '--sandbox', action='store_true', help='Try put gameplan in sandbox mode without waiting for specific rounds (not done)')
+    parser.add_argument('-de', '--delay', help='Starts bot after a delay')
     
     # Start the bot on a seperate thread
     bot_thread = Thread(target=main, args=(parser,), daemon=True)

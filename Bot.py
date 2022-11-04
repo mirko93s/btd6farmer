@@ -2,10 +2,11 @@ import time
 import static
 from BotCore import BotCore
 
+
 class Bot(BotCore):
     def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False):
         super().__init__(instruction_path)
-        
+
         self.start_time = time.time()
         self.running = True
         self.DEBUG = debug_mode
@@ -13,6 +14,7 @@ class Bot(BotCore):
         self.RESTART = restart_mode
         self.game_start_time = time.time()
         self.fast_forward = True
+        self.autostart_false_check = False  # Starts False until checked
 
     def initilize(self):
         if self.DEBUG:
@@ -20,17 +22,21 @@ class Bot(BotCore):
 
         self.press_key("alt")
 
-
     def ingame_loop(self):
 
-        current_round = -1
+        current_round = None  # -1
         ability_one_timer = time.time()
         ability_two_timer = time.time()
         ability_three_timer = time.time()
-        
+
         finished = False
 
         middle_of_screen = (0.5, 0.5)
+
+        # First check autostart
+        if not self.autostart_false_check:
+            self.autostart_toggle(targ=False)  # Disable auto start
+            self.autostart_false_check = True  # Marks that this has already been checked for future loops
 
         # main ingame loop
         while not finished:
@@ -43,10 +49,10 @@ class Bot(BotCore):
 
             # Check for finished or failed game
             if self.defeat_check():
-                
+
                 if self.DEBUG:
                     self.log("Defeat detected on round {}; exiting level".format(current_round))
-                    self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
+                    self.log_stats(did_win=False, match_time=(time.time() - self.game_start_time))
                 if self.RESTART:
                     self.restart_level(won=False)
                 else:
@@ -58,8 +64,8 @@ class Bot(BotCore):
             elif self.victory_check():
 
                 if self.DEBUG:
-                    self.log("Victory detected; exiting level") 
-                    self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
+                    self.log("Victory detected; exiting level")
+                    self.log_stats(did_win=True, match_time=(time.time() - self.game_start_time))
                 if self.RESTART:
                     self.restart_level(won=True)
                 else:
@@ -67,24 +73,34 @@ class Bot(BotCore):
                 finished = True
                 self.reset_game_plan()
                 continue
-            
-            current_round = self.getRound()
+
+            # current_round = self.getRound()
+            if not finished and self.round_end_check():
+                if current_round is None:
+                    current_round = self.getRound()  # Get first round with ocr (Might want to add confirmation since it is not 100% reliable)
+                    if self.DEBUG:
+                        self.log("Starting round", current_round)  # Only print current round once
+
+                else:
+                    current_round += 1
+                    self.start_next_round()
 
             if current_round != None:
                 # Saftey net; use abilites
                 # TODO: Calculate round dynamically, base on which round hero has been placed.
-                if self.settings["HERO"] != "GERALDO": # geraldo doesn't any ability
+                if self.settings["HERO"] != "GERALDO":  # geraldo doesn't any ability
                     cooldowns = static.hero_cooldowns[self.settings["HERO"]]
 
                     if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
                         self.press_key("1")
                         ability_one_timer = time.time()
-                    
+
                     # skip if ezili or adora, their lvl 7 ability is useless
-                    if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]) and (self.settings["HERO"] != "EZILI" and "ADORA"):
+                    if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]) and (
+                            self.settings["HERO"] != "EZILI" and "ADORA"):
                         self.press_key("2")
                         ability_two_timer = time.time()
-                    
+
                     if len(cooldowns) == 3:
                         if current_round >= 53 and self.abilityAvaliabe(ability_three_timer, cooldowns[2]):
                             self.press_key("3")
@@ -92,7 +108,7 @@ class Bot(BotCore):
 
                 # Check for round in game plan
                 if str(current_round) in self.game_plan:
-                    
+
                     # Handle all instructions in current round
                     for instruction in self.game_plan[str(current_round)]:
                         if not "DONE" in instruction:
@@ -100,22 +116,21 @@ class Bot(BotCore):
                             if self._game_plan_version == "1":
                                 self.log(instruction)
                                 self.v1_handleInstruction(instruction)
-                                
+
                             else:
                                 raise Exception("Game plan version {} not supported".format(self._game_plan_version))
 
                             instruction["DONE"] = True
 
                             if self.DEBUG:
-                                self.log("Current round", current_round) # Only print current round once
+                                self.log("Current round", current_round)  # Only print current round once
 
-    def exit_bot(self): 
+    def exit_bot(self):
         self.running = False
 
     def place_tower(self, tower_position, keybind):
-        self.press_key(keybind) # press keybind
-        self.click(tower_position) # click on decired location
-
+        self.press_key(keybind)  # press keybind
+        self.click(tower_position)  # click on decired location
 
     def upgrade_tower(self, tower_position, upgrade_path):
         if not any(isinstance(path, int) for path in upgrade_path) or len(upgrade_path) != 3:
@@ -125,7 +140,7 @@ class Bot(BotCore):
 
         # Convert upgrade_path to something usable
         top, middle, bottom = upgrade_path
-        
+
         for _ in range(top):
             self.press_key(static.upgrade_keybinds["top"])
 
@@ -134,7 +149,7 @@ class Bot(BotCore):
 
         for _ in range(bottom):
             self.press_key(static.upgrade_keybinds["bottom"])
-        
+
         self.press_key("esc")
 
     def change_target(self, tower_type, tower_position, targets: str | list, delay: int | float | list | tuple = 3):
@@ -160,25 +175,24 @@ class Bot(BotCore):
 
             while current_target_index != target_order.index(i):
                 self.press_key("tab")
-                current_target_index+=1
+                current_target_index += 1
                 if current_target_index > 3:
                     current_target_index = 0
 
             # If delay is an int sleep for delay for each target
             if isinstance(delay, (int, float)):
                 # If the bot is on the last target  in targets list, dont sleep
-                if targets[-1] != i: # 
-                    time.sleep(delay)   
-            # If delay is a list sleep for respective delay for each target
+                if targets[-1] != i:  #
+                    time.sleep(delay)
+                    # If delay is a list sleep for respective delay for each target
             elif isinstance(delay, (list, tuple)):
                 time.sleep(delay.pop(-1))
-            
 
         self.press_key("esc")
 
     def set_static_target(self, tower_position, target_pos):
         self.click(tower_position)
-        
+
         target_button = self.locate_static_target_button()
         self.click(target_button)
 
@@ -209,13 +223,13 @@ class Bot(BotCore):
 
             if self.DEBUG or self.VERBOSE:
                 self.log("Tower placed:", tower)
-            
+
         elif instruction_type == "REMOVE_TOWER":
             self.remove_tower(instruction["ARGUMENTS"]["LOCATION"])
-            
+
             if self.DEBUG or self.VERBOSE:
                 self.log("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
-        
+
         # Upgrade tower
         elif instruction_type == "UPGRADE_TOWER":
             position = instruction["ARGUMENTS"]["LOCATION"]
@@ -224,8 +238,9 @@ class Bot(BotCore):
             self.upgrade_tower(position, upgrade_path)
 
             if self.DEBUG or self.VERBOSE:
-                self.log("Tower upgraded at position:", instruction["ARGUMENTS"]["LOCATION"], "with the upgrade path:", instruction["ARGUMENTS"]["UPGRADE_PATH"])
-        
+                self.log("Tower upgraded at position:", instruction["ARGUMENTS"]["LOCATION"], "with the upgrade path:",
+                         instruction["ARGUMENTS"]["UPGRADE_PATH"])
+
         # Change tower target
         elif instruction_type == "CHANGE_TARGET":
             target_type = instruction["ARGUMENTS"]["TYPE"]
@@ -233,11 +248,11 @@ class Bot(BotCore):
             target = instruction["ARGUMENTS"]["TARGET"]
 
             if "DELAY" in instruction["ARGUMENTS"]:
-                delay = instruction["ARGUMENTS"]["DELAY"] 
+                delay = instruction["ARGUMENTS"]["DELAY"]
                 self.change_target(target_type, position, target, delay)
             else:
                 self.change_target(target_type, position, target)
-            
+
 
         # Set static target of a tower
         elif instruction_type == "SET_STATIC_TARGET":
@@ -245,12 +260,12 @@ class Bot(BotCore):
             target_position = instruction["ARGUMENTS"]["TARGET"]
 
             self.set_static_target(position, target_position)
-        
+
         # Start game
         elif instruction_type == "START":
             if "ARGUMENTS" in instruction and "FAST_FORWARD " in instruction["ARGUMENTS"]:
                 self.fast_forward = instruction["ARGUMENTS"]["FASTFORWARD"]
-                
+
             self.start_first_round()
 
             if self.DEBUG or self.VERBOSE:
@@ -262,14 +277,13 @@ class Bot(BotCore):
 
             if self.DEBUG or self.VERBOSE:
                 self.log("Waiting for ", instruction["ARGUMENTS"]["TIME"], "second(s)")
-        
+
         else:
             # Maybe raise exception or just ignore?
             raise Exception("Instruction type {} is not a valid type".format(instruction_type))
 
         if self.DEBUG or self.VERBOSE:
             self.log(f"executed instruction:\n{instruction}")
-
 
     def abilityAvaliabe(self, last_used, cooldown):
         # TODO: Store if the game is speeded up or not. If it is use the constant (true by default)
@@ -288,29 +302,56 @@ class Bot(BotCore):
 
         self.game_start_time = time.time()
 
+    def start_next_round(self):
+        self.press_key("space", amount=1)
+
+    def autostart_toggle(self, targ=None):
+        button_y_threshold = 5
+
+        self.press_key("esc")
+        time.sleep(1)
+
+        if targ is not None:  # If targ, then attempt to match
+            autostart_state = False
+            autostart_location = self.autostart_on_position()
+
+            toggle_on_positions = self.toggle_on_positions()
+            for cords in toggle_on_positions:
+                left, top, width, height = cords
+                xCenter, yCenter = (left + width // 2, top + height // 2)
+                if autostart_location[1] - button_y_threshold < yCenter < autostart_location[1] + button_y_threshold and autostart_location[0] < xCenter:
+                    autostart_state = True
+            if targ != autostart_state:
+                self.click("AUTOSTART")
+                time.sleep(1)
+        else:  # If targ not set, simply toggle
+            self.click("AUTOSTART")
+            time.sleep(1)
+        self.press_key("esc")
+
     def check_for_collection_crates(self):
         if self.collection_event_check():
             if self.DEBUG:
                 self.log("easter collection detected")
                 # take screenshot of loc and save it to the folder
 
-            self.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
+            self.click("EASTER_COLLECTION")  # DUE TO EASTER EVENT:
             time.sleep(1)
-            self.click("LEFT_INSTA") # unlock insta
+            self.click("LEFT_INSTA")  # unlock insta
             time.sleep(1)
-            self.click("LEFT_INSTA") # collect insta
+            self.click("LEFT_INSTA")  # collect insta
             time.sleep(1)
-            self.click("RIGHT_INSTA") # unlock r insta
+            self.click("RIGHT_INSTA")  # unlock r insta
             time.sleep(1)
-            self.click("RIGHT_INSTA") # collect r insta
-            time.sleep(1)
-            self.click("F_LEFT_INSTA")
+            self.click("RIGHT_INSTA")  # collect r insta
             time.sleep(1)
             self.click("F_LEFT_INSTA")
             time.sleep(1)
-            self.click("MID_INSTA") # unlock insta
+            self.click("F_LEFT_INSTA")
             time.sleep(1)
-            self.click("MID_INSTA") # collect insta
+            self.click("MID_INSTA")  # unlock insta
+            time.sleep(1)
+            self.click("MID_INSTA")  # collect insta
             time.sleep(1)
             self.click("F_RIGHT_INSTA")
             time.sleep(1)
@@ -321,7 +362,7 @@ class Bot(BotCore):
             self.click("EASTER_CONTINUE")
 
             self.press_key("esc")
-            
+
     # select hero if not selected
     def hero_select(self):
         if not self.hero_check(self.settings["HERO"]):
@@ -342,9 +383,9 @@ class Bot(BotCore):
         else:
             self.click("DEFEAT_HOME")
             time.sleep(2)
-        
-        self.wait_for_loading() # wait for loading screen
-    
+
+        self.wait_for_loading()  # wait for loading screen
+
     def restart_level(self, won=True):
         if won:
             self.click("VICTORY_CONTINUE")
@@ -364,73 +405,74 @@ class Bot(BotCore):
             self.click("DEFEAT_RESTART")
             self.click("CONFIRM_RESTART")
             time.sleep(2)
-        
-        self.wait_for_loading() # wait for loading screen
+
+        self.wait_for_loading()  # wait for loading screen
 
     def select_map(self):
         map_page = static.maps[self.settings["MAP"]][0]
         map_index = static.maps[self.settings["MAP"]][1]
-        
+
         time.sleep(1)
 
         self.click("HOME_MENU_START")
         self.click("EXPERT_SELECTION")
-        
-        self.click("BEGINNER_SELECTION") # goto first page
+
+        self.click("BEGINNER_SELECTION")  # goto first page
 
         # click to the right page
         self.click("RIGHT_ARROW_SELECTION", amount=(map_page - 1), timeout=0.1)
 
-        self.click("MAP_INDEX_" + str(map_index)) # Click correct map
-        self.click(self.settings["DIFFICULTY"]) # Select Difficulty
-        self.click(self.settings["GAMEMODE"]) # Select Gamemode
+        self.click("MAP_INDEX_" + str(map_index))  # Click correct map
+        self.click(self.settings["DIFFICULTY"])  # Select Difficulty
+        self.click(self.settings["GAMEMODE"])  # Select Gamemode
         self.click("OVERWRITE_SAVE")
 
-        self.wait_for_loading() # wait for loading screen
+        self.wait_for_loading()  # wait for loading screen
 
         # Only need to press confirm button if we play chimps or impoppable
         if self.settings["GAMEMODE"] == "CHIMPS_MODE" or \
-           self.settings["GAMEMODE"] == "IMPOPPABLE"  or \
-           self.settings["GAMEMODE"] == "DEFLATION"   or \
-           self.settings["GAMEMODE"] == "APOPALYPSE"  or \
-           self.settings["GAMEMODE"] == "HALF_CASH":
+                self.settings["GAMEMODE"] == "IMPOPPABLE" or \
+                self.settings["GAMEMODE"] == "DEFLATION" or \
+                self.settings["GAMEMODE"] == "APOPALYPSE" or \
+                self.settings["GAMEMODE"] == "HALF_CASH":
             """
             todo: change to something like wait_for_loading
             apopalypse different screen
             """
             self.wait_for_confirm_mode()
             self.press_key("esc", timeout=1)
-    
+
     def wait_for_loading(self):
         still_loading = True
 
         while still_loading:
             if self.DEBUG:
                 self.log("Waiting for loading screen..")
-            
-            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+
+            time.sleep(0.2)  # add a short timeout to avoid spamming the cpu
             still_loading = self.loading_screen_check()
-    
+
     def wait_for_confirm_mode(self):
         still_loading = True
 
         while still_loading:
             if self.DEBUG:
                 self.log("Waiting for confirm screen..")
-            
-            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+
+            time.sleep(0.2)  # add a short timeout to avoid spamming the cpu
             still_loading = self.confirm_mode_check()
+
 
 if __name__ == "__main__":
     # For testing purposes; open sandbox on dark castle and run Bot.py will place every tower
     import time, sys
     from pathlib import Path
+
     time.sleep(2)
-    gameplan_path = (Path(__file__).resolve().parent/sys.argv[sys.argv.index("--gameplan_path") + 1]) if "--gameplan_path" in sys.argv else exit(0)
+    gameplan_path = (Path(__file__).resolve().parent / sys.argv[
+        sys.argv.index("--gameplan_path") + 1]) if "--gameplan_path" in sys.argv else exit(0)
     b = Bot(instruction_path=gameplan_path)
     for round, instruction_list in b.game_plan.items():
         b.log(round, instruction_list)
         for instruction in instruction_list:
-            b.v1_handleInstruction(instruction)    
-            
-        
+            b.v1_handleInstruction(instruction)

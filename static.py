@@ -62,7 +62,9 @@ button_positions = { # Creates a dictionary of all relative positions needed for
     "CONFIRM_CHIMPS"            : [ 0.500390625 , 0.6805555555555556 ],
     "SETTINGS"                  : [0.037500 , 0.191667],
     "LANGUAGE"                  : [0.555208 , 0.659259],
-    "ENGLISH"                   : [0.224479 , 0.192593]
+    "ENGLISH"                   : [0.224479 , 0.192593],
+    # GAME SETTINGS
+    "AUTOSTART"                 : [0.6895833333333333, 0.28055555555555556],
 }
 hero_positions = {
     "OBYN"              : [ 0.04140625 , 0.36944444444444446 ],

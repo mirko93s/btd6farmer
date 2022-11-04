@@ -19,14 +19,32 @@ import mss
 import ctypes
 from collections import defaultdict
 
+import math
+from win32gui import FindWindow, GetClientRect, GetWindowRect
+
 class BotUtils:
     def __init__(self):
 
         try:
             if sys.platform == "win32":
                 ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
-            tk = tkinter.Tk()
-            self.width, self.height = tk.winfo_screenwidth(), tk.winfo_screenheight()
+            # tk = tkinter.Tk()
+            # self.width, self.height = tk.winfo_screenwidth(), tk.winfo_screenheight()
+
+            self.win_title = "BloonsTD6"
+            self.window_handle = FindWindow(None, self.win_title)
+
+            # https://stackoverflow.com/questions/51287338/python-2-7-get-ui-title-bar-size
+            window_rect = GetWindowRect(self.window_handle)
+            client_rect = GetClientRect(self.window_handle)
+            windowOffset = math.floor(((window_rect[2] - window_rect[0]) - client_rect[2]) / 2)
+            titleOffset = ((window_rect[3] - window_rect[1]) - client_rect[3]) - windowOffset
+            game_rect = (window_rect[0] + windowOffset, window_rect[1] + titleOffset, window_rect[2] - windowOffset,
+                         window_rect[3] - windowOffset)
+
+            self.left, self.top, self.right, self.bottom = game_rect
+            self.width = self.right - self.left
+            self.height = self.bottom - self.top
         except Exception as e:
             raise Exception("Could not retrieve monitor resolution")
 
@@ -60,6 +78,7 @@ class BotUtils:
     
             self.round_area = defaultdict()
             rectangle = self._scaling([0.1041666666666667, 0.0388888888888889])
+
             self.round_area["width"] = rectangle[0] #200
             self.round_area["height"] = rectangle[1] #42
 
@@ -87,12 +106,12 @@ class BotUtils:
         
         # Setting up screen capture area
         monitor = {'top': self.round_area["top"], 'left': self.round_area["left"], 'width': self.round_area["width"], 'height': self.round_area["height"]}
-        # print("region", monitor)
 
         # Take Screenshot
         with mss.mss() as sct:
             sct_image = sct.grab(monitor)
             screenshot = np.array(sct_image, dtype=np.uint8)
+
             # Get local maximum:
             kernelSize = 5
             maxKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernelSize, kernelSize))
@@ -190,7 +209,7 @@ class BotUtils:
             location = static.button_positions[location]
         
         # Move mouse to location
-        self._move_mouse(self._scaling(location), move_timeout)
+        self._move_mouse(self._scaling(location, offset_left_top=True), move_timeout)
 
         for _ in range(amount):
             mouse.press(button='left')
@@ -222,11 +241,20 @@ class BotUtils:
     def monkey_knowledge_check(self):
         return self._find( self._image_path("monkey_knowledge") )
 
+    def autostart_on_position(self):
+        return self._find( self._image_path("autostart_on"), return_cords=True )
+
+    def toggle_on_positions(self):
+        return self._locate_all(self._image_path("toggle_on"))
+
     def victory_check(self):
         return self._find( self._image_path("victory") )
 
     def defeat_check(self):
         return self._find( self._image_path("defeat") )
+
+    def round_end_check(self):
+        return self._find( self._image_path("round_play") )
 
     def levelup_check(self):
         return self._find( self._image_path("levelup") )
@@ -294,7 +322,7 @@ class BotUtils:
             raise Exception(e)
 
     # Scaling functions for different resolutions support
-    def _scaling(self, pos_list):
+    def _scaling(self, pos_list, offset_left_top=False):
         """
             This function will dynamically calculate the coordinates for the current resolution given the normalized ones in static.py
             it will also add any padding needed to positions to account for 21:9 
@@ -315,6 +343,10 @@ class BotUtils:
         
         y = pos_list[1] * self.height
         x = x + self._padding() # Add's the pad to to the curent x position variable
+
+        if offset_left_top:
+            x += self.left
+            y += self.top
 
         if self.DEBUG:
             self.log("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
@@ -391,7 +423,7 @@ class BotUtils:
             Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
         """
 
-        monitor = {'top': 0, 'left': 0, 'width': self.width, 'height': self.height} if region is None else region
+        monitor = {'top': self.top, 'left': self.left, 'width': self.width, 'height': self.height} if region is None else region
 
         if  0.0 > confidence <= 1.0:
             raise ValueError("Confidence must be a value between 0.0 and 1.0")
@@ -433,7 +465,7 @@ class BotUtils:
             if len(matches[0]) == 0:
                 return None
             else:
-                return [ (x, y, templateWidth, templateHeight) for x, y in zip(matchesX, matchesY) ]
+                return [ (x + self.left, y + self.top, templateWidth, templateHeight) for x, y in zip(matchesX, matchesY) ]
 
     def _locate(self, template_path, confidence=0.9, tries=1):
         """
