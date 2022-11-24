@@ -159,7 +159,7 @@ maps = {
     "CHUTES" : [7, 5],
     "RAKE" : [7, 6],
     "SPICE_ISLANDS" : [8, 1],
-    "MIDNIGHT MANSION" : [9, 1],
+    "MIDNIGHT_MANSION" : [9, 1],
     "SUNKEN_COLUMNS" : [9, 2],
     "XFACTOR" : [9, 3],
     "MESA" : [9, 4],
