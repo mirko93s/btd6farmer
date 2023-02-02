@@ -75,7 +75,7 @@ def main(arg_parser):
         print("Game start")
 
         # main game loop
-        bot.ingame_loop()
+        bot.loop()
 
 
 if __name__ == "__main__":
