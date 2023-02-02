@@ -1,1 +1,0 @@
-python main.py --gameplan_path "Instructions/Dark_Castle_Hard_Chimps"
