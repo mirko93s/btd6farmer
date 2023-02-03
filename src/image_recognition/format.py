@@ -1,0 +1,2 @@
+def formatImageOCR(image):
+    pass
