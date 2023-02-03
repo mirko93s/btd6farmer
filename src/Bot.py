@@ -6,14 +6,11 @@ from pathlib import Path
 
 import sys
 import time
-import keyboard
-import mouse
 import static
 import tkinter
 from pathlib import Path
 
 import numpy as np
-import cv2
 import pytesseract
 import processing
 
@@ -69,6 +66,7 @@ class Bot():
 
         # Defing a lamda function that can be used to get a path to a specific image
         # self._image_path = lambda image, root_dir=self.support_dir, height=self.height : root_dir/f"{height}_{image}.png"
+        # In essence this is dumb
         self._image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
 
 
@@ -97,9 +95,17 @@ class Bot():
         else: # No sane person will run this bokk for a week
             return (ttime, "s")
 
+    # Put this somewhere else
     def log_stats(self, did_win: bool = None, match_time: int | float = 0):
         # Standard dict which will be used if json loads nothing
-        data = {"wins": 0, "loses": 0, "winrate": "0%", "average_matchtime": "0 s", "total_time": 0, "average_matchtime_seconds": 0}
+        data = {
+            "wins": 0, 
+            "loses": 0, 
+            "winrate": "0%", 
+            "average_matchtime": "0 s", 
+            "total_time": 0, 
+            "average_matchtime_seconds": 0
+        }
         
         # Try to read the file
         try:
@@ -539,11 +545,8 @@ class Bot():
         self.wait_for_loading() # wait for loading screen
 
         # Only need to press confirm button if we play chimps or impoppable
-        if self.settings["GAMEMODE"] == "CHIMPS_MODE" or \
-           self.settings["GAMEMODE"] == "IMPOPPABLE"  or \
-           self.settings["GAMEMODE"] == "DEFLATION"   or \
-           self.settings["GAMEMODE"] == "APOPALYPSE"  or \
-           self.settings["GAMEMODE"] == "HALF_CASH":
+        confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH"]
+        if self.settings["GAMEMODE"] in confirm_list:
             self.press_key("esc", timeout=1)
             # self.click(self.settings["DIFFICULTY"])
             # self.click("CONFIRM_CHIMPS")
