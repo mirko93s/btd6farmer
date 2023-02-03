@@ -22,7 +22,7 @@ def find_tower(letter):
     for tower in static.tower_keybinds:
         if static.tower_keybinds[tower] == letter:
             return tower
-    return None
+    return None # Not Possible
 
 while True:
     for tower in static.tower_keybinds:
@@ -53,7 +53,3 @@ while True:
                         os.system('cls')
                         break
                 break
-        
-    else:
-        print("Invalid tower")
-
