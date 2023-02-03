@@ -1,5 +1,5 @@
 class Static: 
-    # I wanna do something with this later, dont know what yet
+    # I wanna do something with this later, dont know what yet just doesnt feel right
     pass
 
 button_positions = { # Creates a dictionary of all relative positions needed for monkeys
