@@ -1,2 +1,1 @@
-import _keyboard
-import _mouse
+import simulatedinput
