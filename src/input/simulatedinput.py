@@ -8,6 +8,10 @@ import static
 # Maybe add static in here somewhere?
 def send_key( keybind, timeout=0.1, amount=1):
     """"""
+    # Check if keybind is a nick for a keybind in static
+    if keybind in static.keybinds:
+        keybind = static.keybinds[keybind]
+    
     for _ in range(amount):
         keyboard.send(keybind)
         sleep(timeout)
