@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np
 import cv2
 import mss
-
+import monitor
 
 #Generic function to see if something is present on the screen
 def find(path, confidence=0.9, return_cords=False, center_on_found=True):
@@ -25,56 +25,7 @@ def find(path, confidence=0.9, return_cords=False, center_on_found=True):
     except Exception as e:
         raise Exception(e)
 
-# Scaling functions for different resolutions support
-def scaling(pos_list, width, height, resolution_list):
-    """
-        This function will dynamically calculate the differance between current resolution and designed for 2560x1440
-        it will also add any padding needed to positions to account for 21:9 
 
-        do_padding -- this is used during start 
-    """
-
-    reso_21 = False
-    for x in resolution_list: 
-        if height == x['height']:
-            if width != x['width']:
-                reso_21 = True
-                x = pos_list[0]
-                break
-
-    if reso_21 != True:
-        x = pos_list[0] * width
-    
-    y = pos_list[1] * height
-    x = x + padding() # Add's the pad to to the curent x position variable
-
-    if DEBUG:
-        log("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
-
-    return (int(x), int(y))
-    # return (x,y)
-
-
-def padding(width, height, resolutions_list):
-    """
-        Get's width and height of current resolution
-        we iterate through reso_16 for heights, if current resolution height matches one of the entires 
-        then it will calulate the difference of the width's between current resolution and 16:9 (reso_16) resolution
-        divides by 2 for each side of padding
-
-        Variables Used
-        width -- used to referance current resolution width
-        height -- used to referance current resolution height
-        pad -- used to output how much padding we expect in different resolutions
-        reso_16 -- list that  
-    """
-
-    padding = 0
-    for x in resolutions_list: 
-        if height == x['height']:
-            padding = (width - x['width'])/2
-
-    return padding
 
 def load_image(img):
     """
