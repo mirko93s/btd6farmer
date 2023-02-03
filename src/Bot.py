@@ -22,6 +22,7 @@ import mss
 
 import ctypes
 from collections import defaultdict
+from logger import logger as log
 
 # Definently fix this 
 class Bot():
@@ -155,9 +156,6 @@ class Bot():
         
         return data
 
-    def log(self, *kargs):
-        print(*kargs)
-
     def _load_json(self, path):
         """
             Will read the @path as a json file load into a dictionary.
@@ -172,9 +170,8 @@ class Bot():
 
 
     def initilize(self):
-        if self.DEBUG:
-            self.log("RUNNING IN DEBUG MODE, DEBUG FILES WILL BE GENERATED")
-
+        # if self.DEBUG:
+        #     self.log("RUNNING IN DEBUG MODE, DEBUG FILES WILL BE GENERATED")
         self.press_key("alt")
 
 
@@ -263,8 +260,7 @@ class Bot():
 
                             instruction["DONE"] = True
 
-                            if self.DEBUG:
-                                self.log("Current round", current_round) # Only print current round once
+                            log.debug("Current round", current_round) # Only print current round once
 
     def exit_bot(self): 
         self.running = False
@@ -363,14 +359,12 @@ class Bot():
 
             self.place_tower(position, keybind)
 
-            if self.DEBUG or self.VERBOSE:
-                self.log("Tower placed:", tower)
+            log.debug("Tower placed:", tower)
             
         elif instruction_type == "REMOVE_TOWER":
             self.remove_tower(instruction["ARGUMENTS"]["LOCATION"])
             
-            if self.DEBUG or self.VERBOSE:
-                self.log("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
+            self.debug("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
         
         # Upgrade tower
         elif instruction_type == "UPGRADE_TOWER":
@@ -379,8 +373,7 @@ class Bot():
 
             self.upgrade_tower(position, upgrade_path)
 
-            if self.DEBUG or self.VERBOSE:
-                self.log("Tower upgraded at position:", instruction["ARGUMENTS"]["LOCATION"], "with the upgrade path:", instruction["ARGUMENTS"]["UPGRADE_PATH"])
+            log.debug("Tower upgraded at position:", instruction["ARGUMENTS"]["LOCATION"], "with the upgrade path:", instruction["ARGUMENTS"]["UPGRADE_PATH"])
         
         # Change tower target
         elif instruction_type == "CHANGE_TARGET":
@@ -409,22 +402,19 @@ class Bot():
                 
             self.start_first_round()
 
-            if self.DEBUG or self.VERBOSE:
-                self.log("First Round Started")
+            log.debug("First Round Started")
 
         # Wait a given time
         elif instruction_type == "WAIT":
             time.sleep(instruction["ARGUMENTS"]["TIME"])
 
-            if self.DEBUG or self.VERBOSE:
-                self.log("Waiting for ", instruction["ARGUMENTS"]["TIME"], "second(s)")
+            log.debug("Waiting for ", instruction["ARGUMENTS"]["TIME"], "second(s)")
         
         else:
             # Maybe raise exception or just ignore?
             raise Exception("Instruction type {} is not a valid type".format(instruction_type))
 
-        if self.DEBUG or self.VERBOSE:
-            self.log(f"executed instruction:\n{instruction}")
+        log.debug(f"executed instruction:\n{instruction}")
 
 
     def abilityAvaliabe(self, last_used, cooldown):
@@ -446,8 +436,7 @@ class Bot():
 
     def check_for_collection_crates(self):
         if self.collection_event_check():
-            if self.DEBUG:
-                self.log("easter collection detected")
+            log.debug("easter collection detected")
                 # take screenshot of loc and save it to the folder
 
             self.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
@@ -481,7 +470,8 @@ class Bot():
     # select hero if not selected
     def hero_select(self):
         if not self.hero_check(self.settings["HERO"]):
-            self.log(f"Selecting {self.settings['HERO']}")
+            log.debug(f"Selecting {self.settings['HERO']}")
+
             self.click("HERO_SELECT")
             self.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
             self.click("CONFIRM_HERO")
@@ -555,8 +545,7 @@ class Bot():
         still_loading = True
 
         while still_loading:
-            if self.DEBUG:
-                self.log("Waiting for loading screen..")
+            log.debug("Waiting for loading screen..")
             
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             still_loading = self.loading_screen_check()
@@ -581,8 +570,7 @@ class Bot():
             
             # If it cant find anything
             if area == None:
-                if self.DEBUG:
-                    self.log("Could not find round area, setting default values")
+                log.warning("Could not find round area, setting default values")
                 scaled_values = self._scaling([0.7083333333333333, 0.0277777777777778]) # Use default values, (1360,30) on 1080p
 
                 # left = x
@@ -618,16 +606,11 @@ class Bot():
                 return int(found_text.group(0))
 
             else:
-                if self.DEBUG:
-                    self.log("Found text '{}' does not match regex requirements".format(found_text))
-                    self.save_file(data=mss.tools.to_png(sct_image.rgb, sct_image.size), _file_name="get_current_round_failed.png")
-                    self.log("Saved screenshot of what was found")
+                log.warning("Found text '{}' does not match regex requirements".format(found_text))
+                self.save_file(data=mss.tools.to_png(sct_image.rgb, sct_image.size), _file_name="get_current_round_failed.png")
+                log.warning("Saved screenshot of what was found")
 
                 return None
-                    
-            
-
-
     
     def save_file(self, data=format(0, 'b'), _file_name="noname", folder="DEBUG", ):
         directory = Path(__file__).resolve().parent/folder

@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import mss
 import monitor
+from logger import logger as log
 
 #Generic function to see if something is present on the screen
 def find(path, confidence=0.9, return_cords=False, center_on_found=True):
@@ -10,8 +11,9 @@ def find(path, confidence=0.9, return_cords=False, center_on_found=True):
     try:
         if return_cords:
             cords = locate(path, confidence=confidence)
-            if self.DEBUG:
-                self.log(cords)
+            
+            log.debug(cords)
+
             if cords is not None:
                 left, top, width, height = cords
                 if center_on_found:

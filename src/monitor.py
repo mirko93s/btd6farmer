@@ -5,6 +5,8 @@ Handle for monitor related functions, such as
     - TODO: getting main monitor & resolution
 
 """
+from logger import logger as log
+
 
 
 def get_resolution() -> tuple[int, int]:
@@ -41,11 +43,10 @@ def scaling(pos_list, width, height, resolution_list):
     y = pos_list[1] * height
     x = x + padding() # Add's the pad to to the curent x position variable
 
-    if DEBUG:
-        log("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
+    log.debug("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
 
+    # Return the scaled position as tuple of ints
     return (int(x), int(y))
-    # return (x,y)
 
 
 def padding(width, height, resolutions_list):

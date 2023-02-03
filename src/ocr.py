@@ -4,12 +4,14 @@ import format
 import cv2
 import pytesseract
 
+
 def getTextFromImage(image):
     """ returns text from image """
     imageCandidate = format.formatImageOCR(image)
     # Write result to disk:
-    if DEBUG:
-        cv2.imwrite("./DEBUG/round.png", imageCandidate, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+    
+    # DEBUG log round to disk
+    #cv2.imwrite("./DEBUG/round.png", imageCandidate, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
     # NOTE: This part seems to be buggy
     # Get current round from screenshot with tesseract

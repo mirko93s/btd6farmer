@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 
-
 def formatImageOCR(originalScreenshot):
     screenshot = np.array(originalScreenshot, dtype=np.uint8)
     # Get local maximum:

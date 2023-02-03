@@ -1,7 +1,7 @@
 import keyboard
 import mouse
 from time import sleep
-from ..processing import monitor
+import monitor
 
 import static
 

@@ -6,7 +6,7 @@ from Bot import Bot
 from threading import Thread
 from Failsafe import FailSafe
 import mouse
-
+from logger import logger as log
 
 def main(arg_parser):
     def no_gameplan_exception():
@@ -43,14 +43,13 @@ def main(arg_parser):
     waiting_for_home = False
 
     while waiting_for_home is False:
-        if bot.DEBUG:
-            print("Waiting for loading screen..")
+        log.info("Waiting for loading screen..")
+
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_home = bot.home_menu_check()
 
     if bot.language_check() is False:
-        if bot.DEBUG:
-            bot.log("Setting game to english")
+        log.info("Setting game to english")
         bot.click("SETTINGS")
         bot.click("LANGUAGE")
         bot.click("ENGLISH")
@@ -60,7 +59,7 @@ def main(arg_parser):
     bot.hero_select()
 
     if bot.RESTART:
-        print("selecting map")
+        log.info("Selecting map")
         bot.select_map()
 
     # Make sure we haven't exited by using the stop key.
@@ -68,11 +67,12 @@ def main(arg_parser):
         bot.check_for_collection_crates()
 
         if not bot.RESTART:
-            print("selecting map")
+            log.info("Selecting map")
+            
             # Choose map
             bot.select_map()   
-
-        print("Game start")
+        log.info("Game start")
+        
 
         # main game loop
         bot.loop()

@@ -1,6 +1,15 @@
-class Static: 
-    # I wanna do something with this later, dont know what yet just doesnt feel right
+# Wrappers around static data
+class Heros:
     pass
+
+class Towers:
+    pass
+
+class Map:
+    pass
+
+
+
 
 button_positions = { # Creates a dictionary of all relative positions needed for monkeys
     "HOME_MENU_START"           : [ 0.438671875 , 0.8666666666666667 ],
