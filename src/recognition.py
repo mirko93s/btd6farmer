@@ -76,7 +76,6 @@ def locate_all(template_path, width, height, confidence=0.9, limit=100, region=N
         Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
     """
 
-
     monitor = {
         'top': 0, 
         'left': 0, 
