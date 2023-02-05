@@ -42,11 +42,12 @@ def main(arg_parser):
     # Wait for btd6 home screen
     waiting_for_home = False
 
+    log.info("Waiting for home screen..")
     while waiting_for_home is False:
-        log.info("Waiting for loading screen..")
 
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_home = bot.home_menu_check()
+    log.info("Home screen detected")
 
     if bot.language_check() is False:
         log.info("Setting game to english")

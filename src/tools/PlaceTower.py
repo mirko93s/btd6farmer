@@ -1,6 +1,7 @@
 import mouse
 import tkinter
 import static # Will be broken until static is imported
+# from .. import static
 import keyboard
 import os
 tk = tkinter.Tk()
