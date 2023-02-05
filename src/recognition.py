@@ -107,8 +107,9 @@ def locate_all(template_path, width, height, confidence=0.9, limit=100, region=N
         templateHeight, templateWidth = template.shape[:2]
 
         # scale template
+        # Could I use monitor.scale here?
         if width != 2560 or height != 1440:
-            template = cv2.resize(template, dsize=(int(templateWidth/(2560/self.width)), int(templateHeight/(1440/self.height))), interpolation=cv2.INTER_CUBIC)
+            template = cv2.resize(template, dsize=(int(templateWidth/(2560/width)), int(templateHeight/(1440/height))), interpolation=cv2.INTER_CUBIC)
 
         # Find all the matches
         # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
