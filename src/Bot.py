@@ -75,13 +75,7 @@ class Bot():
         self._image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
 
 
-        # Resolutions for for padding
-        self.reso_16 = [
-            { "width": 1280, "height": 720  },
-            { "width": 1920, "height": 1080 },
-            { "width": 2560, "height": 1440 },
-            { "width": 3840, "height": 2160 }
-        ]
+
         self.round_area = None
 
 

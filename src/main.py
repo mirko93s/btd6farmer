@@ -6,6 +6,7 @@ from Bot import Bot
 from threading import Thread
 from Failsafe import FailSafe
 import mouse
+import simulatedinput
 from logger import logger as log
 
 def main(arg_parser):
@@ -51,9 +52,9 @@ def main(arg_parser):
 
     if bot.language_check() is False:
         log.info("Setting game to english")
-        bot.click("SETTINGS")
-        bot.click("LANGUAGE")
-        bot.click("ENGLISH")
+        simulatedinput.click("SETTINGS")
+        simulatedinput.click("LANGUAGE")
+        simulatedinput.click("ENGLISH")
         bot.press_key("esc", timeout=0.5, amount=2)
 
     # Check for obyn

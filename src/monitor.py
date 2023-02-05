@@ -8,9 +8,30 @@ Handle for monitor related functions, such as
 from logger import logger as log
 
 
+ 
+import sys
+import ctypes
+import tkinter
+
+# Resolutions for for padding
+resolution_list = [
+    { "width": 1280, "height": 720  },
+    { "width": 1920, "height": 1080 },
+    { "width": 2560, "height": 1440 },
+    { "width": 3840, "height": 2160 }
+]
+
+
 
 def get_resolution() -> tuple[int, int]:
-    pass
+    try:
+        if sys.platform == "win32":
+            ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
+        tk = tkinter.Tk()
+        return tk.winfo_screenwidth(), tk.winfo_screenheight()
+    except Exception as e:
+        raise Exception("Could not retrieve monitor resolution")
+
 
 # Scaling functions for different resolutions support
 def scaling(pos_list, width, height, resolution_list):
