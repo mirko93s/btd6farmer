@@ -10,11 +10,7 @@ import static
 import tkinter
 from pathlib import Path
 
-import numpy as np
 import pytesseract
-import ocr
-import recognition
-import simulatedinput
 
 if sys.platform == "win32":
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -24,6 +20,12 @@ import mss
 
 import ctypes
 from collections import defaultdict
+
+# Local imports
+import ocr
+import recognition
+import simulatedinput
+import monitor
 from logger import logger as log
 
 # Definently fix this 
@@ -200,9 +202,9 @@ class Bot():
             # Check for finished or failed game
             if self.defeat_check():
                 
-                if self.DEBUG:
-                    print("Defeat detected on round {}; exiting level".format(current_round))
-                    self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
+                log.info("Defeat detected on round {}; exiting level".format(current_round))
+                self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
+
                 if self.RESTART:
                     self.restart_level(won=False)
                 else:
@@ -213,9 +215,10 @@ class Bot():
 
             elif self.victory_check():
 
-                if self.DEBUG:
-                    print("Victory detected; exiting level") 
-                    self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
+                log.info("Victory detected; exiting level")
+
+                self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
+
                 if self.RESTART:
                     self.restart_level(won=True)
                 else:
@@ -365,8 +368,7 @@ class Bot():
             
         elif instruction_type == "REMOVE_TOWER":
             self.remove_tower(instruction["ARGUMENTS"]["LOCATION"])
-            
-            self.debug("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
+            log.debug("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
         
         # Upgrade tower
         elif instruction_type == "UPGRADE_TOWER":
@@ -437,6 +439,7 @@ class Bot():
         self.game_start_time = time.time()
 
     def check_for_collection_crates(self):
+        # Reweite this
         if self.collection_event_check():
             log.debug("easter collection detected")
                 # take screenshot of loc and save it to the folder
@@ -551,46 +554,53 @@ class Bot():
             
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             still_loading = self.loading_screen_check()
-            
+
         log.debug("Out of loading screen, continuing..")
         
 
     def get_resource_dir(self, path):
         return Path(__file__).resolve().parent/path
 
+    def getRoundArea(self):
+        # Init round area dict with width and height of the round area
+        round_area = {
+            "width": 200,
+            "height": 42
+        }
+
+        area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
+        
+        # If it cant find anything
+        if area == None:
+            log.warning("Could not find round area, setting default values")
+            scaled_values = monitor.scaling([0.7083333333333333, 0.0277777777777778]) # Use default values, (1360,30) on 1080p
+
+            # left = x, top = y
+            round_area["left"] = scaled_values[0]
+            round_area["top"] = scaled_values[1]
+        else:
+            # set round area to the found area + offset
+            x, y, roundwidth, roundheight = area
+            
+            # Calculated offset do not touch
+            xOffset = (roundwidth + 55)
+            yOffset = (int(roundheight * 2) - 5)
+            
+            round_area["top"] = y + yOffset
+            round_area["left"] = x - xOffset
+        
+        return round_area
+
     def getRound(self):
         # Change to https://stackoverflow.com/questions/66334737/pytesseract-is-very-slow-for-real-time-ocr-any-way-to-optimise-my-code 
         # or https://www.reddit.com/r/learnpython/comments/kt5zzw/how_to_speed_up_pytesseract_ocr_processing/
 
-        # The screen part to capture
-
         # If round area is not located yet
         if self.round_area is None:
-    
-            self.round_area = defaultdict()
-            self.round_area["width"] = 200
-            self.round_area["height"] = 42
-
-            area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
-            
-            # If it cant find anything
-            if area == None:
-                log.warning("Could not find round area, setting default values")
-                scaled_values = self._scaling([0.7083333333333333, 0.0277777777777778]) # Use default values, (1360,30) on 1080p
-
-                # left = x
-                # top = y
-                self.round_area["left"] = scaled_values[0]
-                self.round_area["top"] = scaled_values[1]
-            else:
-                # set round area to the found area + offset
-                x, y, roundwidth, roundheight = area
-                
-                xOffset, yOffset = ((roundwidth + 55), int(roundheight * 2) - 5)
-                self.round_area["top"] = y + yOffset
-                self.round_area["left"] = x - xOffset
+            self.round_area = self.getRoundArea()
         
         # Setting up screen capture area
+        # The screen part to capture
         screenshot_dimensions = {
             'top': self.round_area["top"], 
             'left': self.round_area["left"], 
@@ -599,11 +609,9 @@ class Bot():
         }
 
         # Take Screenshot
-        with mss.mss() as sct:
-            sct_image = sct.grab(screenshot_dimensions)
-
-            
-            found_text = ocr.getTextFromImage(sct_image)
+        with mss.mss() as screenshotter:
+            screenshot = screenshotter.grab(screenshot_dimensions)
+            found_text = ocr.getTextFromImage(screenshot)
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
@@ -611,21 +619,25 @@ class Bot():
                 return int(found_text.group(0))
 
             else:
+                # If the found text does not match the regex requirements, Debug and save image
                 log.warning("Found text '{}' does not match regex requirements".format(found_text))
-                self.save_file(data=mss.tools.to_png(sct_image.rgb, sct_image.size), _file_name="get_current_round_failed.png")
-                log.warning("Saved screenshot of what was found")
+                
+                try:
+                    file_path =  Path(__file__).resolve().parent/ "get_current_round_failed.png"
+                    if not file_path.exists():
+                        Path.mkdir(file_path)
+
+                    with open(file_path/"get_currentRound_failed", "wb") as output_file:
+                        output_file.write(mss.tools.to_png(sct_image.rgb, sct_image.size))
+                    
+                    log.warning("Saved screenshot of what was found")
+
+                except Exception as e:
+                    log.error(e)
+                    log.warning("Could not save screenshot of what was found")
 
                 return None
     
-    def save_file(self, data=format(0, 'b'), _file_name="noname", folder="DEBUG", ):
-        directory = Path(__file__).resolve().parent/folder
-        
-        if not directory.exists():
-            Path.mkdir(directory)
-
-        with open(directory/_file_name, "wb") as output_file:
-            output_file.write(data)
-
     # Different methods for different checks all wraps over _find()
     # Can this be done better?
     def menu_check(self):
