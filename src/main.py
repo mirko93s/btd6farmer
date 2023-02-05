@@ -15,8 +15,8 @@ def main(arg_parser):
     args = vars(arg_parser.parse_args())
 
     # Retrives the gameplan from the command line and makes a Path object out of it
-    gameplan_path = (Path(__file__).resolve().parent / Path(args["path"]) )
-
+    gameplan_path = (Path(__file__).parent.parent.resolve() / Path(args["path"]) )
+    print(gameplan_path, Path(__file__).parent.parent.resolve())
     # Verify directory exist.
     if not gameplan_path.exists():
         print("No directory found at: " + str(gameplan_path))

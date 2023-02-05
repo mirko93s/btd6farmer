@@ -6,11 +6,11 @@ import monitor
 from logger import logger as log
 
 #Generic function to see if something is present on the screen
-def find(path, confidence=0.9, return_cords=False, center_on_found=True):
+def find(path, width, height, confidence=0.9, return_cords=False, center_on_found=True):
 
     try:
         if return_cords:
-            cords = locate(path, confidence=confidence)
+            cords = locate(path, width, height, confidence=confidence)
             
             log.debug(cords)
 
@@ -22,7 +22,7 @@ def find(path, confidence=0.9, return_cords=False, center_on_found=True):
                     return (left, top, width, height)
             else:
                 return None
-        return True if locate(path, confidence=confidence) is not None else False
+        return True if locate(path, width, height, confidence=confidence) is not None else False
 
     except Exception as e:
         raise Exception(e)

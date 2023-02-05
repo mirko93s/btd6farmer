@@ -14,6 +14,7 @@ import numpy as np
 import pytesseract
 import ocr
 import recognition
+import simulatedinput
 
 if sys.platform == "win32":
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -173,7 +174,7 @@ class Bot():
     def initilize(self):
         # if self.DEBUG:
         #     self.log("RUNNING IN DEBUG MODE, DEBUG FILES WILL BE GENERATED")
-        self.press_key("alt")
+        simulatedinput.send_key("alt")
 
 
     def loop(self):
@@ -232,17 +233,17 @@ class Bot():
                     cooldowns = static.hero_cooldowns[self.settings["HERO"]]
 
                     if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
-                        self.press_key("1")
+                        simulatedinput.send_key("1")
                         ability_one_timer = time.time()
                     
                     # skip if ezili or adora, their lvl 7 ability is useless
                     if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]) and (self.settings["HERO"] != "EZILI" and "ADORA"):
-                        self.press_key("2")
+                        simulatedinput.send_key("2")
                         ability_two_timer = time.time()
                     
                     if len(cooldowns) == 3:
                         if current_round >= 53 and self.abilityAvaliabe(ability_three_timer, cooldowns[2]):
-                            self.press_key("3")
+                            simulatedinput.send_key("3")
                             ability_three_timer = time.time()
 
                 # Check for round in game plan
@@ -267,7 +268,7 @@ class Bot():
         self.running = False
 
     def place_tower(self, tower_position, keybind):
-        self.press_key(keybind) # press keybind
+        simulatedinput.send_key(keybind) # press keybind
         self.click(tower_position) # click on decired location
 
 
@@ -281,15 +282,15 @@ class Bot():
         top, middle, bottom = upgrade_path
         
         for _ in range(top):
-            self.press_key("top")
+            simulatedinput.send_key("top")
 
         for _ in range(middle):
-            self.press_key("middle")
+            simulatedinput.send_key("middle")
 
         for _ in range(bottom):
-            self.press_key("bottom")
+            simulatedinput.send_key("bottom")
         
-        self.press_key("esc")
+        simulatedinput.send_key("esc")
 
     def change_target(self, tower_type, tower_position, targets: str | list, delay: int | float | list | tuple = 3):
         if not isinstance(targets, (tuple, list)):
@@ -313,7 +314,7 @@ class Bot():
         for i in targets:
 
             while current_target_index != target_order.index(i):
-                self.press_key("tab")
+                simulatedinput.send_key("tab")
                 current_target_index+=1
                 if current_target_index > 3:
                     current_target_index = 0
@@ -328,7 +329,7 @@ class Bot():
                 time.sleep(delay.pop(-1))
             
 
-        self.press_key("esc")
+        simulatedinput.send_key("esc")
 
     def set_static_target(self, tower_position, target_pos):
         self.click(tower_position)
@@ -338,12 +339,12 @@ class Bot():
 
         self.click(target_pos)
 
-        self.press_key("esc")
+        simulatedinput.send_key("esc")
 
     def remove_tower(self, position):
         self.click(position)
-        self.press_key("backspace")
-        self.press_key("esc")
+        simulatedinput.send_key("backspace")
+        simulatedinput.send_key("esc")
 
     def v1_handleInstruction(self, instruction):
         """
@@ -429,9 +430,9 @@ class Bot():
 
     def start_first_round(self):
         if self.fast_forward:
-            self.press_key("space", amount=2)
+            simulatedinput.send_key("space", amount=2)
         else:
-            self.press_key("space", amount=1)
+            simulatedinput.send_key("space", amount=1)
 
         self.game_start_time = time.time()
 
@@ -466,7 +467,7 @@ class Bot():
             time.sleep(1)
             self.click("EASTER_CONTINUE")
 
-            self.press_key("esc")
+            simulatedinput.send_key("esc")
             
     # select hero if not selected
     def hero_select(self):
@@ -476,7 +477,7 @@ class Bot():
             self.click("HERO_SELECT")
             self.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
             self.click("CONFIRM_HERO")
-            self.press_key("esc")
+            simulatedinput.send_key("esc")
 
     def exit_level(self, won=True):
         if won:
@@ -499,7 +500,7 @@ class Bot():
             self.click("FREEPLAY")
             self.click("OK_MIDDLE")
             time.sleep(1)
-            self.press_key("esc")
+            simulatedinput.send_key("esc")
             time.sleep(1)
             self.click("RESTART_WIN")
             self.click("RESTART_CONFIRM")
@@ -538,7 +539,7 @@ class Bot():
         # Only need to press confirm button if we play chimps or impoppable
         confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH"]
         if self.settings["GAMEMODE"] in confirm_list:
-            self.press_key("esc", timeout=1)
+            simulatedinput.send_key("esc", timeout=1)
             # self.click(self.settings["DIFFICULTY"])
             # self.click("CONFIRM_CHIMPS")
     
