@@ -546,11 +546,14 @@ class Bot():
     def wait_for_loading(self):
         still_loading = True
 
+        log.debug("Waiting for loading screen..")
         while still_loading:
-            log.debug("Waiting for loading screen..")
             
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             still_loading = self.loading_screen_check()
+            
+        log.debug("Out of loading screen, continuing..")
+        
 
     def get_resource_dir(self, path):
         return Path(__file__).resolve().parent/path
