@@ -8,9 +8,6 @@ class Towers:
 class Map:
     pass
 
-
-
-
 button_positions = { # Creates a dictionary of all relative positions needed for monkeys
     "HOME_MENU_START"           : [ 0.438671875 , 0.8666666666666667 ],
     "EXPERT_SELECTION"          : [ 0.69453125 , 0.9055555555555556 ],
