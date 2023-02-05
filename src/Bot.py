@@ -12,7 +12,8 @@ from pathlib import Path
 
 import numpy as np
 import pytesseract
-import processing
+import ocr
+import recognition
 
 if sys.platform == "win32":
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -598,7 +599,7 @@ class Bot():
             sct_image = sct.grab(screenshot_dimensions)
 
             
-            found_text = processing.getTextFromImage(sct_image)
+            found_text = ocr.getTextFromImage(sct_image)
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
@@ -624,45 +625,45 @@ class Bot():
     # Different methods for different checks all wraps over _find()
     # Can this be done better?
     def menu_check(self):
-        return processing.find( self._image_path("menu"), self.width, self.height )
+        return recognition.find( self._image_path("menu"), self.width, self.height )
 
     def insta_monkey_check(self):
-        return processing.find( self._image_path("instamonkey"), self.width, self.height )
+        return recognition.find( self._image_path("instamonkey"), self.width, self.height )
 
     def monkey_knowledge_check(self):
-        return processing.find( self._image_path("monkey_knowledge"), self.width, self.height )
+        return recognition.find( self._image_path("monkey_knowledge"), self.width, self.height )
 
     def victory_check(self):
-        return processing.find( self._image_path("victory"), self.width, self.height )
+        return recognition.find( self._image_path("victory"), self.width, self.height )
 
     def defeat_check(self):
-        return processing.find( self._image_path("defeat"), self.width, self.height )
+        return recognition.find( self._image_path("defeat"), self.width, self.height )
 
     def levelup_check(self):
-        return processing.find( self._image_path("levelup"), self.width, self.height )
+        return recognition.find( self._image_path("levelup"), self.width, self.height )
 
     def hero_check(self, heroString):
-        return processing.find( self._image_path(heroString), self.width, self.height ) or \
-                processing.find( self._image_path(f"{heroString}_2" , self.width, self.height) ) or \
-                processing.find( self._image_path(f"{heroString}_3" , self.width, self.height) )
+        return recognition.find( self._image_path(heroString), self.width, self.height ) or \
+                recognition.find( self._image_path(f"{heroString}_2" , self.width, self.height) ) or \
+                recognition.find( self._image_path(f"{heroString}_3" , self.width, self.height) )
 
     def loading_screen_check(self):
-        return processing.find( self._image_path("loading_screen"), self.width, self.height )
+        return recognition.find( self._image_path("loading_screen"), self.width, self.height )
 
     def home_menu_check(self):
-        return processing.find( self._image_path("play"), self.width, self.height )
+        return recognition.find( self._image_path("play"), self.width, self.height )
 
     def language_check(self):
-        return processing.find( self._image_path("english"), self.width, self.height )
+        return recognition.find( self._image_path("english"), self.width, self.height )
 
     def collection_event_check(self):
-        return processing.find(self._image_path("diamond_case"), self.width, self.height )
+        return recognition.find(self._image_path("diamond_case"), self.width, self.height )
 
     def locate_static_target_button(self):
-        return processing.find(self._image_path("set_target_button"), self.width, self.height, return_cords=True)
+        return recognition.find(self._image_path("set_target_button"), self.width, self.height, return_cords=True)
     
     def locate_round_area(self):
-        return processing.find(self._image_path("round_area"), self.width, self.height, return_cords=True, center_on_found=False)
+        return recognition.find(self._image_path("round_area"), self.width, self.height, return_cords=True, center_on_found=False)
 
 
     
