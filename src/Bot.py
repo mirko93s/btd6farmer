@@ -642,9 +642,18 @@ class Bot():
                     log.warning("Could not save screenshot of what was found")
 
                 return None
-    
+
+    # Generic function to check for images on screen    
+    def checkFor(self, images: list[str], **kwargs) -> bool:
+        if isinstance(images, list):
+            output = []
+            for image_string in images:
+                output.append(recognition.find(self.image_path(image_string)))
+            return any(output)
+        else:
+            return recognition.find(self.image_path(image_string), **kwargs)
+
     # Different methods for different checks all wraps over _find()
-    # Can this be done better?
     def menu_check(self):
         return recognition.find( self.image_path("menu"))
 
