@@ -14,5 +14,5 @@ logger.basicConfig(filename=LogsDirectory/Path('Bot.log'), format='%(asctime)s -
 
 if __name__ == "__main__":
     logger.warning("test")
-    logger.warning("test2")
-    logger.warning("test3")
+    logger.warning("test 2")
+    logger.warning("test 3")
