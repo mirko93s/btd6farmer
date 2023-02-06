@@ -26,7 +26,6 @@ from logger import logger as log
 class Bot():
     def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False):
         # wtf fix this
-        instruction_path=Path.cwd()/"Instructions"/"Dark_Castle_Hard_Standard"
         game_plan_filename="instructions.json"
         game_settings_filename="setup.json"
         self.settings = self._load_json(instruction_path / game_settings_filename)
