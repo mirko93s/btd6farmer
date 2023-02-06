@@ -50,7 +50,7 @@ _______    ___      .______      .___  ___.  _______ .______
 |   __|  /  /_\  \   |      /     |  |\/|  | |   __|  |      /     
 |  |    /  _____  \  |  |\  \----.|  |  |  | |  |____ |  |\  \----.
 |__|   /__/     \__\ | _| `._____||__|  |__| |_______|| _| `._____|
-Join the discord: https://discord.com/invite/qyKT6bzqZQ
+Join the discord: https://discord.gg/qyKT6bzqZQ
 """)
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
