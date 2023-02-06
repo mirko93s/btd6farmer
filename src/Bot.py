@@ -99,10 +99,10 @@ class Bot():
                     data = json.loads(str_file)
                 # Catch if file format is invalid for json (eg empty file)
                 except json.decoder.JSONDecodeError:
-                    print("invalid stats file")
+                    log.error("invalid stats file while logging stats")
         # Catch if the file does not exist
         except IOError:
-            print("file does not exist")
+            log.error("stats file does not exist")
 
 
         if did_win:
@@ -170,7 +170,6 @@ class Bot():
 
         # main ingame loop
         while not finished:
-            print("Looping")
             # Check for levelup or insta monkey (level 100)
             if self.levelup_check() or self.insta_monkey_check():
                 simulatedinput.click(middle_of_screen, amount=3)
@@ -235,7 +234,7 @@ class Bot():
                         if not "DONE" in instruction:
 
                             if self._game_plan_version == "1":
-                                print(instruction)
+                                # print(instruction)
                                 self.v1_handleInstruction(instruction)
                                 
                             else:
@@ -547,8 +546,8 @@ class Bot():
         }
 
         area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
-        print("this should be only printed once")
-        print(area)
+        log.debug("this should be only printed once, getting round area")
+        log.debug(f"Round area found at {area}, applying offsetts")
         
         if area:
             log.info("Found round area!")
@@ -600,6 +599,8 @@ class Bot():
             def get_valid_filename(s):
                 s = str(s).strip().replace(' ', '_')
                 return re.sub(r'(?u)[^-\w.]', '', s)
+            
+            # if self.DEBUG:
             cv2.imwrite(f"./DEBUG/OCT_DONE_FOUND_{get_valid_filename(found_text)}_{str(time.time())}.png", _ocrImage, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
             # Get only the first number/group so we don't need to replace anything in the string
