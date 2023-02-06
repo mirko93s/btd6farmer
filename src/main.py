@@ -112,9 +112,8 @@ if __name__ == "__main__":
 
     parser.add_argument('-p', '--path', '--gameplan_path', type=str, help='Path to the gameplan directory', required=True)
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug mode')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode (not done)')
     parser.add_argument('-r', '--restart', action='store_true', help='automatically restarts the game when finished, instead of going to home screen')
-    parser.add_argument('-s', '--sandbox', action='store_true', help='Try put gameplan in sandbox mode without waiting for specific rounds (not done)')
+    parser.add_argument('-s', '--sandbox', action='store_true', help='Try put gameplan in sandbox mode without waiting for specific rounds')
     
     # Start the bot on a seperate thread
     bot_thread = Thread(target=main, args=(parser,), daemon=True)

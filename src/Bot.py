@@ -30,7 +30,6 @@ class Bot():
     def __init__(self, 
         instruction_path, 
         debug_mode=False, 
-        verbose_mode=False, 
         restart_mode=False, 
         sandbox_mode=False,
         game_plan_filename="instructions.json",
@@ -52,7 +51,6 @@ class Bot():
         self.round_area = None
         
         self.DEBUG = debug_mode
-        self.VERBOSE = verbose_mode
         self.RESTART = restart_mode
         self.SANDBOX = sandbox_mode
 
