@@ -543,27 +543,33 @@ class Bot():
         }
 
         area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
+        print("this should be only printed once")
+        print(area)
         
-        # If it cant find anything
-        if area == None:
-            log.warning("Could not find round area, setting default values")
-            scaled_values = monitor.scaling([0.7083333333333333, 0.0277777777777778]) # Use default values, (1360,30) on 1080p
+        if area:
+            log.info("Found round area!")
 
-            # left = x, top = y
-            round_area["left"] = scaled_values[0]
-            round_area["top"] = scaled_values[1]
-        else:
             # set round area to the found area + offset
             x, y, roundwidth, roundheight = area
             
             # Calculated offset do not touch
-            xOffset = (roundwidth + 55)
-            yOffset = (int(roundheight * 2) - 5)
-            
+            xOffset = (roundwidth + 10)
+            yOffset = (int(roundheight * 2) - 7)
+
             round_area["top"] = y + yOffset
             round_area["left"] = x - xOffset
-        
+
+            return round_area
+
+        # If it cant find anything
+        log.warning("Could not find round area, setting default values")
+        default_round_area_scaled = monitor.scaling([0.7083333333333333, 0.0277777777777778]) # Use default values, (1360,30) on 1080p
+
+        # left = x, top = y
+        round_area["left"] = default_round_area_scaled[0]
+        round_area["top"] = default_round_area_scaled[1]
         return round_area
+    
 
     def getRound(self):
 
@@ -602,7 +608,7 @@ class Bot():
                     if not file_path.exists():
                         Path.mkdir(file_path)
 
-                    with open(file_path/f"{str(time.time())}.png", "wb") as output_file:
+                    with open(file_path/f"GETROUND_IMAGE_{str(time.time())}.png", "wb") as output_file:
                         output_file.write(mss.tools.to_png(screenshot.rgb, screenshot.size))
                     
                     log.warning("Saved screenshot of what was found")
@@ -654,7 +660,7 @@ class Bot():
         return recognition.find(self._image_path("set_target_button"), return_cords=True)
     
     def locate_round_area(self):
-        return recognition.find(self._image_path("round_area"), return_cords=True, center_on_found=False)
+        return recognition.find(self._image_path("round"), return_cords=True, center_on_found=False)
 
 
 if __name__ == "__main__":
