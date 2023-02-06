@@ -11,6 +11,10 @@ from pathlib import Path
 import re
 import mss
 
+# 
+import cv2
+import time
+
 # Local imports
 import ocr
 import recognition
@@ -591,20 +595,21 @@ class Bot():
         # Take Screenshot
         with mss.mss() as screenshotter:
             screenshot = screenshotter.grab(screenshot_dimensions)
-            found_text = ocr.getTextFromImage(screenshot)
+            found_text, _ = ocr.getTextFromImage(screenshot)
             print(found_text)
+            cv2.imwrite(f"./DEBUG/OCT_DONE_FOUND_{found_text}{str(time.time())}.png", _, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
                 found_text = re.search(r"(\d+)", found_text)
                 return int(found_text.group(0))
 
+
             else:
                 # If the found text does not match the regex requirements, Debug and save image
                 log.warning("Found text '{}' does not match regex requirements".format(found_text))
                 
                 try:
-                    import time
                     file_path =  Path(__file__).resolve().parent.parent/ "DEBUG"
                     if not file_path.exists():
                         Path.mkdir(file_path)

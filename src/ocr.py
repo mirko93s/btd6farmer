@@ -69,9 +69,6 @@ def formatImageOCR(originalScreenshot):
             cv2.floodFill(final_image, mask=None, seedPoint=(int(fx), int(fy)), newVal=(0))
             # cv2.imwrite(f"./DEBUG/OCR_FLOOD_{i}_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
-    
-
-    cv2.imwrite(f"./DEBUG/OCR_FORMAT_DONE_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
     return final_image
 
 
@@ -89,5 +86,5 @@ def getTextFromImage(image):
 
     # NOTE: This part seems to be buggy
     # Get current round from screenshot with tesseract
-    return pytesseract.image_to_string(imageCandidate,  config='--psm 7').replace("\n", "")
+    return pytesseract.image_to_string(imageCandidate,  config='--psm 7').replace("\n", ""), imageCandidate
 
