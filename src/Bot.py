@@ -541,12 +541,8 @@ class Bot():
         # Only need to press confirm button if we play chimps or impoppable
         confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH", ]
         if self.settings["GAMEMODE"] in confirm_list and not self.SANDBOX:
-            print("confirm")
             simulatedinput.send_key("esc", timeout=1)
-            # simulatedinput.click(self.settings["DIFFICULTY"])
-            # simulatedinput.click("CONFIRM_CHIMPS")
         if self.SANDBOX:
-            print("sandbox mode hide popup")
             simulatedinput.send_key("esc", timeout=2)
 
     
