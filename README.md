@@ -9,7 +9,7 @@ Join the [Discord](https://discord.gg/qyKT6bzqZQ) for support, updates and shari
 
 Feel free to make a pull request if you have any improvements or create a issue if something isn't working correctly! 
 
-## Table Of Contents
+## Table Of Contents (TODO)
 - [Dependencies](#dependenices) 
 - [Installation](#installation)
 - [Running the bot](#running)
@@ -61,8 +61,6 @@ The python library requirments can be installed using `python -m pip install -r 
 2. Run main.py in the command line with `py <location of script>/main.py --path <directory to gameplan>` or start `run.bat` to run with the default settings and gameplan.
 3. Navigate to the homescreen of BTD 6.
 
-**_note: make sure that you use the english version of the game, as the bot needs the english text to work properly._**
-
 ### Bot Launch options
 ```
 >> py main.py --help
@@ -71,9 +69,8 @@ options:
   -p PATH, --path PATH, --gameplan_path PATH
                         Path to the gameplan directory
   -d, --debug           Enable debug mode
-  -v, --verbose         Enable verbose mode (not done)
   -r, --restart         automatically restarts the game when finished, instead of going to home screen
-  -s, --sandbox         Try put gameplan in sandbox mode without waiting for specific rounds (not done)
+  -s, --sandbox         Try put gameplan in sandbox mode without waiting for specific rounds
 ```
 
 <a name="gameplans"/>
