@@ -15,6 +15,8 @@ import mss
 import cv2
 import time
 
+
+import sys
 # Local imports
 import ocr
 import recognition
@@ -24,7 +26,7 @@ from logger import logger as log
 
 # Definently fix this 
 class Bot():
-    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False):
+    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False, sandbox_mode=False):
         # wtf fix this
         game_plan_filename="instructions.json"
         game_settings_filename="setup.json"
@@ -41,6 +43,7 @@ class Bot():
         self.DEBUG = debug_mode
         self.VERBOSE = verbose_mode
         self.RESTART = restart_mode
+        self.SANDBOX = sandbox_mode
         self.game_start_time = time.time()
         self.fast_forward = True
 
@@ -151,8 +154,8 @@ class Bot():
 
 
     def initilize(self):
-        # if self.DEBUG:
-        #     self.log("RUNNING IN DEBUG MODE, DEBUG FILES WILL BE GENERATED")
+        if self.DEBUG:
+            log.debug("RUNNING IN DEBUG MODE, DEBUG FILES WILL BE GENERATED")
         simulatedinput.send_key("alt")
 
 
@@ -166,6 +169,22 @@ class Bot():
         finished = False
 
         middle_of_screen = (0.5, 0.5)
+
+        if self.SANDBOX:
+            print("Sandbox mode started")
+            for instructionGroup in self.game_plan.keys():
+                for instruction in self.game_plan.get(instructionGroup):
+                    if self._game_plan_version == "1":
+                        # print(instruction)
+                        self.v1_handleInstruction(instruction)
+                        
+                    else:
+                        raise Exception("Game plan version {} not supported".format(self._game_plan_version))
+            
+            print("Sandbox mode finished")
+            
+            self.running = False
+            return
 
         # main ingame loop
         while not finished:
@@ -313,8 +332,7 @@ class Bot():
     def set_static_target(self, tower_position, target_pos):
         simulatedinput.click(tower_position)
         
-        target_button = self.locate_static_target_button()
-        simulatedinput.click(target_button)
+        simulatedinput.send_key("tab")
 
         simulatedinput.click(target_pos)
 
@@ -509,18 +527,28 @@ class Bot():
         simulatedinput.click("RIGHT_ARROW_SELECTION", amount=(map_page - 1), timeout=0.1)
 
         simulatedinput.click("MAP_INDEX_" + str(map_index)) # Click correct map
-        simulatedinput.click(self.settings["DIFFICULTY"]) # Select Difficulty
-        simulatedinput.click(self.settings["GAMEMODE"]) # Select Gamemode
-        simulatedinput.click("OVERWRITE_SAVE")
+
+        if self.SANDBOX:
+            simulatedinput.click("EASY_MODE") # Select Difficulty
+            simulatedinput.click("SANDBOX_EASY") # Select Gamemode
+        else:
+            simulatedinput.click(self.settings["DIFFICULTY"]) # Select Difficulty
+            simulatedinput.click(self.settings["GAMEMODE"]) # Select Gamemode
+
+            simulatedinput.click("OVERWRITE_SAVE")
 
         self.wait_for_loading() # wait for loading screen
-
         # Only need to press confirm button if we play chimps or impoppable
-        confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH"]
-        if self.settings["GAMEMODE"] in confirm_list:
+        confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH", ]
+        if self.settings["GAMEMODE"] in confirm_list and not self.SANDBOX:
+            print("confirm")
             simulatedinput.send_key("esc", timeout=1)
             # simulatedinput.click(self.settings["DIFFICULTY"])
             # simulatedinput.click("CONFIRM_CHIMPS")
+        if self.SANDBOX:
+            print("sandbox mode hide popup")
+            simulatedinput.send_key("esc", timeout=2)
+
     
     def wait_for_loading(self):
         still_loading = True
@@ -665,9 +693,6 @@ class Bot():
     def collection_event_check(self):
         return recognition.find(self._image_path("diamond_case"))
 
-    def locate_static_target_button(self):
-        return recognition.find(self._image_path("set_target_button"), return_cords=True)
-    
     def locate_round_area(self):
         return recognition.find(self._image_path("round"), return_cords=True, center_on_found=False)
 
