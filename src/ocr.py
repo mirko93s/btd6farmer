@@ -5,6 +5,7 @@ import pytesseract
 import numpy as np
 import cv2
 import sys
+import time
 
 if sys.platform == "win32":
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -29,6 +30,8 @@ def formatImageOCR(originalScreenshot):
     grayscaleImage = cv2.resize(grayscaleImage,(0,0), fx=3.0, fy=3.0)
     # Get binary image via Otsu:
     _, final_image = cv2.threshold(grayscaleImage, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    cv2.imwrite(f"./DEBUG/OCR_FORMAT_BINARY_IMAGE_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+
     # Set kernel (structuring element) size:
     kernelSize = 3
     # Set morph operation iterations:
@@ -37,6 +40,8 @@ def formatImageOCR(originalScreenshot):
     morphKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernelSize, kernelSize))
     # Perform closing:
     final_image = cv2.morphologyEx( final_image, cv2.MORPH_CLOSE, morphKernel, None, None, opIterations, cv2.BORDER_REFLECT101 )
+    cv2.imwrite(f"./DEBUG/OCR_FORMAT_BEFORE_FLOOD_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+
     # Flood fill (white + black):
     cv2.floodFill(final_image, mask=None, seedPoint=(int(0), int(0)), newVal=(255))
     # Invert image so target blobs are colored in white:
@@ -62,10 +67,11 @@ def formatImageOCR(originalScreenshot):
             fy = rectY + 0.5 * rectHeight
             # Fill the hole:
             cv2.floodFill(final_image, mask=None, seedPoint=(int(fx), int(fy)), newVal=(0))
+            cv2.imwrite(f"./DEBUG/OCR_FLOOD_{i}_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+
     
 
-    import time
-    cv2.imwrite(f"./DEBUG/OCR_FORMAT_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+    cv2.imwrite(f"./DEBUG/OCR_FORMAT_DONE_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
     return final_image
 
 

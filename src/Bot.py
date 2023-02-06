@@ -552,9 +552,10 @@ class Bot():
             # set round area to the found area + offset
             x, y, roundwidth, roundheight = area
             
-            # Calculated offset do not touch
-            xOffset = (roundwidth + 10)
-            yOffset = (int(roundheight * 2) - 7)
+            # Fiddled offset, do not tuch
+            # Offset from ROUND text to round number
+            xOffset = roundwidth + 10
+            yOffset = int(roundheight * 3) - 40
 
             round_area["top"] = y + yOffset
             round_area["left"] = x - xOffset
@@ -584,7 +585,7 @@ class Bot():
             'top': self.round_area["top"], 
             'left': self.round_area["left"], 
             'width': self.round_area["width"], 
-            'height': self.round_area["height"]
+            'height': self.round_area["height"] + 50
         }
 
         # Take Screenshot
