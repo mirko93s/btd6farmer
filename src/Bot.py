@@ -618,20 +618,17 @@ class Bot():
         with mss.mss() as screenshotter:
             screenshot = screenshotter.grab(screenshot_dimensions)
             found_text, _ocrImage = ocr.getTextFromImage(screenshot)
-            #print(found_text)
-            def get_valid_filename(s):
-                s = str(s).strip().replace(' ', '_')
-                return re.sub(r'(?u)[^-\w.]', '', s)
             
-            # if self.DEBUG:
-            cv2.imwrite(f"./DEBUG/OCT_DONE_FOUND_{get_valid_filename(found_text)}_{str(time.time())}.png", _ocrImage, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+            if self.DEBUG:
+                def get_valid_filename(s):
+                    s = str(s).strip().replace(' ', '_')
+                    return re.sub(r'(?u)[^-\w.]', '', s)
+                cv2.imwrite(f"./DEBUG/OCR_DONE_FOUND_{get_valid_filename(found_text)}_{str(time.time())}.png", _ocrImage, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
                 found_text = re.search(r"(\d+)", found_text)
                 return int(found_text.group(0))
-
-
             else:
                 # If the found text does not match the regex requirements, Debug and save image
                 log.warning("Found text '{}' does not match regex requirements".format(found_text))
