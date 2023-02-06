@@ -202,7 +202,6 @@ upgrade_keybinds = {
     "top" : ",",
     "middle" : ".",
     "bottom" : "/"
-
 }
 
 # Index, regular targets, spike factory targets
