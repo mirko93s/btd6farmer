@@ -50,7 +50,6 @@ def scaling(pos_list):
     """
 
     reso_21 = False
-    # Does this even do anything?
     # What does it even do?
     for x in resolution_list: 
         if height == x['height']:
