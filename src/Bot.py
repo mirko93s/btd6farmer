@@ -166,7 +166,7 @@ class Bot():
 
         # main ingame loop
         while not finished:
-
+            print("Looping")
             # Check for levelup or insta monkey (level 100)
             if self.levelup_check() or self.insta_monkey_check():
                 simulatedinput.click(middle_of_screen, amount=3)
@@ -239,7 +239,7 @@ class Bot():
 
                             instruction["DONE"] = True
 
-                            log.debug("Current round", current_round) # Only print current round once
+                            log.debug(f"Current round {current_round}") # Only print current round once
 
     def exit_bot(self): 
         self.running = False
@@ -338,11 +338,11 @@ class Bot():
 
             self.place_tower(position, keybind)
 
-            log.debug("Tower placed:", tower)
+            log.debug(f"Tower placed: {tower}")
             
         elif instruction_type == "REMOVE_TOWER":
             self.remove_tower(instruction["ARGUMENTS"]["LOCATION"])
-            log.debug("Tower removed on:", instruction["ARGUMENTS"]["LOCATION"])
+            log.debug(f"Tower removed on: {instruction['ARGUMENTS']['LOCATION']}")
         
         # Upgrade tower
         elif instruction_type == "UPGRADE_TOWER":
@@ -351,7 +351,7 @@ class Bot():
 
             self.upgrade_tower(position, upgrade_path)
 
-            log.debug("Tower upgraded at position:", instruction["ARGUMENTS"]["LOCATION"], "with the upgrade path:", instruction["ARGUMENTS"]["UPGRADE_PATH"])
+            log.debug(f"Tower upgraded at position: {instruction['ARGUMENTS']['LOCATION']} with the upgrade path {instruction['ARGUMENTS']['UPGRADE_PATH']}")
         
         # Change tower target
         elif instruction_type == "CHANGE_TARGET":
@@ -386,7 +386,7 @@ class Bot():
         elif instruction_type == "WAIT":
             time.sleep(instruction["ARGUMENTS"]["TIME"])
 
-            log.debug("Waiting for ", instruction["ARGUMENTS"]["TIME"], "second(s)")
+            log.debug(f"Waiting for {instruction['ARGUMENTS']['TIME']} second(s)")
         
         else:
             # Maybe raise exception or just ignore?
