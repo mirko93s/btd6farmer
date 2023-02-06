@@ -17,7 +17,9 @@ def formatImageOCR(originalScreenshot):
     maxKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernelSize, kernelSize))
     localMax = cv2.morphologyEx(screenshot, cv2.MORPH_CLOSE, maxKernel, None, None, 1, cv2.BORDER_REFLECT101)
     # Perform gain division
+    # print(screenshot, localMax)
     gainDivision = np.where(localMax == 0, 0, (screenshot / localMax))
+    
     # Clip the values to [0,255]
     gainDivision = np.clip((255 * gainDivision), 0, 255)
     # Convert the mat type from float to uint8:
@@ -74,8 +76,8 @@ def getTextFromImage(image):
     # Write result to disk:
     
     # DEBUG log round to disk
-    import time
-    cv2.imwrite(f"./DEBUG/{str(time.time())}.png", imageCandidate, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+    # import time
+    # cv2.imwrite(f"./DEBUG/{str(time.time())}.png", imageCandidate, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
     # NOTE: This part seems to be buggy
     # Get current round from screenshot with tesseract

@@ -585,6 +585,7 @@ class Bot():
         with mss.mss() as screenshotter:
             screenshot = screenshotter.grab(screenshot_dimensions)
             found_text = ocr.getTextFromImage(screenshot)
+            print(found_text)
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
@@ -596,11 +597,12 @@ class Bot():
                 log.warning("Found text '{}' does not match regex requirements".format(found_text))
                 
                 try:
-                    file_path =  Path(__file__).resolve().parent/ "get_current_round_failed.png"
+                    import time
+                    file_path =  Path(__file__).resolve().parent.parent/ "DEBUG"
                     if not file_path.exists():
                         Path.mkdir(file_path)
 
-                    with open(file_path/"get_currentRound_failed", "wb") as output_file:
+                    with open(file_path/f"{str(time.time())}.png", "wb") as output_file:
                         output_file.write(mss.tools.to_png(screenshot.rgb, screenshot.size))
                     
                     log.warning("Saved screenshot of what was found")
@@ -655,4 +657,8 @@ class Bot():
         return recognition.find(self._image_path("round_area"), return_cords=True, center_on_found=False)
 
 
-    
+if __name__ == "__main__":
+    import time
+    time.sleep(2)
+    bot = Bot(instruction_path="")
+    print(bot.getRound())

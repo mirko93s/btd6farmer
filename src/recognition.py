@@ -12,7 +12,7 @@ def find(path, confidence=0.9, return_cords=False, center_on_found=True):
         if return_cords:
             cords = locate(path, confidence=confidence)
             
-            log.debug(cords)
+            log.debug("Found cords: " + str(cords))
 
             if cords is not None:
                 left, top, width, height = cords
@@ -92,6 +92,8 @@ def locate_all(template_path, confidence=0.9, limit=100, region=None):
         img = np.array(screenshotter.grab(screenshotArea))
         screenshot = load_image(img) 
         import time
+        cv2.imwrite(f"./DEBUG/LOCATE_ALL{str(time.time())}.png", screenshot, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+
         if region:
             screenshot = screenshot[region[1]:region[1]+region[3],
                                     region[0]:region[0]+region[2]
@@ -109,13 +111,17 @@ def locate_all(template_path, confidence=0.9, limit=100, region=None):
         # scale template
         # Could I use monitor.scale here? Why is is scaling?
         if monitor.width != 2560 or monitor.height != 1440:
+            print("Template scaling to monitor resolution")
             template = cv2.resize(template, dsize=(int(templateWidth/(2560/monitor.width)), int(templateHeight/(1440/monitor.height))), interpolation=cv2.INTER_CUBIC)
-
+        
         # Find all the matches
         # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
         result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)    # heatmap of the template and the screenshot"
+        cv2.imwrite(f"./DEBUG/LOCATE_ALL_RESULT{str(time.time())}.png", result, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+
         match_indices = np.arange(result.size)[(result > confidence).flatten()]
         matches = np.unravel_index(match_indices[:limit], result.shape)
+        print("matches:", matches)
         
         # Defining the coordinates of the matched region
         matchesX = matches[1] * 1 + region[0]
