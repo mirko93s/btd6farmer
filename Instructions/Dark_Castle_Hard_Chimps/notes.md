@@ -18,4 +18,6 @@
 
 ...and 1 insta-monkey!
 
+# Credits to : Tanttinen#4001
+
 *Note: The strat that is being used has RNG because of the Alchemist, so the results may differ to you from what I got*
