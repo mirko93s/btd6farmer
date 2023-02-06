@@ -10,6 +10,8 @@ import simulatedinput
 from logger import logger as log
 
 def main(arg_parser):
+
+
     def no_gameplan_exception():
         raise Exception("No valid argument for directory.. 'python main.py --gameplan_path <directory to gameplan>'")
 
@@ -32,7 +34,21 @@ def main(arg_parser):
             verbose_mode=(args['verbose']), 
             restart_mode=(args['restart'])
         )
-        
+    print("""
+.______   .___________. _______    __                              
+|   _  \  |           ||       \  / /                              
+|  |_)  | `---|  |----`|  .--.  |/ /_                              
+|   _  <      |  |     |  |  |  | '_ \                             
+|  |_)  |     |  |     |  '--'  | (_) |                            
+|______/      |__|     |_______/ \___/                             
+_______    ___      .______      .___  ___.  _______ .______      
+|   ____|  /   \     |   _  \     |   \/   | |   ____||   _  \     
+|  |__    /  ^  \    |  |_)  |    |  \  /  | |  |__   |  |_)  |    
+|   __|  /  /_\  \   |      /     |  |\/|  | |   __|  |      /     
+|  |    /  _____  \  |  |\  \----.|  |  |  | |  |____ |  |\  \----.
+|__|   /__/     \__\ | _| `._____||__|  |__| |_______|| _| `._____|
+
+    """)
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
     
@@ -49,7 +65,7 @@ def main(arg_parser):
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_home = bot.home_menu_check()
     log.info("Home screen detected")
-
+    print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")
     if bot.language_check() is False:
         log.info("Setting game to english")
         simulatedinput.click("SETTINGS")
