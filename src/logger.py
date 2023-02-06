@@ -10,7 +10,7 @@ if not LogsDirectory.exists():
 import logging
 
 logger = logging
-logger.basicConfig(filename=LogsDirectory/Path('Bot.log'), format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger.basicConfig(filename=LogsDirectory/Path('Bot.log'), format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
 if __name__ == "__main__":
     logger.warning("test")
