@@ -546,9 +546,7 @@ class Bot():
         self.wait_for_loading() # wait for loading screen
         # Only need to press confirm button if we play chimps or impoppable
         confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH", ]
-        if self.settings["GAMEMODE"] in confirm_list and not self.SANDBOX:
-            simulatedinput.send_key("esc", timeout=1)
-        if self.SANDBOX:
+        if self.settings["GAMEMODE"] in confirm_list or self.SANDBOX:
             simulatedinput.send_key("esc", timeout=2)
 
     
