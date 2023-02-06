@@ -44,7 +44,7 @@ pytesseract==0.3.9
 <a name="installation"/>
 
 ## Installation of dependencies:
-The script relies on tesseract which can be installed using this [this](https://github.com/UB-Mannheim/tesseract/wiki) guide. 
+The script relies on tesseract (tested with v5.3.0) which can be installed using this [this](https://github.com/UB-Mannheim/tesseract/wiki) guide. 
 (*If by any chance the tesseract installation directory is different from the directory specified in Bot.py you need to manually change that in the script. Otherwise the bot will not work!*)
 
 default path (all users tesseract installation):
