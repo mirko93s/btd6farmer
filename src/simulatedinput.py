@@ -12,6 +12,8 @@ def send_key( keybind, timeout=0.1, amount=1):
 
     # Check if keybind is a nick for a keybind in static otherwise use the keybind as is
     keybind = static.tower_keybinds.get(keybind, keybind)
+    keybind = static.upgrade_keybinds.get(keybind, keybind) # cool stacking will pass the last value to next dictionary
+
     
     for _ in range(amount):
         keyboard.send(keybind)
