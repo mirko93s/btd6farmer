@@ -6,8 +6,6 @@ Handle for monitor related functions, such as
 
 """
 from logger import logger as log
-
-
  
 import sys
 import ctypes
@@ -21,20 +19,24 @@ resolution_list = [
     { "width": 3840, "height": 2160 }
 ]
 
-
-
 def get_resolution() -> tuple[int, int]:
+    global width, height
+    print("Getting resolution")
     try:
         if sys.platform == "win32":
             ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
         tk = tkinter.Tk()
-        return tk.winfo_screenwidth(), tk.winfo_screenheight()
+        width, height = tk.winfo_screenwidth(), tk.winfo_screenheight()
+        return width, height
     except Exception as e:
-        raise Exception("Could not retrieve monitor resolution")
+        log.critical("Could not retrieve monitor resolution: \n %d", e)
+        raise Exception("Could not retrieve monitor resolution: \n %d", e)
 
+width, height = get_resolution()
 
 # Scaling functions for different resolutions support
-def scaling(pos_list, width, height, resolution_list):
+def scaling(pos_list):
+    global width, height, resolution_list
     """
         Function takes in width, and height normalized to 2560x1440
         it will then iterate through the reso_21 list and check if the current resolution height matches any of the entries
@@ -70,7 +72,8 @@ def scaling(pos_list, width, height, resolution_list):
     return (int(x), int(y))
 
 
-def padding(width, height, resolutions_list):
+def padding():
+    global width, height, resolution_list
     """
         Get's width and height of current resolution
         we iterate through reso_16 for heights, if current resolution height matches one of the entires 
@@ -85,7 +88,7 @@ def padding(width, height, resolutions_list):
     """
 
     padding = 0
-    for x in resolutions_list: 
+    for x in resolution_list: 
         if height == x['height']:
             padding = (width - x['width'])/2
 

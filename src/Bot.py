@@ -635,45 +635,45 @@ class Bot():
     # Different methods for different checks all wraps over _find()
     # Can this be done better?
     def menu_check(self):
-        return recognition.find( self._image_path("menu"), self.width, self.height )
+        return recognition.find( self._image_path("menu"))
 
     def insta_monkey_check(self):
-        return recognition.find( self._image_path("instamonkey"), self.width, self.height )
+        return recognition.find( self._image_path("instamonkey"))
 
     def monkey_knowledge_check(self):
-        return recognition.find( self._image_path("monkey_knowledge"), self.width, self.height )
+        return recognition.find( self._image_path("monkey_knowledge"))
 
     def victory_check(self):
-        return recognition.find( self._image_path("victory"), self.width, self.height )
+        return recognition.find( self._image_path("victory"))
 
     def defeat_check(self):
-        return recognition.find( self._image_path("defeat"), self.width, self.height )
+        return recognition.find( self._image_path("defeat"))
 
     def levelup_check(self):
-        return recognition.find( self._image_path("levelup"), self.width, self.height )
+        return recognition.find( self._image_path("levelup"))
 
     def hero_check(self, heroString):
-        return recognition.find( self._image_path(heroString), self.width, self.height ) or \
-                recognition.find( self._image_path(f"{heroString}_2" , self.width, self.height) ) or \
-                recognition.find( self._image_path(f"{heroString}_3" , self.width, self.height) )
+        return recognition.find( self._image_path(heroString)) or \
+                recognition.find( self._image_path(f"{heroString}_2" ) ) or \
+                recognition.find( self._image_path(f"{heroString}_3" ) )
 
     def loading_screen_check(self):
-        return recognition.find( self._image_path("loading_screen"), self.width, self.height )
+        return recognition.find( self._image_path("loading_screen"))
 
     def home_menu_check(self):
-        return recognition.find( self._image_path("play"), self.width, self.height )
+        return recognition.find( self._image_path("play"))
 
     def language_check(self):
-        return recognition.find( self._image_path("english"), self.width, self.height )
+        return recognition.find( self._image_path("english"))
 
     def collection_event_check(self):
-        return recognition.find(self._image_path("diamond_case"), self.width, self.height )
+        return recognition.find(self._image_path("diamond_case"))
 
     def locate_static_target_button(self):
-        return recognition.find(self._image_path("set_target_button"), self.width, self.height, return_cords=True)
+        return recognition.find(self._image_path("set_target_button"), return_cords=True)
     
     def locate_round_area(self):
-        return recognition.find(self._image_path("round_area"), self.width, self.height, return_cords=True, center_on_found=False)
+        return recognition.find(self._image_path("round_area"), return_cords=True, center_on_found=False)
 
 
     

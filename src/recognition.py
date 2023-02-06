@@ -6,11 +6,11 @@ import monitor
 from logger import logger as log
 
 #Generic function to see if something is present on the screen
-def find(path, width, height, confidence=0.9, return_cords=False, center_on_found=True):
+def find(path, confidence=0.9, return_cords=False, center_on_found=True):
 
     try:
         if return_cords:
-            cords = locate(path, width, height, confidence=confidence)
+            cords = locate(path, confidence=confidence)
             
             log.debug(cords)
 
@@ -22,7 +22,7 @@ def find(path, width, height, confidence=0.9, return_cords=False, center_on_foun
                     return (left, top, width, height)
             else:
                 return None
-        return True if locate(path, width, height, confidence=confidence) is not None else False
+        return True if locate(path, confidence=confidence) is not None else False
 
     except Exception as e:
         raise Exception(e)
@@ -64,7 +64,7 @@ def load_image(img):
     return img_cv
 
 
-def locate_all(template_path, width, height, confidence=0.9, limit=100, region=None):
+def locate_all(template_path, confidence=0.9, limit=100, region=None):
     """
         Template matching a method to match a template to a screenshot taken with mss.
         
@@ -76,20 +76,20 @@ def locate_all(template_path, width, height, confidence=0.9, limit=100, region=N
         Returns a list of cordinates to where openCV found matches of the template on the screenshot taken
     """
 
-    monitor = {
+    screenshotArea = {
         'top': 0, 
         'left': 0, 
-        'width': width, 
-        'height': height
+        'width': monitor.width, 
+        'height': monitor.height
     } if region is None else region
 
     if 0.0 > confidence <= 1.0:
         raise ValueError("Confidence must be a value between 0.0 and 1.0")
 
-    with mss.mss() as sct:
+    with mss.mss() as screenshotter:
 
         # Load the taken screenshot into a opencv img object
-        img = np.array(sct.grab(monitor))
+        img = np.array(screenshotter.grab(screenshotArea))
         screenshot = load_image(img) 
 
         if region:
@@ -107,9 +107,9 @@ def locate_all(template_path, width, height, confidence=0.9, limit=100, region=N
         templateHeight, templateWidth = template.shape[:2]
 
         # scale template
-        # Could I use monitor.scale here?
+        # Could I use monitor.scale here? Why is is scaling?
         if width != 2560 or height != 1440:
-            template = cv2.resize(template, dsize=(int(templateWidth/(2560/width)), int(templateHeight/(1440/height))), interpolation=cv2.INTER_CUBIC)
+            template = cv2.resize(template, dsize=(int(templateWidth/(2560/monitor.width)), int(templateHeight/(1440/monitor.height))), interpolation=cv2.INTER_CUBIC)
 
         # Find all the matches
         # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
@@ -126,11 +126,11 @@ def locate_all(template_path, width, height, confidence=0.9, limit=100, region=N
         else:
             return [ (x, y, templateWidth, templateHeight) for x, y in zip(matchesX, matchesY) ]
 
-def locate(template_path, width, height, confidence=0.9, tries=1):
+def locate(template_path, confidence=0.9, tries=1):
     """
         Locates a template on the screen.
 
         Note: @tries does not do anything at the moment
     """
-    result = locate_all(template_path, width, height, confidence)
+    result = locate_all(template_path, confidence)
     return result[0] if result is not None else None
