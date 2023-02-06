@@ -27,7 +27,7 @@ def move_mouse(location, move_timeout=0.1):
     sleep(move_timeout)
 
 
-def click(location: tuple | tuple, width, height, amount=1, timeout=0.5, move_timeout=0.1, hold_time=0.075, _button='left', ):
+def click(location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, hold_time=0.075, _button='left', ):
     """"""
     """
     Method to click on a specific location on the screen
@@ -43,7 +43,7 @@ def click(location: tuple | tuple, width, height, amount=1, timeout=0.5, move_ti
         location = static.button_positions[location]
     
     # Move mouse to location
-    move_mouse(monitor.scaling(location, width, height), move_timeout)
+    move_mouse(monitor.scaling(location), move_timeout)
 
     for _ in range(amount):
         mouse.press(button=_button)

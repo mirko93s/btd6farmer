@@ -4,22 +4,12 @@ import json
 import copy
 from pathlib import Path
 
-import sys
 import time
 import static
-import tkinter
 from pathlib import Path
-
-import pytesseract
-
-if sys.platform == "win32":
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 import re
 import mss
-
-import ctypes
-from collections import defaultdict
 
 # Local imports
 import ocr
@@ -59,22 +49,12 @@ class Bot():
             "Uptime": 0
         }
 
-        try:
-            if sys.platform == "win32":
-                ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
-            tk = tkinter.Tk()
-            self.width, self.height = tk.winfo_screenwidth(), tk.winfo_screenheight()
-        except Exception as e:
-            raise Exception("Could not retrieve monitor resolution")
-
         self.support_dir = self.get_resource_dir("assets")
 
         # Defing a lamda function that can be used to get a path to a specific image
         # self._image_path = lambda image, root_dir=self.support_dir, height=self.height : root_dir/f"{height}_{image}.png"
         # In essence this is dumb
         self._image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
-
-
 
         self.round_area = None
 
@@ -189,9 +169,9 @@ class Bot():
 
             # Check for levelup or insta monkey (level 100)
             if self.levelup_check() or self.insta_monkey_check():
-                self.click(middle_of_screen, amount=3)
+                simulatedinput.click(middle_of_screen, amount=3)
             elif self.monkey_knowledge_check():
-                self.click(middle_of_screen, amount=1)
+                simulatedinput.click(middle_of_screen, amount=1)
 
             # Check for finished or failed game
             if self.defeat_check():
@@ -266,14 +246,14 @@ class Bot():
 
     def place_tower(self, tower_position, keybind):
         simulatedinput.send_key(keybind) # press keybind
-        self.click(tower_position) # click on decired location
+        simulatedinput.click(tower_position) # click on decired location
 
 
     def upgrade_tower(self, tower_position, upgrade_path):
         if not any(isinstance(path, int) for path in upgrade_path) or len(upgrade_path) != 3:
             raise Exception("Upgrade path must be a list of integers", upgrade_path)
 
-        self.click(tower_position)
+        simulatedinput.click(tower_position)
 
         # Convert upgrade_path to something usable
         top, middle, bottom = upgrade_path
@@ -298,7 +278,7 @@ class Bot():
             if len(targets) != len(delay):
                 raise Exception("Number of targets and number of delays needs to be the same")
 
-        self.click(tower_position)
+        simulatedinput.click(tower_position)
 
         if "SPIKE" in tower_type:
             target_order = static.target_order_spike
@@ -329,17 +309,17 @@ class Bot():
         simulatedinput.send_key("esc")
 
     def set_static_target(self, tower_position, target_pos):
-        self.click(tower_position)
+        simulatedinput.click(tower_position)
         
         target_button = self.locate_static_target_button()
-        self.click(target_button)
+        simulatedinput.click(target_button)
 
-        self.click(target_pos)
+        simulatedinput.click(target_pos)
 
         simulatedinput.send_key("esc")
 
     def remove_tower(self, position):
-        self.click(position)
+        simulatedinput.click(position)
         simulatedinput.send_key("backspace")
         simulatedinput.send_key("esc")
 
@@ -438,31 +418,31 @@ class Bot():
             log.debug("easter collection detected")
                 # take screenshot of loc and save it to the folder
 
-            self.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
+            simulatedinput.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
             time.sleep(1)
-            self.click("LEFT_INSTA") # unlock insta
+            simulatedinput.click("LEFT_INSTA") # unlock insta
             time.sleep(1)
-            self.click("LEFT_INSTA") # collect insta
+            simulatedinput.click("LEFT_INSTA") # collect insta
             time.sleep(1)
-            self.click("RIGHT_INSTA") # unlock r insta
+            simulatedinput.click("RIGHT_INSTA") # unlock r insta
             time.sleep(1)
-            self.click("RIGHT_INSTA") # collect r insta
+            simulatedinput.click("RIGHT_INSTA") # collect r insta
             time.sleep(1)
-            self.click("F_LEFT_INSTA")
+            simulatedinput.click("F_LEFT_INSTA")
             time.sleep(1)
-            self.click("F_LEFT_INSTA")
+            simulatedinput.click("F_LEFT_INSTA")
             time.sleep(1)
-            self.click("MID_INSTA") # unlock insta
+            simulatedinput.click("MID_INSTA") # unlock insta
             time.sleep(1)
-            self.click("MID_INSTA") # collect insta
+            simulatedinput.click("MID_INSTA") # collect insta
             time.sleep(1)
-            self.click("F_RIGHT_INSTA")
+            simulatedinput.click("F_RIGHT_INSTA")
             time.sleep(1)
-            self.click("F_RIGHT_INSTA")
+            simulatedinput.click("F_RIGHT_INSTA")
             time.sleep(1)
 
             time.sleep(1)
-            self.click("EASTER_CONTINUE")
+            simulatedinput.click("EASTER_CONTINUE")
 
             simulatedinput.send_key("esc")
             
@@ -471,43 +451,43 @@ class Bot():
         if not self.hero_check(self.settings["HERO"]):
             log.debug(f"Selecting {self.settings['HERO']}")
 
-            self.click("HERO_SELECT")
-            self.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
-            self.click("CONFIRM_HERO")
+            simulatedinput.click("HERO_SELECT")
+            simulatedinput.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
+            simulatedinput.click("CONFIRM_HERO")
             simulatedinput.send_key("esc")
 
     def exit_level(self, won=True):
         if won:
-            self.click("VICTORY_CONTINUE")
+            simulatedinput.click("VICTORY_CONTINUE")
             time.sleep(2)
-            self.click("VICTORY_HOME")
+            simulatedinput.click("VICTORY_HOME")
         elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
-            self.click("DEFEAT_HOME_CHIMPS")
+            simulatedinput.click("DEFEAT_HOME_CHIMPS")
             time.sleep(2)
         else:
-            self.click("DEFEAT_HOME")
+            simulatedinput.click("DEFEAT_HOME")
             time.sleep(2)
         
         self.wait_for_loading() # wait for loading screen
     
     def restart_level(self, won=True):
         if won:
-            self.click("VICTORY_CONTINUE")
+            simulatedinput.click("VICTORY_CONTINUE")
             time.sleep(2)
-            self.click("FREEPLAY")
-            self.click("OK_MIDDLE")
+            simulatedinput.click("FREEPLAY")
+            simulatedinput.click("OK_MIDDLE")
             time.sleep(1)
             simulatedinput.send_key("esc")
             time.sleep(1)
-            self.click("RESTART_WIN")
-            self.click("RESTART_CONFIRM")
+            simulatedinput.click("RESTART_WIN")
+            simulatedinput.click("RESTART_CONFIRM")
         elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
-            self.click("RESTART_DEFEAT_CHIMPS")
-            self.click("RESTART_CONFIRM")
+            simulatedinput.click("RESTART_DEFEAT_CHIMPS")
+            simulatedinput.click("RESTART_CONFIRM")
             time.sleep(2)
         else:
-            self.click("RESTART_DEFEAT")
-            self.click("RESTART_CONFIRM")
+            simulatedinput.click("RESTART_DEFEAT")
+            simulatedinput.click("RESTART_CONFIRM")
             time.sleep(2)
         
         self.wait_for_loading() # wait for loading screen
@@ -518,18 +498,18 @@ class Bot():
         
         time.sleep(1)
 
-        self.click("HOME_MENU_START")
-        self.click("EXPERT_SELECTION")
+        simulatedinput.click("HOME_MENU_START")
+        simulatedinput.click("EXPERT_SELECTION")
         
-        self.click("BEGINNER_SELECTION") # goto first page
+        simulatedinput.click("BEGINNER_SELECTION") # goto first page
 
         # click to the right page
-        self.click("RIGHT_ARROW_SELECTION", amount=(map_page - 1), timeout=0.1)
+        simulatedinput.click("RIGHT_ARROW_SELECTION", amount=(map_page - 1), timeout=0.1)
 
-        self.click("MAP_INDEX_" + str(map_index)) # Click correct map
-        self.click(self.settings["DIFFICULTY"]) # Select Difficulty
-        self.click(self.settings["GAMEMODE"]) # Select Gamemode
-        self.click("OVERWRITE_SAVE")
+        simulatedinput.click("MAP_INDEX_" + str(map_index)) # Click correct map
+        simulatedinput.click(self.settings["DIFFICULTY"]) # Select Difficulty
+        simulatedinput.click(self.settings["GAMEMODE"]) # Select Gamemode
+        simulatedinput.click("OVERWRITE_SAVE")
 
         self.wait_for_loading() # wait for loading screen
 
@@ -537,8 +517,8 @@ class Bot():
         confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH"]
         if self.settings["GAMEMODE"] in confirm_list:
             simulatedinput.send_key("esc", timeout=1)
-            # self.click(self.settings["DIFFICULTY"])
-            # self.click("CONFIRM_CHIMPS")
+            # simulatedinput.click(self.settings["DIFFICULTY"])
+            # simulatedinput.click("CONFIRM_CHIMPS")
     
     def wait_for_loading(self):
         still_loading = True
@@ -586,8 +566,7 @@ class Bot():
         return round_area
 
     def getRound(self):
-        # Change to https://stackoverflow.com/questions/66334737/pytesseract-is-very-slow-for-real-time-ocr-any-way-to-optimise-my-code 
-        # or https://www.reddit.com/r/learnpython/comments/kt5zzw/how_to_speed_up_pytesseract_ocr_processing/
+
 
         # If round area is not located yet
         if self.round_area is None:
@@ -622,7 +601,7 @@ class Bot():
                         Path.mkdir(file_path)
 
                     with open(file_path/"get_currentRound_failed", "wb") as output_file:
-                        output_file.write(mss.tools.to_png(sct_image.rgb, sct_image.size))
+                        output_file.write(mss.tools.to_png(screenshot.rgb, screenshot.size))
                     
                     log.warning("Saved screenshot of what was found")
 

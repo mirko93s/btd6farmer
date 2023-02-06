@@ -91,7 +91,7 @@ def locate_all(template_path, confidence=0.9, limit=100, region=None):
         # Load the taken screenshot into a opencv img object
         img = np.array(screenshotter.grab(screenshotArea))
         screenshot = load_image(img) 
-
+        import time
         if region:
             screenshot = screenshot[region[1]:region[1]+region[3],
                                     region[0]:region[0]+region[2]
@@ -108,7 +108,7 @@ def locate_all(template_path, confidence=0.9, limit=100, region=None):
 
         # scale template
         # Could I use monitor.scale here? Why is is scaling?
-        if width != 2560 or height != 1440:
+        if monitor.width != 2560 or monitor.height != 1440:
             template = cv2.resize(template, dsize=(int(templateWidth/(2560/monitor.width)), int(templateHeight/(1440/monitor.height))), interpolation=cv2.INTER_CUBIC)
 
         # Find all the matches

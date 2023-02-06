@@ -55,7 +55,7 @@ def main(arg_parser):
         simulatedinput.click("SETTINGS")
         simulatedinput.click("LANGUAGE")
         simulatedinput.click("ENGLISH")
-        bot.press_key("esc", timeout=0.5, amount=2)
+        simulatedinput.send_key("esc", timeout=0.5, amount=2)
 
     # Check for obyn
     bot.hero_select()
