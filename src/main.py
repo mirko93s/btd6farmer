@@ -54,10 +54,14 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
 """)
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
-    
-    bot.initilize() # Initialize the bot (presses alt, etc)
+    print("="*25)
+    print("Hero:", bot.settings["HERO"].replace("_", " ").title())
+    print("Map:", bot.settings["MAP"].replace("_", " ").title())
+    print("Difficulty:", bot.settings["DIFFICULTY"].replace("_", " ").title())
+    print("Gamemode:", bot.settings["GAMEMODE"].replace("_", " ").title())
+    print("="*25)
 
-    print("Waiting for Home screen. Please switch to Bloons TD 6 window.")
+    print("Waiting for Home screen. Please switch to the Bloons TD 6 window.")
 
     # Wait for btd6 home screen
     waiting_for_home = False
@@ -68,7 +72,11 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_home = bot.home_menu_check()
     log.info("Home screen detected")
+    
     print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")
+    
+    bot.initilize() # Initialize the bot (presses alt, etc)
+    
     if bot.language_check() is False:
         log.info("Setting game to english")
         simulatedinput.click("SETTINGS")
