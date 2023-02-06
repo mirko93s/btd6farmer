@@ -595,9 +595,12 @@ class Bot():
         # Take Screenshot
         with mss.mss() as screenshotter:
             screenshot = screenshotter.grab(screenshot_dimensions)
-            found_text, _ = ocr.getTextFromImage(screenshot)
-            print(found_text)
-            cv2.imwrite(f"./DEBUG/OCT_DONE_FOUND_{found_text}{str(time.time())}.png", _, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+            found_text, _ocrImage = ocr.getTextFromImage(screenshot)
+            #print(found_text)
+            def get_valid_filename(s):
+                s = str(s).strip().replace(' ', '_')
+                return re.sub(r'(?u)[^-\w.]', '', s)
+            cv2.imwrite(f"./DEBUG/OCT_DONE_FOUND_{get_valid_filename(found_text)}_{str(time.time())}.png", _ocrImage, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
