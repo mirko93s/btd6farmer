@@ -19,7 +19,6 @@ def formatImageOCR(originalScreenshot):
     # Perform gain division
     # print(screenshot, localMax)
     gainDivision = np.where(localMax == 0, 0, (screenshot / localMax))
-    
     # Clip the values to [0,255]
     gainDivision = np.clip((255 * gainDivision), 0, 255)
     # Convert the mat type from float to uint8:
@@ -64,6 +63,9 @@ def formatImageOCR(originalScreenshot):
             # Fill the hole:
             cv2.floodFill(final_image, mask=None, seedPoint=(int(fx), int(fy)), newVal=(0))
     
+
+    import time
+    cv2.imwrite(f"./DEBUG/OCR_FORMAT_{str(time.time())}.png", final_image, [cv2.IMWRITE_PNG_COMPRESSION, 0])
     return final_image
 
 
