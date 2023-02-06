@@ -8,6 +8,7 @@ from Failsafe import FailSafe
 import mouse
 import simulatedinput
 from logger import logger as log
+import os
 
 def main(arg_parser):
 
@@ -35,6 +36,7 @@ def main(arg_parser):
             restart_mode=(args['restart']),
             sandbox_mode=(args['sandbox']),
         )
+    os.system('cls' if os.name == 'nt' else 'clear')
     print("""
 .______   .___________. _______    __                              
 |   _  \  |           ||       \  / /                              
