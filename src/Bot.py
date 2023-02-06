@@ -22,29 +22,47 @@ import ocr
 import recognition
 import simulatedinput
 import monitor
+import gameplan
 from logger import logger as log
 
 # Definently fix this 
 class Bot():
-    def __init__(self, instruction_path, debug_mode=False, verbose_mode=False, restart_mode=False, sandbox_mode=False):
-        # wtf fix this
-        game_plan_filename="instructions.json"
+    def __init__(self, 
+        instruction_path, 
+        debug_mode=False, 
+        verbose_mode=False, 
+        restart_mode=False, 
+        sandbox_mode=False,
+        game_plan_filename="instructions.json",
         game_settings_filename="setup.json"
-        self.settings = self._load_json(instruction_path / game_settings_filename)
-        self.game_plan = self._load_json(instruction_path / game_plan_filename)
-        ####
-        
-        self._game_plan_copy = copy.deepcopy(self.game_plan)
+    ):
+        is_url_regex = re.compile(r"https?://(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)")
+        if (re.search(is_url_regex, str(instruction_path))):
+            self.settings = gameplan.load_from_url(instruction_path)
+            self.game_plan = gameplan.load_from_url(instruction_path)
+        else:
+            self.settings = gameplan.load_from_file(instruction_path / game_settings_filename)
+            self.game_plan = gameplan.load_from_file(instruction_path / game_plan_filename)
 
+        # Something to do with how python handles copying objects
+        self._game_plan_copy = copy.deepcopy(self.game_plan)
         self._game_plan_version = self.settings.pop("VERSION")
+        ####
+
+        self.round_area = None
         
-        self.start_time = time.time()
-        self.running = True
         self.DEBUG = debug_mode
         self.VERBOSE = verbose_mode
         self.RESTART = restart_mode
         self.SANDBOX = sandbox_mode
+
+        if self.SANDBOX and self.RESTART:
+            raise Exception("Sandbox mode and restart mode cannot be used at the same time")
+        
+        self.start_time = time.time()
         self.game_start_time = time.time()
+        
+        self.running = True
         self.fast_forward = True
 
         self.statDict = {
@@ -58,14 +76,11 @@ class Bot():
         self.support_dir = self.get_resource_dir("assets")
 
         # Defing a lamda function that can be used to get a path to a specific image
-        # self._image_path = lambda image, root_dir=self.support_dir, height=self.height : root_dir/f"{height}_{image}.png"
         # In essence this is dumb
-        self._image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
-
-        self.round_area = None
+        self.image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
 
 
-    def _handle_time(self, ttime):
+    def handle_time(self, ttime):
         """
             Converts seconds to appropriate unit
         """
@@ -128,7 +143,7 @@ class Bot():
         data["total_time"] += match_time
         
         # average = total_time / total_matches_played
-        average_converted, unit = self._handle_time(data["average_matchtime_seconds"])
+        average_converted, unit = self.handle_time(data["average_matchtime_seconds"])
         
         # Push average to dictionary
         data["average_matchtime"] = f"{round(average_converted, 3)} {unit}"
@@ -140,15 +155,6 @@ class Bot():
         
         return data
 
-    def _load_json(self, path):
-        """
-            Will read the @path as a json file load into a dictionary.
-        """
-        data = {}
-        with path.open('r', encoding="utf-8") as f:
-            data = json.load(f)
-        return data
-    
     def reset_game_plan(self):
         self.game_plan = copy.deepcopy(self._game_plan_copy)
 
@@ -244,6 +250,7 @@ class Bot():
                             simulatedinput.send_key("3")
                             ability_three_timer = time.time()
 
+                # Is this necessary?
                 # Check for round in game plan
                 if str(current_round) in self.game_plan:
                     
@@ -433,10 +440,9 @@ class Bot():
         self.game_start_time = time.time()
 
     def check_for_collection_crates(self):
-        # Reweite this
+        # Can this be done better?
         if self.collection_event_check():
             log.debug("easter collection detected")
-                # take screenshot of loc and save it to the folder
 
             simulatedinput.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
             time.sleep(1)
@@ -652,42 +658,42 @@ class Bot():
     # Different methods for different checks all wraps over _find()
     # Can this be done better?
     def menu_check(self):
-        return recognition.find( self._image_path("menu"))
+        return recognition.find( self.image_path("menu"))
 
     def insta_monkey_check(self):
-        return recognition.find( self._image_path("instamonkey"))
+        return recognition.find( self.image_path("instamonkey"))
 
     def monkey_knowledge_check(self):
-        return recognition.find( self._image_path("monkey_knowledge"))
+        return recognition.find( self.image_path("monkey_knowledge"))
 
     def victory_check(self):
-        return recognition.find( self._image_path("victory"))
+        return recognition.find( self.image_path("victory"))
 
     def defeat_check(self):
-        return recognition.find( self._image_path("defeat"))
+        return recognition.find( self.image_path("defeat"))
 
     def levelup_check(self):
-        return recognition.find( self._image_path("levelup"))
+        return recognition.find( self.image_path("levelup"))
 
     def hero_check(self, heroString):
-        return recognition.find( self._image_path(heroString)) or \
-                recognition.find( self._image_path(f"{heroString}_2" ) ) or \
-                recognition.find( self._image_path(f"{heroString}_3" ) )
+        return recognition.find( self.image_path(heroString)) or \
+                recognition.find( self.image_path(f"{heroString}_2" ) ) or \
+                recognition.find( self.image_path(f"{heroString}_3" ) )
 
     def loading_screen_check(self):
-        return recognition.find( self._image_path("loading_screen"))
+        return recognition.find( self.image_path("loading_screen"))
 
     def home_menu_check(self):
-        return recognition.find( self._image_path("play"))
+        return recognition.find( self.image_path("play"))
 
     def language_check(self):
-        return recognition.find( self._image_path("english"))
+        return recognition.find( self.image_path("english"))
 
     def collection_event_check(self):
-        return recognition.find(self._image_path("diamond_case"))
+        return recognition.find(self.image_path("diamond_case"))
 
     def locate_round_area(self):
-        return recognition.find(self._image_path("round"), return_cords=True, center_on_found=False)
+        return recognition.find(self.image_path("round"), return_cords=True, center_on_found=False)
 
 
 if __name__ == "__main__":
