@@ -4,19 +4,14 @@ import json
 import copy
 from pathlib import Path
 
-import time
 import static
 from pathlib import Path
 
 import re
 import mss
 
-# 
-import cv2
 import time
 
-
-import sys
 # Local imports
 import ocr
 import recognition
@@ -623,10 +618,11 @@ class Bot():
             found_text, _ocrImage = ocr.getTextFromImage(screenshot)
             
             if self.DEBUG:
+                from cv2 import imwrite, IMWRITE_PNG_COMPRESSION
                 def get_valid_filename(s):
                     s = str(s).strip().replace(' ', '_')
                     return re.sub(r'(?u)[^-\w.]', '', s)
-                cv2.imwrite(f"./DEBUG/OCR_DONE_FOUND_{get_valid_filename(found_text)}_{str(time.time())}.png", _ocrImage, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+                imwrite(f"./DEBUG/OCR_DONE_FOUND_{get_valid_filename(found_text)}_{str(time.time())}.png", _ocrImage, [IMWRITE_PNG_COMPRESSION, 0])
 
             # Get only the first number/group so we don't need to replace anything in the string
             if re.search(r"(\d+/\d+)", found_text):
