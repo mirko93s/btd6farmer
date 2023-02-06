@@ -2,15 +2,10 @@ import time
 import static
 import json
 import copy
-from pathlib import Path
-
-import static
-from pathlib import Path
-
 import re
 import mss
-
 import time
+from pathlib import Path
 
 # Local imports
 import ocr
