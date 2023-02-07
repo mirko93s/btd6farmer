@@ -1,3 +1,18 @@
+# Wrappers around static data
+class Heros:
+    pass
+
+class Towers:
+    pass
+
+class Difficulty:
+    pass
+
+class Gamemode:
+    pass
+class Map (Difficulty, Gamemode):
+    pass
+
 button_positions = { # Creates a dictionary of all relative positions needed for monkeys
     "HOME_MENU_START"           : [ 0.438671875 , 0.8666666666666667 ],
     "EXPERT_SELECTION"          : [ 0.69453125 , 0.9055555555555556 ],
@@ -55,9 +70,9 @@ button_positions = { # Creates a dictionary of all relative positions needed for
     "RESTART_DEFEAT"            : [ 0.430859375 , 0.7520833333333333 ],
     "RESTART_DEFEAT_CHIMPS"     : [ 0.5 , 0.7597222222222222 ],
     "CONFIRM_CHIMPS"            : [ 0.500390625 , 0.6805555555555556 ],
-    "SETTINGS"                  : [0.037500 , 0.191667],
-    "LANGUAGE"                  : [0.555208 , 0.659259],
-    "ENGLISH"                   : [0.224479 , 0.192593]
+    "SETTINGS"                  : [ 0.037500 , 0.191667],
+    "LANGUAGE"                  : [ 0.555208 , 0.659259],
+    "ENGLISH"                   : [ 0.224479 , 0.192593]
 }
 
 hero_positions = {
@@ -192,7 +207,6 @@ upgrade_keybinds = {
     "top" : ",",
     "middle" : ".",
     "bottom" : "/"
-
 }
 
 # Index, regular targets, spike factory targets

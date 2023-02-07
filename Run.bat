@@ -1,1 +1,1 @@
-python main.py --gameplan_path "Instructions/Dark_Castle_Hard_Standard"
+python src/main.py --gameplan_path "Instructions/Dark_Castle_Hard_Standard" --restart

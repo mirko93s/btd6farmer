@@ -1,21 +1,18 @@
-# btd6farmer - a bot for Bloons Td 6 
-#### v1.0.0-pre_release-2
-
-##### Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)
+# BTD 6 farmer | A Macro creator for Bloons td 6
+<span style="font-size:16px;">Inspired from [RavingSmurfGB/Py_AutoBloons](https://github.com/RavingSmurfGB/Py_AutoBloons)</span>
 
 [![Python application](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml/badge.svg?branch=main)](https://github.com/linus-jansson/btd6farmer/actions/workflows/check_bot.yml) 
 
 Join the [Discord](https://discord.gg/qyKT6bzqZQ) for support, updates and sharing gameplans.
 
-Feel free to make a pull request if you have any improvements or create a issue if something isn't working correctly! 
+Feel free to make a pull request if you have any improvements or create a issue if something isn't working correctly!
 
-## Table Of Contents
+## Table Of Contents (TODO)
 - [Dependencies](#dependenices) 
 - [Installation](#installation)
 - [Running the bot](#running)
-- [Gameplans](#gameplans)
-- [Roadmap](#roadmap)
 - [Having issues?](#issues)
+- [Roadmap](#roadmap)
 - [Creating your own gameplan](#contributing)
     - [Setup file](#setup_file)
     - [Gameplan file](#gameplan_file)
@@ -44,7 +41,7 @@ pytesseract==0.3.9
 <a name="installation"/>
 
 ## Installation of dependencies:
-The script relies on tesseract which can be installed using this [this](https://github.com/UB-Mannheim/tesseract/wiki) guide. 
+The script relies on tesseract (tested with v5.3.0) which can be installed using this [this](https://github.com/UB-Mannheim/tesseract/wiki) guide. 
 (*If by any chance the tesseract installation directory is different from the directory specified in Bot.py you need to manually change that in the script. Otherwise the bot will not work!*)
 
 default path (all users tesseract installation):
@@ -58,10 +55,8 @@ The python library requirments can be installed using `python -m pip install -r 
 
 ## Running the bot
 1. Open up BTD 6
-2. Run main.py in the command line with `py <location of script>/main.py --path <directory to gameplan>` or start `run.bat` to run with the default settings and gameplan.
+2. Run main.py in the command line with `py <location of script>/main.py --path <directory to gameplan>` or start `run.bat` to run with the default settings and gameplan. Some gamplans are included in the `gameplans` folder.
 3. Navigate to the homescreen of BTD 6.
-
-**_note: make sure that you use the english version of the game, as the bot needs the english text to work properly._**
 
 ### Bot Launch options
 ```
@@ -71,31 +66,19 @@ options:
   -p PATH, --path PATH, --gameplan_path PATH
                         Path to the gameplan directory
   -d, --debug           Enable debug mode
-  -v, --verbose         Enable verbose mode (not done)
   -r, --restart         automatically restarts the game when finished, instead of going to home screen
-  -s, --sandbox         Try put gameplan in sandbox mode without waiting for specific rounds (not done)
+  -s, --sandbox         Try put gameplan in sandbox mode without waiting for specific rounds
 ```
-
-<a name="gameplans"/>
-
-#### Current Gameplans
-|Map|Difficulty|Gamemode|Directory location|
-|:---:|:---:|:---:|:---:|
-|Dark Castle|Hard|Standard|`./Instructions/Dark_Castle_Hard_Standard`|
-|Dark Castle|Hard|Chimps|`./Instructions/Dark_Castle_Hard_Chimps`|
-
-
-<a name="roadmap"/>
-
-### Roadmap
-At the moment the major parts of being able to create own gameplans are done. Current things that needs to be done is:
-- [ ] Support for different hero abilities
-- [ ] Easier way to create gameplans
 
 <a name="issues"/>
 
 ## Having issues with the bot?
 If you have any issues with the bot, find any bugs or have any suggestions for improvements, please create an issue or create a pull request!
+
+<a name="roadmap"/>
+
+### Roadmap
+The projects roadmap can be found [here](https://github.com/users/linus-jansson/projects/1/views/5)
 
 <a name="contributing"/>
 
@@ -110,9 +93,9 @@ __*NOTE: AS THIS IS STILL A WORK IN PROGRESS I MAY CHANGE THE GUIDE AND LAYOUT O
 
 <a name="setup_file"/>
 
-### setup.py
+### setup.json
 The setup file is used for the bot to know which hero, map, difficulty and gamemode it should use.
-It should be named `setup.py` and be placed in the same directory as the gameplan.
+It should be named `setup.json` and be placed in the same directory as the gameplan.
 
 ```json
 {
@@ -121,28 +104,22 @@ It should be named `setup.py` and be placed in the same directory as the gamepla
     "MAP": "DARK_CASTLE",
     "DIFFICULTY": "HARD_MODE",
     "GAMEMODE": "STANDARD_GAME_MODE",
-    "OPTIONS": { // TODO: Add options
-        "COLLECT_BANANAS": true, 
-        "OPEN_CHEST": true,
-    }
 }
 ```
->`VERSION` - Use version 1 for now\
 > `Hero` - Which hero to use *[list of avaliable heros](#heros)*  \
 > `MAP` - Which map to use *[list of avaliable maps](#maps)* \
 > `DIFFICULTY` - Which Difficulty to use *[list of avaliable difficultues](#difficulties)* \
 > `GAMEMODE` - Which Gamemode to use *[list of avaliable Gamemodes](#gamemodes)* \
-###### OPTIONS
-> `COLLECT_BANANAS` - If the bot should automatically pick up bananas from traps and bananafarms \
-> `OPEN_CHEST` - If the bot should automatically open chests if its unopened on the main menu
 
 <a name="gameplan_file"/>
 
 ### instructions.json
-#### Creating the gameplan 
-The gameplan is a json file that contains the round as a key and the value as an array with instructions. The instructions is also a json object:
+#### Creating the gameplan and example
+The gameplan is a json file that contains the round as a key and the value as an array with instructions. 
+All coordinates are normalized to you'r screen resolution, to work with a wider range of computers. (a value between 0 and 1)
 
-#### instructions.json example
+The following example instruction places a tower on the absolute center of the map and starts the game in fast forward mode, on round 3. See [instruction types](#instruction_types) for more information about the different types of instructions. 
+
 ```json
 {
     "3": [
@@ -150,7 +127,7 @@ The gameplan is a json file that contains the round as a key and the value as an
             "INSTRUCTION_TYPE": "PLACE_TOWER",
             "ARGUMENTS": {
                 "TOWER": "TOWER_TYPE",
-                "POSITION": [ x, y ]
+                "POSITION": [ 0.5, 0.5 ]
             }
         },
         {
@@ -163,6 +140,9 @@ The gameplan is a json file that contains the round as a key and the value as an
 }
 
 ```
+
+<a name="instruction_types"/>
+
 ##### instruction types
 - `START` - Indicates the game
     - `FAST_FORWARD` - (true / false) Defaults to True. Should the bot play in fast forward mode?
@@ -175,8 +155,8 @@ The gameplan is a json file that contains the round as a key and the value as an
 - `CHANGE_TARGET` - changes target of a tower
     - `LOCATION` - [x, y] location of the tower
     - `TARGET` - target or targets eg [ "FIRST", "LAST", "STRONG" ]. Can be a string or a array of targets
-    - `TYPE` - (SPIKE or REGULAR) # TODO: add support for Heli targets
-    - `DELAY` - (optional) Defaults to 3 delay between each target change, can be one delay eg `2` for 2 seconds or multiple `[1, 3, 4]` to sleep for 1 second, 3 seconds and 4 seconds respectively for each target change.
+    - `TYPE` - (SPIKE or REGULAR) [*Heli & gunner not yet supported*]
+    - `DELAY` - *(optional)* Defaults to 3 delay between each target change. Can also be an array of delays. Can be one delay eg `2` for 2 seconds or multiple `[1, 3, 4]` to sleep for 1 second, 3 seconds and 4 seconds respectively for each target change.
 - `REMOVE_TOWER` - Removes a tower
     - `LOCATION` - [x, y] location of the tower
 - `SET_STATIC_TARGET`
@@ -187,8 +167,8 @@ The gameplan is a json file that contains the round as a key and the value as an
 
 An instruction array in a round can have multiple objects that will be executed after each other. for example:
 ```json
-    ...
-    [
+    //...
+    "33": [
         {
             "INSTRUCTION_TYPE": "PLACE_TOWER",
             "ARGUMENTS": {
@@ -211,14 +191,11 @@ An instruction array in a round can have multiple objects that will be executed 
             }
         }
     ]
-    ...
+    //...
 ```
-
-#### Creating the gameplan in excel and converting to json
-TODO
 ### Getting the position of a tower or the target position.
 An easy way to get the position of the tower or the target you want, is to use the following code:
-```
+```py
 import mouse, time
 import tkinter
 import static
@@ -298,13 +275,34 @@ Run it in a terminal and copy the decired position into the gameplan.
 <a name="gamemodes"/>
 <details>
 <summary>Gamemodes</summary>
-TODO
+
+|Gamemode|Keyword in file|
+|--|--|
+|Chimps|CHIMPS_MODE|
+|Chimps|CHIMPS|
+|Deflation|DEFLATION|
+|Apopalypse|APOPALYPSE|
+|Reverse|REVERSE|
+|Military Only|MILITARY_ONLY|
+|Magic monkeys only|MAGIC_MONKEYS_ONLY|
+|Double HP MOABS|DOUBLE_HP_MOABS|
+|Half cash|HALF_CASH|
+|Alternate Bloons Rounds|ALTERNATE_BLOONS_ROUNDS|
+|Impoppable|IMPOPPABLE|
+|Standard|STANDARD_GAME_MODE|
+
 </details>
 
 <a name="difficulties"/>
 <details>
 <summary>Difficulties</summary>
-TODO
+
+|Difficulty|Keyword in file|
+|--|--|
+|Easy|EASY_MODE|
+|Medium|MEDIUM_MODE|
+|Hard|HARD_MODE|
+
 </details>
 
 <a name="maps"/>
@@ -333,6 +331,8 @@ TODO
 |Hedge|HEDGE|
 |End Of The Road|END_OF_THE_ROAD|
 |Logs|LOGS|
+|Covered Garden|COVERED_GARDEN|
+|Quarry|QUARRY|
 |Quiet Street|QUIET_STREET|
 |Bloonarius Prime|BLOONARIUS_PRIME|
 |Balance|BALANCE|
@@ -350,6 +350,7 @@ TODO
 |Chutes|CHUTES|
 |Rake|RAKE|
 |Spice Islands|SPICE_ISLANDS|
+|Midnight Mansion|MIDNIGHT_MANSION|
 |Sunken Columns|SUNKEN_COLUMNS|
 |X Factor|XFACTOR|
 |Mesa|MESA|
