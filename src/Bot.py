@@ -5,6 +5,7 @@ import copy
 import re
 import mss
 import time
+import concurrent.futures
 from pathlib import Path
 
 # Local imports
@@ -630,11 +631,20 @@ class Bot():
         assets_directory = Path(__file__).resolve().parent/"assets"
         image_path = lambda image : assets_directory/f"{image}.png"
         if isinstance(images, list):
-            output = []
-            for image_string in images:
-                # Could I do this multi-threading for faster results?
-                if image_path(image_string).is_file():
-                    output.append(recognition.find(image_path(image_string)))
+            
+            output = [None]*len(images)
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                # Submit the template matching function to the thread pool
+                futures= {
+                    executor.submit(recognition.find, image_path(image)): idx for idx, image in enumerate(images)
+                }
+                
+                # When all the tasks are done, return the results in the same order as the input
+                for future in concurrent.futures.as_completed(futures):
+                    output[futures[future]] = future.result()
+            
+            # Return true if any of the images are found
             return any(output)
         else:
             return recognition.find(
