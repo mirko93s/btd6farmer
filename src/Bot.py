@@ -35,7 +35,6 @@ class Bot():
 
         # Something to do with how python handles copying objects
         self._game_plan_copy = copy.deepcopy(self.game_plan)
-        self._game_plan_version = self.settings.pop("VERSION")
         ####
 
         self.round_area = None
@@ -160,13 +159,7 @@ class Bot():
             print("Sandbox mode started")
             for instructionGroup in self.game_plan.keys():
                 for instruction in self.game_plan.get(instructionGroup):
-                    if self._game_plan_version == "1":
-                        # print(instruction)
-                        self.v1_handleInstruction(instruction)
-                        
-                    else:
-                        raise Exception("Game plan version {} not supported".format(self._game_plan_version))
-            
+                    self.execute_instruction(instruction)
             print("Sandbox mode finished")
             
             self.running = False
@@ -237,16 +230,8 @@ class Bot():
                     # Handle all instructions in current round
                     for instruction in self.game_plan[str(current_round)]:
                         if not "DONE" in instruction:
-
-                            if self._game_plan_version == "1":
-                                # print(instruction)
-                                self.v1_handleInstruction(instruction)
-                                
-                            else:
-                                raise Exception("Game plan version {} not supported".format(self._game_plan_version))
-
+                            self.execute_instruction(instruction)
                             instruction["DONE"] = True
-
                             log.debug(f"Current round {current_round}") # Only print current round once
 
     def exit_bot(self): 
@@ -330,7 +315,7 @@ class Bot():
         simulatedinput.send_key("backspace")
         simulatedinput.send_key("esc")
 
-    def v1_handleInstruction(self, instruction):
+    def execute_instruction(self, instruction):
         """
             Handles instructions for version 1 of the game plan 
         """
