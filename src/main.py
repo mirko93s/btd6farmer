@@ -32,7 +32,6 @@ def main(arg_parser):
     
     bot = Bot(instruction_path=Path(args["path"]), 
             debug_mode=(args['debug']), 
-            verbose_mode=(args['verbose']), 
             restart_mode=(args['restart']),
             sandbox_mode=(args['sandbox']),
         )
