@@ -43,13 +43,13 @@ def main(arg_parser):
 |   _  <      |  |     |  |  |  | '_ \                             
 |  |_)  |     |  |     |  '--'  | (_) |                            
 |______/      |__|     |_______/ \___/                             
-_______    ___      .______      .___  ___.  _______ .______      
+ _______    ___      .______      .___  ___.  _______ .______      
 |   ____|  /   \     |   _  \     |   \/   | |   ____||   _  \     
 |  |__    /  ^  \    |  |_)  |    |  \  /  | |  |__   |  |_)  |    
 |   __|  /  /_\  \   |      /     |  |\/|  | |   __|  |      /     
 |  |    /  _____  \  |  |\  \----.|  |  |  | |  |____ |  |\  \----.
 |__|   /__/     \__\ | _| `._____||__|  |__| |_______|| _| `._____|
-Join the discord: https://discord.gg/qyKT6bzqZQ
+Join the discord: https://discord.gg/qyKT6bzqZQ                    
 """)
     print("Setting up Bot...")
     print("Using gameplan located in: " + str(gameplan_path))
@@ -103,7 +103,7 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
 
         # main game loop
         bot.loop()
-
+        break
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A bot that plays the game bloons td 6')

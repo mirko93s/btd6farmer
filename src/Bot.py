@@ -146,16 +146,6 @@ class Bot():
 
 
     def loop(self):
-
-        current_round = -1
-        ability_one_timer = time.time()
-        ability_two_timer = time.time()
-        ability_three_timer = time.time()
-        
-        finished = False
-
-        middle_of_screen = (0.5, 0.5)
-
         if self.SANDBOX:
             print("Sandbox mode started")
             for instructionGroup in self.game_plan.keys():
@@ -166,6 +156,15 @@ class Bot():
             self.running = False
             return
 
+        current_round = -1
+        ability_one_timer = time.time()
+        ability_two_timer = time.time()
+        ability_three_timer = time.time()
+        
+        finished = False
+
+        middle_of_screen = (0.5, 0.5)
+
         # main ingame loop
         while not finished:
             # Check for levelup or insta monkey (level 100)
@@ -174,6 +173,14 @@ class Bot():
             elif self.checkFor("monkey_knowledge"):
                 simulatedinput.click(middle_of_screen, amount=1)
 
+
+            # Could combine defeat and victory in checkFor to make it more efficient
+            # Could make checkFor reaturn the list of matches instead of just True/False (extra argument)
+            # In this way the bot could check with multi threading and then look in the output if idx 0 is true then its a victory
+            # vice versa for defeat but index 1
+            # did_win, did_fail = self.checkFor(["victory", "defeat"])
+            # if did_win or did_fail:
+            
             # Check for finished or failed game
             if self.checkFor("defeat"):
                 
@@ -206,7 +213,7 @@ class Bot():
 
             if current_round != None:
                 # Saftey net; use abilites
-                # TODO: Calculate round dynamically, base on which round hero has been placed.
+                # TODO: Calculate round dynamically, based on which round hero has been placed.
                 if self.settings["HERO"] != "GERALDO": # geraldo doesn't any ability
                     cooldowns = static.hero_cooldowns[self.settings["HERO"]]
 
@@ -317,9 +324,7 @@ class Bot():
         simulatedinput.send_key("esc")
 
     def execute_instruction(self, instruction):
-        """
-            Handles instructions for version 1 of the game plan 
-        """
+        """Handles instructions from the gameplan"""
 
         instruction_type = instruction["INSTRUCTION_TYPE"]
 
@@ -495,7 +500,7 @@ class Bot():
         time.sleep(1)
 
         simulatedinput.click("HOME_MENU_START")
-        simulatedinput.click("EXPERT_SELECTION")
+        simulatedinput.click("EXPERT_SELECTION", timeout=0.25)
         
         simulatedinput.click("BEGINNER_SELECTION") # goto first page
 
@@ -620,13 +625,21 @@ class Bot():
 
                 return None
 
-    # Generic function to check for images on screen    
+    def waitForRound(self, round) -> None:
+        """Wait for a specific round to start, use this to wait until to execute a gameplan instruction"""
+        pass
+
+    def waitFor(self, images: list[str] | str, confidence: float = 0.9, timeout: int = 10) -> None:
+        """Wait for a image to appear on screen, generic function for multiple things"""
+        pass
+
     def checkFor(self, 
             images: list[str] | str, 
             confidence: float = 0.9, 
             return_cords: bool = False, 
             center_on_found: bool = True
         ) -> bool:
+        """Generic function to check for images on screen"""
 
         assets_directory = Path(__file__).resolve().parent/"assets"
         image_path = lambda image : assets_directory/f"{image}.png"
@@ -634,6 +647,7 @@ class Bot():
             
             output = [None]*len(images)
             
+            # Could this be done the find function?
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 # Submit the template matching function to the thread pool
                 futures= {

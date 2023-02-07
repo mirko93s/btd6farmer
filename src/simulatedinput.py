@@ -30,7 +30,6 @@ def move_mouse(location, move_timeout=0.1):
 
 
 def click(location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, hold_time=0.075, _button='left', ):
-    """"""
     """
     Method to click on a specific location on the screen
     @param location: The location to click on
