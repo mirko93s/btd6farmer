@@ -455,6 +455,7 @@ class Bot():
     # select hero if not selected
     def hero_select(self):
         hero_vaiants = [f"{self.settings['HERO']}_{i}" for i in range(1, 4)]
+
         if not self.checkFor(hero_vaiants):
             log.debug(f"Selecting {self.settings['HERO']}")
 
@@ -482,8 +483,10 @@ class Bot():
             simulatedinput.click("VICTORY_CONTINUE")
             time.sleep(2)
             simulatedinput.click("FREEPLAY")
-            simulatedinput.click("OK_MIDDLE")
-            time.sleep(1)
+            # simulatedinput.click("OK_MIDDLE")
+            simulatedinput.send_key("esc")
+
+            time.sleep(2)
             simulatedinput.send_key("esc")
             time.sleep(1)
             simulatedinput.click("RESTART_WIN")
@@ -645,7 +648,8 @@ class Bot():
             output = []
             for image_string in images:
                 # Could I do this multi-threading for faster results?
-                output.append(recognition.find(image_path(image_string)))
+                if image_path(image_string).is_file():
+                    output.append(recognition.find(image_path(image_string)))
             return any(output)
         else:
             return recognition.find(
