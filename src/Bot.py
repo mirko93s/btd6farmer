@@ -61,14 +61,6 @@ class Bot():
             "Uptime": 0
         }
 
-        self.support_dir = self.get_resource_dir("assets")
-
-        # Defing a lamda function that can be used to get a path to a specific image
-        # In essence this is dumb
-        self.image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
-
-
-
     def handle_time(self, ttime):
         """
             Converts seconds to appropriate unit
@@ -137,9 +129,8 @@ class Bot():
         # Push average to dictionary
         data["average_matchtime"] = f"{round(average_converted, 3)} {unit}"
 
-
         # Open as write
-        with open("stats.json", "w") as outfile:        
+        with open("stats.json", "w") as outfile:
             outfile.write(json.dumps(data, indent=4)) # write stats to file
         
         return data
@@ -564,7 +555,7 @@ class Bot():
         }
 
         # Search for round text, returns (1484,13) on 1080p
-        area = self.checkFor("round", return_cords=True, center_on_found=True) 
+        area = self.checkFor("round", return_cords=True, center_on_found=False) 
         log.debug("this should be only printed once, getting round area")
         log.debug(f"Round area found at {area}, applying offsetts")
         
@@ -652,22 +643,20 @@ class Bot():
             center_on_found: bool = True
         ) -> bool:
 
-        support_dir = self.get_resource_dir("assets")
-        image_path = lambda image, root_dir=support_dir : root_dir/f"{image}.png"
-        print(images)
+        assets_dir = self.get_resource_dir("assets")
+        image_path = lambda image, root_dir=assets_dir : root_dir/f"{image}.png"
         if isinstance(images, list):
             output = []
             for image_string in images:
                 print(image_path(image_string))
                 output.append(recognition.find(image_path(image_string)))
-            print(output)
             return any(output)
         else:
             return recognition.find(
                 image_path(images), 
-                confidence = 0.9, 
-                return_cords = False, 
-                center_on_found = True
+                confidence, 
+                return_cords, 
+                center_on_found
             )
 
 if __name__ == "__main__":
