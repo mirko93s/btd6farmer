@@ -162,8 +162,8 @@ The gameplan is a json file that contains the round as a key and the value as an
 
 An instruction array in a round can have multiple objects that will be executed after each other. for example:
 ```json
-    ...
-    [
+    //...
+    "3": [
         {
             "INSTRUCTION_TYPE": "PLACE_TOWER",
             "ARGUMENTS": {
@@ -186,7 +186,7 @@ An instruction array in a round can have multiple objects that will be executed 
             }
         }
     ]
-    ...
+    //...
 ```
 ### Getting the position of a tower or the target position.
 An easy way to get the position of the tower or the target you want, is to use the following code:
