@@ -114,10 +114,8 @@ It should be named `setup.json` and be placed in the same directory as the gamep
 <a name="gameplan_file"/>
 
 ### instructions.json
-#### Creating the gameplan 
-The gameplan is a json file that contains the round as a key and the value as an array with instructions. The instructions is also a json object:
-
-#### instructions.json example
+#### Creating the gameplan and example
+The gameplan is a json file that contains the round as a key and the value as an array with instructions. The following example instruction places a tower on the absolute center of the map and starts the game in fast forward mode, on round 3. See [instruction types](#instruction_types) for more information about the different types of instructions.
 ```json
 {
     "3": [
@@ -125,7 +123,7 @@ The gameplan is a json file that contains the round as a key and the value as an
             "INSTRUCTION_TYPE": "PLACE_TOWER",
             "ARGUMENTS": {
                 "TOWER": "TOWER_TYPE",
-                "POSITION": [ x, y ]
+                "POSITION": [ 0.5, 0.5 ]
             }
         },
         {
@@ -138,6 +136,9 @@ The gameplan is a json file that contains the round as a key and the value as an
 }
 
 ```
+
+<a name="instruction_types"/>
+
 ##### instruction types
 - `START` - Indicates the game
     - `FAST_FORWARD` - (true / false) Defaults to True. Should the bot play in fast forward mode?
@@ -163,7 +164,7 @@ The gameplan is a json file that contains the round as a key and the value as an
 An instruction array in a round can have multiple objects that will be executed after each other. for example:
 ```json
     //...
-    "3": [
+    "33": [
         {
             "INSTRUCTION_TYPE": "PLACE_TOWER",
             "ARGUMENTS": {
