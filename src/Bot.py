@@ -68,6 +68,7 @@ class Bot():
         self.image_path = lambda image, root_dir=self.support_dir : root_dir/f"{image}.png"
 
 
+
     def handle_time(self, ttime):
         """
             Converts seconds to appropriate unit
@@ -183,13 +184,13 @@ class Bot():
         # main ingame loop
         while not finished:
             # Check for levelup or insta monkey (level 100)
-            if self.levelup_check() or self.insta_monkey_check():
+            if self.checkFor(["levelup", "instamonkey"]):
                 simulatedinput.click(middle_of_screen, amount=3)
-            elif self.monkey_knowledge_check():
+            elif self.checkFor("monkey_knowledge"):
                 simulatedinput.click(middle_of_screen, amount=1)
 
             # Check for finished or failed game
-            if self.defeat_check():
+            if self.checkFor("defeat"):
                 
                 log.info("Defeat detected on round {}; exiting level".format(current_round))
                 self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
@@ -202,7 +203,7 @@ class Bot():
                 self.reset_game_plan()
                 continue
 
-            elif self.victory_check():
+            elif self.checkFor("victory"):
 
                 log.info("Victory detected; exiting level")
 
@@ -429,7 +430,7 @@ class Bot():
 
     def check_for_collection_crates(self):
         # Can this be done better?
-        if self.collection_event_check():
+        if self.checkFor("diamond_case"):
             log.debug("easter collection detected")
 
             simulatedinput.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
@@ -462,7 +463,8 @@ class Bot():
             
     # select hero if not selected
     def hero_select(self):
-        if not self.hero_check(self.settings["HERO"]):
+        hero_vaiants = [f"{self.settings['HERO']}_{i}" for i in range(1, 4)]
+        if not self.checkFor(hero_vaiants):
             log.debug(f"Selecting {self.settings['HERO']}")
 
             simulatedinput.click("HERO_SELECT")
@@ -546,7 +548,7 @@ class Bot():
         while still_loading:
             
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
-            still_loading = self.loading_screen_check()
+            still_loading = self.checkFor("loading_screen")
 
         log.debug("Out of loading screen, continuing..")
         
@@ -561,7 +563,8 @@ class Bot():
             "height": 42
         }
 
-        area = self.locate_round_area() # Search for round text, returns (1484,13) on 1080p
+        # Search for round text, returns (1484,13) on 1080p
+        area = self.checkFor("round", return_cords=True, center_on_found=True) 
         log.debug("this should be only printed once, getting round area")
         log.debug(f"Round area found at {area}, applying offsetts")
         
@@ -592,8 +595,6 @@ class Bot():
     
 
     def getRound(self):
-
-
         # If round area is not located yet
         if self.round_area is None:
             self.round_area = self.getRoundArea()
@@ -644,54 +645,30 @@ class Bot():
                 return None
 
     # Generic function to check for images on screen    
-    def checkFor(self, images: list[str], **kwargs) -> bool:
+    def checkFor(self, 
+            images: list[str] | str, 
+            confidence: float = 0.9, 
+            return_cords: bool = False, 
+            center_on_found: bool = True
+        ) -> bool:
+
+        support_dir = self.get_resource_dir("assets")
+        image_path = lambda image, root_dir=support_dir : root_dir/f"{image}.png"
+        print(images)
         if isinstance(images, list):
             output = []
             for image_string in images:
-                output.append(recognition.find(self.image_path(image_string)))
+                print(image_path(image_string))
+                output.append(recognition.find(image_path(image_string)))
+            print(output)
             return any(output)
         else:
-            return recognition.find(self.image_path(image_string), **kwargs)
-
-    # Different methods for different checks all wraps over _find()
-    def menu_check(self):
-        return recognition.find( self.image_path("menu"))
-
-    def insta_monkey_check(self):
-        return recognition.find( self.image_path("instamonkey"))
-
-    def monkey_knowledge_check(self):
-        return recognition.find( self.image_path("monkey_knowledge"))
-
-    def victory_check(self):
-        return recognition.find( self.image_path("victory"))
-
-    def defeat_check(self):
-        return recognition.find( self.image_path("defeat"))
-
-    def levelup_check(self):
-        return recognition.find( self.image_path("levelup"))
-
-    def hero_check(self, heroString):
-        return recognition.find( self.image_path(heroString)) or \
-                recognition.find( self.image_path(f"{heroString}_2" ) ) or \
-                recognition.find( self.image_path(f"{heroString}_3" ) )
-
-    def loading_screen_check(self):
-        return recognition.find( self.image_path("loading_screen"))
-
-    def home_menu_check(self):
-        return recognition.find( self.image_path("play"))
-
-    def language_check(self):
-        return recognition.find( self.image_path("english"))
-
-    def collection_event_check(self):
-        return recognition.find(self.image_path("diamond_case"))
-
-    def locate_round_area(self):
-        return recognition.find(self.image_path("round"), return_cords=True, center_on_found=False)
-
+            return recognition.find(
+                image_path(images), 
+                confidence = 0.9, 
+                return_cords = False, 
+                center_on_found = True
+            )
 
 if __name__ == "__main__":
     import time
