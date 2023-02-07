@@ -116,7 +116,6 @@ It should be named `setup.json` and be placed in the same directory as the gamep
 ### instructions.json
 #### Creating the gameplan and example
 The gameplan is a json file that contains the round as a key and the value as an array with instructions. 
-
 All coordinates are normalized to you'r screen resolution, to work with a wider range of computers. (a value between 0 and 1)
 
 The following example instruction places a tower on the absolute center of the map and starts the game in fast forward mode, on round 3. See [instruction types](#instruction_types) for more information about the different types of instructions. 
@@ -332,6 +331,8 @@ Run it in a terminal and copy the decired position into the gameplan.
 |Hedge|HEDGE|
 |End Of The Road|END_OF_THE_ROAD|
 |Logs|LOGS|
+|Covered Garden|COVERED_GARDEN|
+|Quarry|QUARRY|
 |Quiet Street|QUIET_STREET|
 |Bloonarius Prime|BLOONARIUS_PRIME|
 |Balance|BALANCE|
@@ -349,6 +350,7 @@ Run it in a terminal and copy the decired position into the gameplan.
 |Chutes|CHUTES|
 |Rake|RAKE|
 |Spice Islands|SPICE_ISLANDS|
+|Midnight Mansion|MIDNIGHT_MANSION|
 |Sunken Columns|SUNKEN_COLUMNS|
 |X Factor|XFACTOR|
 |Mesa|MESA|
