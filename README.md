@@ -115,7 +115,12 @@ It should be named `setup.json` and be placed in the same directory as the gamep
 
 ### instructions.json
 #### Creating the gameplan and example
-The gameplan is a json file that contains the round as a key and the value as an array with instructions. The following example instruction places a tower on the absolute center of the map and starts the game in fast forward mode, on round 3. See [instruction types](#instruction_types) for more information about the different types of instructions.
+The gameplan is a json file that contains the round as a key and the value as an array with instructions. 
+
+All coordinates are normalized to you'r screen resolution, to work with a wider range of computers. (a value between 0 and 1)
+
+The following example instruction places a tower on the absolute center of the map and starts the game in fast forward mode, on round 3. See [instruction types](#instruction_types) for more information about the different types of instructions. 
+
 ```json
 {
     "3": [
