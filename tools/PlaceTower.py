@@ -1,7 +1,6 @@
-import mouse
+import mouse, time
 import tkinter
-import static # Will be broken until static is imported
-# from .. import static
+import static
 import keyboard
 import os
 tk = tkinter.Tk()
@@ -18,15 +17,13 @@ step = """
         ]
     }}
 }}
-"""
-
+        """
 def find_tower(letter):
     for tower in static.tower_keybinds:
         if static.tower_keybinds[tower] == letter:
             return tower
-    return None
+    return None # Not Possible
 
-## Look at this
 while True:
     for tower in static.tower_keybinds:
         print(static.tower_keybinds[tower].upper() + ". " +tower )
@@ -48,15 +45,11 @@ while True:
                 w_norm, h_norm = x / width, y / height
                 print("Step:")
                 print(step.format(tower, w_norm, h_norm))
-                print("Press O to quit or press any other key to continue")
+                print("Press O to quit or P to continue")
                 while True:
                     if keyboard.read_key().lower() == 'o':
                         exit()
-                    else:
+                    elif keyboard.read_key().lower() == 'p':
                         os.system('cls')
                         break
                 break
-        
-    else:
-        print("Invalid tower")
-
