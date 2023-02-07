@@ -543,10 +543,6 @@ class Bot():
 
         log.debug("Out of loading screen, continuing..")
         
-
-    def get_resource_dir(self, path):
-        return Path(__file__).resolve().parent/path
-
     def getRoundArea(self):
         # Init round area dict with width and height of the round area
         round_area = {
@@ -643,12 +639,12 @@ class Bot():
             center_on_found: bool = True
         ) -> bool:
 
-        assets_dir = self.get_resource_dir("assets")
-        image_path = lambda image, root_dir=assets_dir : root_dir/f"{image}.png"
+        assets_directory = Path(__file__).resolve().parent/"assets"
+        image_path = lambda image : assets_directory/f"{image}.png"
         if isinstance(images, list):
             output = []
             for image_string in images:
-                print(image_path(image_string))
+                # Could I do this multi-threading for faster results?
                 output.append(recognition.find(image_path(image_string)))
             return any(output)
         else:
