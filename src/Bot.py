@@ -277,7 +277,7 @@ class Bot():
         
         simulatedinput.send_key("esc")
 
-    def change_target(self, tower_type, tower_position, targets: str | list, delay: int | float | list | tuple = 3):
+    def change_target(self, tower_type, tower_position, targets: list, delay: int | float | list | tuple = 3):
         if not isinstance(targets, (tuple, list)):
             targets = [targets]
 
