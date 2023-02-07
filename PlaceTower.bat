@@ -1,2 +1,2 @@
 @echo off
-python PlaceTower.py
+python -m tools.PlaceTower.py

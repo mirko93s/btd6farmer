@@ -1,6 +1,6 @@
-import mouse, time
+import mouse
 import tkinter
-import static
+from src import static # https://stackoverflow.com/questions/448271/what-is-init-py-for
 import keyboard
 import os
 tk = tkinter.Tk()
