@@ -48,7 +48,7 @@ button_positions = { # Creates a dictionary of all relative positions needed for
     "VICTORY_CONTINUE"          : [ 0.501171875 , 0.84375 ],
     "VICTORY_HOME"              : [ 0.366796875 , 0.7805555555555556 ],
     "DEFEAT_HOME"               : [ 0.29453125 , 0.7520833333333333 ],
-    "DEFEAT_HOME_NO_CONTINUE"        : [ 0.36328125 , 0.7520833333333333 ],
+    "DEFEAT_HOME_NO_CONTINUE"   : [ 0.36328125 , 0.7520833333333333 ],
     "EASTER_COLLECTION"         : [ 0.499609375 , 0.6326388888888889 ],
     "F_LEFT_INSTA"              : [ 0.3390625 , 0.5013888888888889 ],
     "F_RIGHT_INSTA"             : [ 0.65625 , 0.5013888888888889 ],
