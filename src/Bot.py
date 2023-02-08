@@ -195,33 +195,6 @@ class Bot():
                 finished = True
                 self.reset_game_plan()
                 break
-            
-            # if self.checkFor("defeat"):
-                
-            #     log.info("Defeat detected on round {}; exiting level".format(current_round))
-            #     self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
-
-            #     if self.RESTART:
-            #         self.restart_level(won=False)
-            #     else:
-            #         self.exit_level(won=False)
-            #     finished = True
-            #     self.reset_game_plan()
-            #     continue
-
-            # elif self.checkFor("victory"):
-
-            #     log.info("Victory detected; exiting level")
-
-            #     self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
-
-            #     if self.RESTART:
-            #         self.restart_level(won=True)
-            #     else:
-            #         self.exit_level(won=True)
-            #     finished = True
-            #     self.reset_game_plan()
-            #     continue
 
             current_round = self.getRound()
 
