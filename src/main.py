@@ -103,7 +103,6 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
 
         # main game loop
         bot.loop()
-        break
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A bot that plays the game bloons td 6')
