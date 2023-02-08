@@ -1,0 +1,96 @@
+{
+    "31": [
+        {
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "VILLAGE",
+                "LOCATION": [
+                    0.824609375,
+                    0.46875
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.824609375,
+                    0.46875
+                ],
+                "UPGRADE_PATH": [
+                    0,
+                    0,
+                    2
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.824609375,
+                    0.46875
+                ],
+                "UPGRADE_PATH": [
+                    3,
+                    0,
+                    2
+                ]
+            }
+        },
+        {
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "SNIPER",
+                "LOCATION": [
+                    0.797265625,
+                    0.5430555555555555
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.797265625,
+                    0.5430555555555555
+                ],
+                "UPGRADE_PATH": [
+                    0,
+                    2,
+                    4
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "PLACE_TOWER",
+            "ARGUMENTS": {
+                "MONKEY": "ALCHEMIST",
+                "LOCATION": [
+                    0.828515625,
+                    0.5965277777777778
+                ]
+            }
+        },
+		{
+            "INSTRUCTION_TYPE": "UPGRADE_TOWER",
+            "ARGUMENTS": {
+                "LOCATION": [
+                    0.828515625,
+                    0.5965277777777778
+                ],
+                "UPGRADE_PATH": [
+                    4,
+                    2,
+                    0
+                ]
+            }
+        },
+        {
+            "INSTRUCTION_TYPE": "START",
+            "ARGUMENTS": {
+                "FAST_FORWARD": true
+            }
+        }
+    ]  
+}
