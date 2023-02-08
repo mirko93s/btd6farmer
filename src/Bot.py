@@ -173,42 +173,56 @@ class Bot():
             elif self.checkFor("monkey_knowledge"):
                 simulatedinput.click(middle_of_screen, amount=1)
 
-
-            # Could combine defeat and victory in checkFor to make it more efficient
-            # Could make checkFor reaturn the list of matches instead of just True/False (extra argument)
-            # In this way the bot could check with multi threading and then look in the output if idx 0 is true then its a victory
-            # vice versa for defeat but index 1
-            # did_win, did_fail = self.checkFor(["victory", "defeat"])
-            # if did_win or did_fail:
-            
             # Check for finished or failed game
-            if self.checkFor("defeat"):
+            did_win, did_fail = self.checkFor(["victory", "defeat"], return_raw=True)
+            if did_win or did_fail:
+                if did_win:
+                    print("We won")
+                    log.info("Victory detected; exiting level")
+                else:
+                    print("We lost")
+                    log.info("Defeat detected on round {}; exiting level".format(current_round))
                 
-                log.info("Defeat detected on round {}; exiting level".format(current_round))
-                self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
+                win_or_lose = True if did_win else False # is this correct logic?
+                print(win_or_lose)
+                self.log_stats(did_win=win_or_lose, match_time=(time.time()-self.game_start_time))
 
                 if self.RESTART:
-                    self.restart_level(won=False)
+                    self.restart_level(won=win_or_lose)
                 else:
-                    self.exit_level(won=False)
+                    self.exit_level(won=win_or_lose)
+
                 finished = True
                 self.reset_game_plan()
-                continue
-
-            elif self.checkFor("victory"):
-
-                log.info("Victory detected; exiting level")
-
-                self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
-
-                if self.RESTART:
-                    self.restart_level(won=True)
-                else:
-                    self.exit_level(won=True)
-                finished = True
-                self.reset_game_plan()
-                continue
+                break
             
+            # if self.checkFor("defeat"):
+                
+            #     log.info("Defeat detected on round {}; exiting level".format(current_round))
+            #     self.log_stats(did_win=False, match_time=(time.time()-self.game_start_time))
+
+            #     if self.RESTART:
+            #         self.restart_level(won=False)
+            #     else:
+            #         self.exit_level(won=False)
+            #     finished = True
+            #     self.reset_game_plan()
+            #     continue
+
+            # elif self.checkFor("victory"):
+
+            #     log.info("Victory detected; exiting level")
+
+            #     self.log_stats(did_win=True, match_time=(time.time()-self.game_start_time))
+
+            #     if self.RESTART:
+            #         self.restart_level(won=True)
+            #     else:
+            #         self.exit_level(won=True)
+            #     finished = True
+            #     self.reset_game_plan()
+            #     continue
+
             current_round = self.getRound()
 
             if current_round != None:
@@ -460,8 +474,9 @@ class Bot():
             simulatedinput.click("VICTORY_CONTINUE")
             time.sleep(2)
             simulatedinput.click("VICTORY_HOME")
-        elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
-            simulatedinput.click("DEFEAT_HOME_CHIMPS")
+        # Some Chimps and Deflation doesn't have continue button
+        elif self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "DEFLATION":
+            simulatedinput.click("DEFEAT_HOME_NO_CONTINUE")
             time.sleep(2)
         else:
             simulatedinput.click("DEFEAT_HOME")
@@ -482,8 +497,8 @@ class Bot():
             time.sleep(1)
             simulatedinput.click("RESTART_WIN")
             simulatedinput.click("RESTART_CONFIRM")
-        elif self.settings["GAMEMODE"] == "CHIMPS_MODE":
-            simulatedinput.click("RESTART_DEFEAT_CHIMPS")
+        elif self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "DEFLATION":
+            simulatedinput.click("RESTART_DEFEAT_NO_CONTINUE")
             simulatedinput.click("RESTART_CONFIRM")
             time.sleep(2)
         else:
@@ -637,7 +652,8 @@ class Bot():
             images: list[str] | str, 
             confidence: float = 0.9, 
             return_cords: bool = False, 
-            center_on_found: bool = True
+            center_on_found: bool = True,
+            return_raw: bool = False
         ) -> bool:
         """Generic function to check for images on screen"""
 
@@ -658,6 +674,10 @@ class Bot():
                 for future in concurrent.futures.as_completed(futures):
                     output[futures[future]] = future.result()
             
+            # Return the raw output if return_raw is true
+            if return_raw:
+                return output
+
             # Return true if any of the images are found
             return any(output)
         else:
