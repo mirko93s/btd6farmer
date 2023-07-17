@@ -529,7 +529,7 @@ class Bot():
 
     def getRound(self):
         add = 0x03096928
-        offsets = [0x40, 0xB8, 0x0, 0xC0, 0x120, 0x20, 0x20]
+        offsets = [0xB8, 0x0, 0xC0, 0x120, 0x20, 0x20]
 
         pm = pymem.Pymem('BloonsTD6.exe')
         gameModule = pymem.process.module_from_name(pm.process_handle, "GameAssembly.dll").lpBaseOfDll
