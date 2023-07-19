@@ -27,28 +27,19 @@ Feel free to make a pull request if you have any improvements or create a issue 
 <a name="dependenices"/>
 
 ## Requirements & Dependencies
-- Tesseract v5.0+
 - Python 3.10+
 
 ```
 keyboard==0.13.5
 mouse==0.7.1
-mss==6.1.0
-numpy==1.22.3
-opencv_python==4.5.5.64
-pytesseract==0.3.9
+mss==9.0.1
+numpy==1.25.1
+opencv_python==4.8.0.74
+Pymem==1.12.0
 ```
 <a name="installation"/>
 
 ## Installation of dependencies:
-The script relies on tesseract (tested with v5.3.0) which can be installed using this [this](https://github.com/UB-Mannheim/tesseract/wiki) guide. 
-(*If by any chance the tesseract installation directory is different from the directory specified in Bot.py you need to manually change that in the script. Otherwise the bot will not work!*)
-
-default path (all users tesseract installation):
-```py
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-```
-
 The python library requirments can be installed using `python -m pip install -r requirements.txt` or by running `Install_Requirements.bat`
 
 <a name="running"/>
