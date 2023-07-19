@@ -9,7 +9,6 @@ import concurrent.futures
 from pathlib import Path
 
 # Local imports
-import ocr
 import recognition
 import simulatedinput
 import monitor
