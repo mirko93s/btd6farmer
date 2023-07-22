@@ -12,6 +12,7 @@ from logger import logger as log
 import os
 import win32gui
 import subprocess
+from winreg import *
 
 def main(arg_parser):
 
@@ -71,13 +72,37 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     game_not_found = True
     hwnd = win32gui.FindWindow(None, 'BloonsTD6')
 
+    # game process not found
     if not hwnd:
-        # game process not found, start the game using steam
-        print("Game not found. Attempting to start the game through Steam. Please wait...")
-        # Steam
-        subprocess.run("start steam://run/960090", shell=True, check=True)
-        # Epic Games
-        # subprocess.run("com.epicgames.launcher://apps/6a8dfa6e441e4f2f9048a98776c6077d%3A49c4bf5c6fd24259b87d0bcc96b6009f%3A7786b355a13b47a6b3915335117cd0b2?action=launch&silent=true", shell=True, check=True)
+        print("Game process not found.")
+        # check if game is installed on Steam (can also be used to check if game is a legit copy or cracked)
+        reg = ConnectRegistry(None,HKEY_CURRENT_USER)
+        game_on_Steam = False
+        try:
+            key = OpenKey(reg, r"SOFTWARE\Valve\Steam\Apps\960090")
+            if key:
+                try:
+                    isInstalled = QueryValueEx(key, "Installed")[0]
+                    # Other useful values are "Running" and "Updating"
+                    if isInstalled == 1:
+                        game_on_Steam = True
+                        print("Detected Steam installation.")
+                except WindowsError:
+                    pass
+            CloseKey(key)
+        except WindowsError:
+            pass
+        CloseKey(reg)
+
+        if game_on_Steam:
+            print("Starting the game through Steam. Please wait...")
+            # Steam
+            subprocess.run("start steam://run/960090", shell=True, check=True)
+
+            # Epic Games
+            # subprocess.run("com.epicgames.launcher://apps/6a8dfa6e441e4f2f9048a98776c6077d%3A49c4bf5c6fd24259b87d0bcc96b6009f%3A7786b355a13b47a6b3915335117cd0b2?action=launch&silent=true", shell=True, check=True)
+        else:
+            print("Please start the game manually.")
 
     while game_not_found:
         time.sleep(0.2)
