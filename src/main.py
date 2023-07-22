@@ -13,6 +13,8 @@ import os
 import win32gui
 import subprocess
 from winreg import *
+import re
+import json
 
 def main(arg_parser):
 
@@ -75,6 +77,7 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     # game process not found
     if not hwnd:
         print("Game process not found.")
+
         # check if game is installed on Steam (can also be used to check if game is a legit copy or cracked)
         reg = ConnectRegistry(None,HKEY_CURRENT_USER)
         game_on_Steam = False
@@ -94,13 +97,46 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
             pass
         CloseKey(reg)
 
-        if game_on_Steam:
-            print("Starting the game through Steam. Please wait...")
-            # Steam
-            subprocess.run("start steam://run/960090", shell=True, check=True)
+        # if game is not installed on Steam check Epic Games
+        if not game_on_Steam:
+            reg = ConnectRegistry(None,HKEY_LOCAL_MACHINE)
+            found_EpicGamesLauncher = False
+            game_on_EpicGames = False
+            try:
+                key = OpenKey(reg, r"SOFTWARE\WOW6432Node\Epic Games\EpicGamesLauncher")
+                if key:
+                    try:
+                        isInstalled = QueryValueEx(key, "AppDataPath")[0]
+                        if isInstalled:
+                            found_EpicGamesLauncher = True
+                    except WindowsError:
+                        pass
+                CloseKey(key)
+            except WindowsError:
+                pass
+            CloseKey(reg)
 
+            if found_EpicGamesLauncher:
+                path = re.search(r".+Epic\\", isInstalled).group(0) + "UnrealEngineLauncher\LauncherInstalled.dat"
+                try:
+                    with open(path) as f:
+                        data = json.load(f)
+                    for x in data["InstallationList"]:
+                        if x["NamespaceId"] == "6a8dfa6e441e4f2f9048a98776c6077d":
+                            game_on_EpicGames = True
+                            print("Detected Epic Games installation.")
+                except:
+                    # game is not installed on epic games
+                    pass
+
+        if game_on_Steam:
+            # Steam
+            print("Starting the game through Steam. Please wait...")
+            subprocess.run("start steam://run/960090", shell=True, check=True)
+        elif game_on_EpicGames:
             # Epic Games
-            # subprocess.run("com.epicgames.launcher://apps/6a8dfa6e441e4f2f9048a98776c6077d%3A49c4bf5c6fd24259b87d0bcc96b6009f%3A7786b355a13b47a6b3915335117cd0b2?action=launch&silent=true", shell=True, check=True)
+            print("Starting the game through Epic Games. Please wait...")
+            subprocess.run("start com.epicgames.launcher://apps/6a8dfa6e441e4f2f9048a98776c6077d%3A49c4bf5c6fd24259b87d0bcc96b6009f%3A7786b355a13b47a6b3915335117cd0b2?action=launch", shell=True, check=True)
         else:
             print("Please start the game manually.")
 
