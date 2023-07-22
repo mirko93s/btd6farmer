@@ -10,6 +10,8 @@ import simulatedinput
 import monitor
 from logger import logger as log
 import os
+import win32gui
+import subprocess
 
 def main(arg_parser):
 
@@ -61,17 +63,41 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     print("Gamemode:", bot.settings["GAMEMODE"].replace("_", " ").title())
     print("="*25)
 
-    print("Waiting for Home screen. Please switch to the Bloons TD 6 window.")
+    print("Finding game process.")
 
-    # Wait for btd6 home screen
     # set mouse starting position to the bottom right corner
     simulatedinput.move_mouse((monitor.width,monitor.height))
+
+    game_not_found = True
+    hwnd = win32gui.FindWindow(None, 'BloonsTD6')
+
+    if not hwnd:
+        # game process not found, start the game using steam
+        print("Game not found. Attempting to start the game through Steam. Please wait...")
+        # Steam
+        subprocess.run("start steam://run/960090", shell=True, check=True)
+        # Epic Games
+        # subprocess.run("com.epicgames.launcher://apps/6a8dfa6e441e4f2f9048a98776c6077d%3A49c4bf5c6fd24259b87d0bcc96b6009f%3A7786b355a13b47a6b3915335117cd0b2?action=launch&silent=true", shell=True, check=True)
+
+    while game_not_found:
+        time.sleep(0.2)
+        # game process found, focus its window
+        hwnd = win32gui.FindWindow(None, 'BloonsTD6')
+        if hwnd:
+            game_not_found = False
+            win32gui.SetForegroundWindow(hwnd)
+            print("Game found. Switching to game window.")
+
+    # Wait for btd6 home screen or startup screen
     waiting_for_home = False
 
     log.info("Waiting for home screen..")
     while waiting_for_home is False:
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
-        waiting_for_home = bot.checkFor("home_menu")
+        waiting_for_startup, waiting_for_home = bot.checkFor(["startup","home_menu"], return_raw=True)
+        if waiting_for_startup:
+            log.info("Startup screen detected")
+            simulatedinput.click("STARTUP")
     log.info("Home screen detected")
     
     print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")

@@ -72,7 +72,8 @@ button_positions = { # Creates a dictionary of all relative positions needed for
     "CONFIRM_CHIMPS"            : [ 0.500390625 , 0.6805555555555556 ],
     "SETTINGS"                  : [ 0.037500 , 0.191667],
     "LANGUAGE"                  : [ 0.555208 , 0.659259],
-    "ENGLISH"                   : [ 0.224479 , 0.192593]
+    "ENGLISH"                   : [ 0.224479 , 0.192593],
+    "STARTUP"                   : [ 0.5, 0.925]
 }
 
 hero_positions = {
