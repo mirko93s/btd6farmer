@@ -401,33 +401,17 @@ class Bot():
         # Can this be done better?
         if self.checkFor("diamond_case"):
             log.debug("easter collection detected")
-
-            simulatedinput.click("EASTER_COLLECTION") #DUE TO EASTER EVENT:
+            #c lick collect button
+            simulatedinput.click("EVENT_COLLECTION", timeout=1.5)
+            # collect instas
+            simulatedinput.click("LEFT_INSTA", amount=2, timeout=1.5)
+            simulatedinput.click("RIGHT_INSTA", amount=2, timeout=1.5)
+            simulatedinput.click("F_LEFT_INSTA", amount=2, timeout=1.5)
+            simulatedinput.click("MID_INSTA", amount=2, timeout=1.5)
+            simulatedinput.click("F_RIGHT_INSTA", amount=2, timeout=1.5)
+            # click continue and exit to main menu
             time.sleep(1)
-            simulatedinput.click("LEFT_INSTA") # unlock insta
-            time.sleep(1)
-            simulatedinput.click("LEFT_INSTA") # collect insta
-            time.sleep(1)
-            simulatedinput.click("RIGHT_INSTA") # unlock r insta
-            time.sleep(1)
-            simulatedinput.click("RIGHT_INSTA") # collect r insta
-            time.sleep(1)
-            simulatedinput.click("F_LEFT_INSTA")
-            time.sleep(1)
-            simulatedinput.click("F_LEFT_INSTA")
-            time.sleep(1)
-            simulatedinput.click("MID_INSTA") # unlock insta
-            time.sleep(1)
-            simulatedinput.click("MID_INSTA") # collect insta
-            time.sleep(1)
-            simulatedinput.click("F_RIGHT_INSTA")
-            time.sleep(1)
-            simulatedinput.click("F_RIGHT_INSTA")
-            time.sleep(1)
-
-            time.sleep(1)
-            simulatedinput.click("EASTER_CONTINUE")
-
+            simulatedinput.click("EVENT_CONTINUE",timeout=1)
             simulatedinput.send_key("esc")
             
     # select hero if not selected
