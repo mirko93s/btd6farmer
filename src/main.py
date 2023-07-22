@@ -7,6 +7,7 @@ from threading import Thread
 from Failsafe import FailSafe
 import mouse
 import simulatedinput
+import monitor
 from logger import logger as log
 import os
 
@@ -63,6 +64,8 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     print("Waiting for Home screen. Please switch to the Bloons TD 6 window.")
 
     # Wait for btd6 home screen
+    # set mouse starting position to the bottom right corner
+    simulatedinput.move_mouse((monitor.width,monitor.height))
     waiting_for_home = False
 
     log.info("Waiting for home screen..")
