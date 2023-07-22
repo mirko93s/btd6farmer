@@ -12,9 +12,6 @@ from logger import logger as log
 import os
 import win32gui
 import subprocess
-from winreg import *
-import re
-import json
 
 def main(arg_parser):
 
@@ -71,81 +68,34 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     # set mouse starting position to the bottom right corner
     simulatedinput.move_mouse((monitor.width,monitor.height))
 
-    game_not_found = True
+    waiting_for_game = True
     hwnd = win32gui.FindWindow(None, 'BloonsTD6')
 
-    # game process not found
+    # game is not open
     if not hwnd:
-        print("Game process not found.")
+        print("Game process not found. Finding game installations.")
 
-        # check if game is installed on Steam (can also be used to check if game is a legit copy or cracked)
-        reg = ConnectRegistry(None,HKEY_CURRENT_USER)
-        game_on_Steam = False
-        try:
-            key = OpenKey(reg, r"SOFTWARE\Valve\Steam\Apps\960090")
-            if key:
-                try:
-                    isInstalled = QueryValueEx(key, "Installed")[0]
-                    # Other useful values are "Running" and "Updating"
-                    if isInstalled == 1:
-                        game_on_Steam = True
-                        print("Detected Steam installation.")
-                except WindowsError:
-                    pass
-            CloseKey(key)
-        except WindowsError:
-            pass
-        CloseKey(reg)
+        Steam, EpicGames = bot.findStore()
 
-        # if game is not installed on Steam check Epic Games
-        if not game_on_Steam:
-            reg = ConnectRegistry(None,HKEY_LOCAL_MACHINE)
-            found_EpicGamesLauncher = False
-            game_on_EpicGames = False
-            try:
-                key = OpenKey(reg, r"SOFTWARE\WOW6432Node\Epic Games\EpicGamesLauncher")
-                if key:
-                    try:
-                        isInstalled = QueryValueEx(key, "AppDataPath")[0]
-                        if isInstalled:
-                            found_EpicGamesLauncher = True
-                    except WindowsError:
-                        pass
-                CloseKey(key)
-            except WindowsError:
-                pass
-            CloseKey(reg)
-
-            if found_EpicGamesLauncher:
-                path = re.search(r".+Epic\\", isInstalled).group(0) + "UnrealEngineLauncher\LauncherInstalled.dat"
-                try:
-                    with open(path) as f:
-                        data = json.load(f)
-                    for x in data["InstallationList"]:
-                        if x["NamespaceId"] == "6a8dfa6e441e4f2f9048a98776c6077d":
-                            game_on_EpicGames = True
-                            print("Detected Epic Games installation.")
-                except:
-                    # game is not installed on epic games
-                    pass
-
-        if game_on_Steam:
-            # Steam
+        if Steam:
             print("Starting the game through Steam. Please wait...")
             subprocess.run("start steam://run/960090", shell=True, check=True)
-        elif game_on_EpicGames:
-            # Epic Games
+
+        elif EpicGames:
             print("Starting the game through Epic Games. Please wait...")
             subprocess.run("start com.epicgames.launcher://apps/6a8dfa6e441e4f2f9048a98776c6077d%3A49c4bf5c6fd24259b87d0bcc96b6009f%3A7786b355a13b47a6b3915335117cd0b2?action=launch", shell=True, check=True)
+
         else:
+            # We can exit the program here if we don't want cracked users to use the bot
+            # sys.exit(1)
             print("Please start the game manually.")
 
-    while game_not_found:
+    while waiting_for_game:
         time.sleep(0.2)
-        # game process found, focus its window
         hwnd = win32gui.FindWindow(None, 'BloonsTD6')
+        # game process found, focus its window
         if hwnd:
-            game_not_found = False
+            waiting_for_game = False
             win32gui.SetForegroundWindow(hwnd)
             print("Game found. Switching to game window.")
 
