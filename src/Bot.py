@@ -307,7 +307,6 @@ class Bot():
     def remove_tower(self, position):
         simulatedinput.click(position)
         simulatedinput.send_key("backspace")
-        simulatedinput.send_key("esc")
 
     def execute_instruction(self, instruction):
         """Handles instructions from the gameplan"""
