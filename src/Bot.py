@@ -587,47 +587,44 @@ class Bot():
                         game_on_Steam = True
                         print("Detected Steam installation.")
                 except WindowsError:
+                    # game is not installed but in the Steam library ???
                     pass
             CloseKey(key)
         except WindowsError:
+            # game is not installed on Steam
             pass
         CloseKey(reg)
 
         # if game is not installed on Steam check Epic Games
         reg = ConnectRegistry(None,HKEY_LOCAL_MACHINE)
-        found_EpicGamesLauncher = False
         game_on_EpicGames = False
         try:
             key = OpenKey(reg, r"SOFTWARE\WOW6432Node\Epic Games\EpicGamesLauncher")
             if key:
                 try:
-                    isInstalled = QueryValueEx(key, "AppDataPath")[0]
-                    if isInstalled:
-                        found_EpicGamesLauncher = True
+                    epicgamesLauncherPath = QueryValueEx(key, "AppDataPath")[0]
+                    if epicgamesLauncherPath:
+                        path = re.search(r".+Epic\\", epicgamesLauncherPath).group(0) + "UnrealEngineLauncher\LauncherInstalled.dat"
+                        try:
+                            with open(path) as f:
+                                data = json.load(f)
+                            for x in data["InstallationList"]:
+                                if x["NamespaceId"] == "6a8dfa6e441e4f2f9048a98776c6077d":
+                                    game_on_EpicGames = True
+                                    print("Detected Epic Games installation.")
+                        except:
+                            # game is not installed on Epic Games
+                            pass
                 except WindowsError:
+                    # couldn't find Epic Games launcher path
                     pass
             CloseKey(key)
         except WindowsError:
+            # Epic Games launcher is not installed
             pass
         CloseKey(reg)
-
-        if found_EpicGamesLauncher:
-            path = re.search(r".+Epic\\", isInstalled).group(0) + "UnrealEngineLauncher\LauncherInstalled.dat"
-            try:
-                with open(path) as f:
-                    data = json.load(f)
-                for x in data["InstallationList"]:
-                    if x["NamespaceId"] == "6a8dfa6e441e4f2f9048a98776c6077d":
-                        game_on_EpicGames = True
-                        print("Detected Epic Games installation.")
-            except:
-                # game is not installed on epic games
-                pass
         
         return(game_on_Steam,game_on_EpicGames)
-
-
-
 
 if __name__ == "__main__":
     import time
