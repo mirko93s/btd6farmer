@@ -37,8 +37,6 @@ class Bot():
         # Something to do with how python handles copying objects
         self._game_plan_copy = copy.deepcopy(self.game_plan)
         ####
-
-        self.round_area = None
         
         self.DEBUG = debug_mode
         self.RESTART = restart_mode
