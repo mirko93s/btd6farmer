@@ -40,12 +40,12 @@ width, height = get_resolution()
 def scaling(pos_list):
     global width, height, resolution_list
     """
-        Function takes in width, and height normalized to 2560x1440
+        Function takes in width, and height normalized to 1920x1080
         it will then iterate through the reso_21 list and check if the current resolution height matches any of the entries
         if it does it will set reso_21 to True and break out of the loop
 
 
-        This function will dynamically calculate the differance between current resolution and designed for 2560x1440
+        This function will dynamically calculate the differance between current resolution and designed for 1920x1080
         it will also add any padding needed to positions to account for 21:9 
 
         do_padding -- this is used during start 
