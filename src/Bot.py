@@ -155,7 +155,9 @@ class Bot():
             self.running = False
             return
 
-        current_round = -1
+        rounds = list(self.game_plan.keys())
+        r = 1
+        current_round = 6
         ability_one_timer = time.time()
         ability_two_timer = time.time()
         ability_three_timer = time.time()
@@ -194,8 +196,12 @@ class Bot():
                 finished = True
                 self.reset_game_plan()
                 break
-
-            current_round = self.getRound()
+            
+            # check for next round using images
+            if self.checkFor("rounds/"+rounds[r],confidence=0.99):
+                current_round = int(rounds[r])
+                if r < len(rounds-1):
+                    r+=1
 
             if current_round != None:
                 # Saftey net; use abilites
@@ -506,23 +512,6 @@ class Bot():
             still_loading = self.checkFor("loading_screen")
 
         log.debug("Out of loading screen, continuing..")
-           
-
-    def getRound(self):
-        add = 0x03096928
-        offsets = [0xB8, 0x0, 0xC0, 0x120, 0x20, 0x20]
-
-        pm = pymem.Pymem('BloonsTD6.exe')
-        gameModule = pymem.process.module_from_name(pm.process_handle, "GameAssembly.dll").lpBaseOfDll
-        address = pm.read_longlong(gameModule+add)
-
-        for offset in offsets:
-            try:
-                address = pm.read_longlong(address + offset)
-            except Exception as e:
-                print(e)
-
-        return address + offsets[-1] -32
 
     def waitForRound(self, round) -> None:
         """Wait for a specific round to start, use this to wait until to execute a gameplan instruction"""
@@ -629,4 +618,3 @@ if __name__ == "__main__":
     import time
     time.sleep(2)
     bot = Bot(instruction_path="")
-    print(bot.getRound())
