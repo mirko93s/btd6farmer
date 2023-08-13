@@ -117,23 +117,14 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     # Check for obyn
     bot.hero_select()
 
-    if bot.RESTART:
-        log.info("Selecting map")
-        bot.select_map()
-
     # Make sure we haven't exited by using the stop key.
     while bot.running:
         bot.check_for_collection_crates()
-
-        if not bot.RESTART:
-            log.info("Selecting map")
-            
-            # Choose map
-            bot.select_map()   
-        log.info("Game start")
-        
-
+        # Choose map
+        log.info("Selecting map")
+        bot.select_map()   
         # main game loop
+        log.info("Game start")
         bot.loop()
 
 if __name__ == "__main__":
