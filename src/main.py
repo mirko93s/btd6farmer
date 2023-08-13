@@ -69,7 +69,7 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     simulatedinput.move_mouse((monitor.width,monitor.height))
 
     waiting_for_game = True
-    hwnd = win32gui.FindWindow(None, 'BloonsTD6')
+    hwnd = win32gui.FindWindow(None, 'BloonsTD6') or win32gui.FindWindow(None, 'BloonsTD6-Epic')
 
     # game is not open
     if not hwnd:
@@ -92,7 +92,7 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
 
     while waiting_for_game:
         time.sleep(0.2)
-        hwnd = win32gui.FindWindow(None, 'BloonsTD6')
+        hwnd = win32gui.FindWindow(None, 'BloonsTD6') or win32gui.FindWindow(None, 'BloonsTD6-Epic')
         # game process found, focus its window
         if hwnd:
             waiting_for_game = False
