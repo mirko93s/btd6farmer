@@ -174,7 +174,7 @@ class Bot():
             # check for next round using images
             if self.checkFor("rounds/"+rounds[r],confidence=0.99):
                 current_round = int(rounds[r])
-                if r < len(rounds-1):
+                if r < len(rounds)-1:
                     r+=1
 
             if current_round != None:
