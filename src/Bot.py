@@ -470,20 +470,16 @@ class Bot():
         self.wait_for_loading() # wait for loading screen
 
     def select_map(self):
-        map_page = static.maps[self.settings["MAP"]][0]
-        map_index = static.maps[self.settings["MAP"]][1]
         
         time.sleep(1)
 
         simulatedinput.click("HOME_MENU_START")
+        # reset map page
         simulatedinput.click("EXPERT_SELECTION", timeout=0.25)
-        
-        simulatedinput.click("BEGINNER_SELECTION") # goto first page
+        simulatedinput.click("BEGINNER_SELECTION")
 
-        # click to the right page
-        simulatedinput.click("RIGHT_ARROW_SELECTION", amount=(map_page - 1), timeout=0.1)
-
-        simulatedinput.click("MAP_INDEX_" + str(map_index)) # Click correct map
+        # loop expert map pages until we find dark castle and click it
+        self.findDarkCastle()
 
         if self.SANDBOX:
             simulatedinput.click("EASY_MODE") # Select Difficulty
@@ -501,7 +497,14 @@ class Bot():
         if self.settings["GAMEMODE"] in confirm_list or self.SANDBOX:
             simulatedinput.send_key("esc", timeout=1)
 
-    
+    def findDarkCastle(self):
+        mapFound = False
+        while not mapFound:
+            simulatedinput.click("EXPERT_SELECTION", timeout=0.25)
+            mapFound = self.checkFor("dark_castle", return_cords=True, center_on_found=True)
+        x, y = mapFound
+        simulatedinput.click((x/monitor.width, y/monitor.height))
+
     def wait_for_loading(self):
         still_loading = True
 
