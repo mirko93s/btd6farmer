@@ -1,6 +1,5 @@
 import time
 import sys
-import argparse
 from pathlib import Path
 from Bot import Bot
 from threading import Thread
@@ -13,16 +12,13 @@ import os
 import win32gui
 import subprocess
 
-def main(arg_parser):
-
+def main():
 
     def no_gameplan_exception():
         raise Exception("No valid argument for directory.. 'python main.py --gameplan_path <directory to gameplan>'")
 
-    args = vars(arg_parser.parse_args())
-
     # Retrives the gameplan from the command line and makes a Path object out of it
-    gameplan_path = (Path(__file__).parent.parent.resolve() / Path(args["path"]) )
+    gameplan_path = (Path(__file__).parent.parent.resolve() / Path("gameplans/Dark_Castle_Hard_Chimps") )
     print(gameplan_path, Path(__file__).parent.parent.resolve())
     # Verify directory exist.
     if not gameplan_path.exists():
@@ -33,11 +29,7 @@ def main(arg_parser):
         print("Not a directory")
         no_gameplan_exception()
     
-    bot = Bot(instruction_path=Path(args["path"]), 
-            debug_mode=(args['debug']), 
-            restart_mode=(args['restart']),
-            sandbox_mode=(args['sandbox']),
-        )
+    bot = Bot(instruction_path=Path("../gameplans/Dark_Castle_Hard_Chimps"))
     os.system('cls' if os.name == 'nt' else 'clear')
     print("""
 .______   .___________. _______    __                              
@@ -145,15 +137,9 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
         bot.loop()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='A bot that plays the game bloons td 6')
-
-    parser.add_argument('-p', '--path', '--gameplan_path', type=str, help='Path to the gameplan directory', required=True)
-    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug mode')
-    parser.add_argument('-r', '--restart', action='store_true', help='automatically restarts the game when finished, instead of going to home screen \(games don\'t count towards event progression if you don\'t go back to home)')
-    parser.add_argument('-s', '--sandbox', action='store_true', help='Try put gameplan in sandbox mode without waiting for specific rounds')
     
     # Start the bot on a seperate thread
-    bot_thread = Thread(target=main, args=(parser,), daemon=True)
+    bot_thread = Thread(target=main,daemon=True)
     bot_thread.start()
 
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
