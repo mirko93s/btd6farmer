@@ -20,9 +20,6 @@ from winreg import *
 class Bot():
     def __init__(self, 
         instruction_path, 
-        debug_mode=False, 
-        restart_mode=False, 
-        sandbox_mode=False,
         game_plan_filename="instructions.json",
         game_settings_filename="setup.json"
     ):
@@ -37,13 +34,6 @@ class Bot():
         # Something to do with how python handles copying objects
         self._game_plan_copy = copy.deepcopy(self.game_plan)
         ####
-        
-        self.DEBUG = debug_mode
-        self.RESTART = restart_mode
-        self.SANDBOX = sandbox_mode
-
-        if self.SANDBOX and self.RESTART:
-            raise Exception("Sandbox mode and restart mode cannot be used at the same time")
         
         self.start_time = time.time()
         self.game_start_time = time.time()
@@ -138,28 +128,16 @@ class Bot():
 
 
     def initilize(self):
-        if self.DEBUG:
-            log.debug("RUNNING IN DEBUG MODE, DEBUG FILES WILL BE GENERATED")
         simulatedinput.send_key("alt")
 
 
     def loop(self):
-        if self.SANDBOX:
-            print("Sandbox mode started")
-            for instructionGroup in self.game_plan.keys():
-                for instruction in self.game_plan.get(instructionGroup):
-                    self.execute_instruction(instruction)
-            print("Sandbox mode finished")
-            
-            self.running = False
-            return
-
+        
         rounds = list(self.game_plan.keys())
         r = 1
         current_round = 6
         ability_one_timer = time.time()
         ability_two_timer = time.time()
-        ability_three_timer = time.time()
         
         finished = False
 
@@ -187,10 +165,7 @@ class Bot():
                 print(win_or_lose)
                 self.log_stats(did_win=win_or_lose, match_time=(time.time()-self.game_start_time))
 
-                if self.RESTART:
-                    self.restart_level(won=win_or_lose)
-                else:
-                    self.exit_level(won=win_or_lose)
+                self.exit_level(won=win_or_lose)
 
                 finished = True
                 self.reset_game_plan()
@@ -204,23 +179,15 @@ class Bot():
 
             if current_round != None:
                 # Saftey net; use abilites
-                # TODO: Calculate round dynamically, based on which round hero has been placed.
-                if self.settings["HERO"] != "GERALDO": # geraldo doesn't any ability
-                    cooldowns = static.hero_cooldowns[self.settings["HERO"]]
+                cooldowns = static.hero_cooldowns[self.settings["HERO"]]
 
-                    if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
-                        simulatedinput.send_key("1")
-                        ability_one_timer = time.time()
-                    
-                    # skip if ezili or adora, their lvl 7 ability is useless
-                    if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]) and (self.settings["HERO"] != "EZILI" and "ADORA"):
-                        simulatedinput.send_key("2")
-                        ability_two_timer = time.time()
-                    
-                    if len(cooldowns) == 3:
-                        if current_round >= 53 and self.abilityAvaliabe(ability_three_timer, cooldowns[2]):
-                            simulatedinput.send_key("3")
-                            ability_three_timer = time.time()
+                if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
+                    simulatedinput.send_key("1")
+                    ability_one_timer = time.time()
+                
+                if current_round >= 31 and self.abilityAvaliabe(ability_two_timer, cooldowns[1]):
+                    simulatedinput.send_key("2")
+                    ability_two_timer = time.time()
 
                 # Is this necessary?
                 # Check for round in game plan
@@ -419,9 +386,9 @@ class Bot():
             
     # select hero if not selected
     def hero_select(self):
-        hero_vaiants = [f"{self.settings['HERO']}_{i}" for i in range(1, 4)]
+        hero_variants = [f"{self.settings['HERO']}_{i}" for i in range(1, 4)]
 
-        if not self.checkFor(hero_vaiants):
+        if not self.checkFor(hero_variants):
             log.debug(f"Selecting {self.settings['HERO']}")
 
             simulatedinput.click("HERO_SELECT")
@@ -434,36 +401,8 @@ class Bot():
             simulatedinput.click("VICTORY_CONTINUE")
             time.sleep(2)
             simulatedinput.click("VICTORY_HOME")
-        # Some Chimps and Deflation doesn't have continue button
-        elif self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "DEFLATION":
+        else: # lost
             simulatedinput.click("DEFEAT_HOME_NO_CONTINUE")
-            time.sleep(2)
-        else:
-            simulatedinput.click("DEFEAT_HOME")
-            time.sleep(2)
-        
-        self.wait_for_loading() # wait for loading screen
-    
-    def restart_level(self, won=True):
-        if won:
-            simulatedinput.click("VICTORY_CONTINUE")
-            time.sleep(2)
-            simulatedinput.click("FREEPLAY")
-            # simulatedinput.click("OK_MIDDLE")
-            simulatedinput.send_key("esc")
-
-            time.sleep(2)
-            simulatedinput.send_key("esc")
-            time.sleep(1)
-            simulatedinput.click("RESTART_WIN")
-            simulatedinput.click("RESTART_CONFIRM")
-        elif self.settings["GAMEMODE"] == "CHIMPS_MODE" or self.settings["GAMEMODE"] == "DEFLATION":
-            simulatedinput.click("RESTART_DEFEAT_NO_CONTINUE")
-            simulatedinput.click("RESTART_CONFIRM")
-            time.sleep(2)
-        else:
-            simulatedinput.click("RESTART_DEFEAT")
-            simulatedinput.click("RESTART_CONFIRM")
             time.sleep(2)
         
         self.wait_for_loading() # wait for loading screen
@@ -480,21 +419,15 @@ class Bot():
         # loop expert map pages until we find dark castle and click it
         self.findDarkCastle()
 
-        if self.SANDBOX:
-            simulatedinput.click("EASY_MODE") # Select Difficulty
-            simulatedinput.click("SANDBOX_EASY") # Select Gamemode
-        else:
-            simulatedinput.click(self.settings["DIFFICULTY"]) # Select Difficulty
-            simulatedinput.click(self.settings["GAMEMODE"]) # Select Gamemode
+        simulatedinput.click(self.settings["DIFFICULTY"]) # Select Difficulty
+        simulatedinput.click(self.settings["GAMEMODE"]) # Select Gamemode
 
-            simulatedinput.click("OVERWRITE_SAVE")
+        simulatedinput.click("OVERWRITE_SAVE")
 
         self.wait_for_loading() # wait for loading screen
         # Only need to press confirm button if we play chimps or impoppable
         time.sleep(1)
-        confirm_list = ["CHIMPS_MODE", "IMPOPPABLE", "DEFLATION", "APOPALYPSE", "HALF_CASH", ]
-        if self.settings["GAMEMODE"] in confirm_list or self.SANDBOX:
-            simulatedinput.send_key("esc", timeout=1)
+        simulatedinput.send_key("esc", timeout=1)
 
     def findDarkCastle(self):
         mapFound = False
