@@ -3,5 +3,4 @@ mouse==0.7.1
 mss==9.0.1
 numpy==1.25.1
 opencv_python==4.8.0.74
-Pymem==1.12.0
 pywin32==306

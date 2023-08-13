@@ -1,1 +1,0 @@
-py -m cProfile %1

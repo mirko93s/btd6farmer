@@ -14,7 +14,6 @@ import simulatedinput
 import monitor
 import gameplan
 from logger import logger as log
-import pymem
 from winreg import *
 
 # Definently fix this 
