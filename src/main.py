@@ -29,7 +29,7 @@ def main():
         print("Not a directory")
         no_gameplan_exception()
     
-    bot = Bot(instruction_path=Path("../gameplans/Dark_Castle_Hard_Chimps"))
+    bot = Bot(instruction_path=Path("gameplans/Dark_Castle_Hard_Chimps"))
     os.system('cls' if os.name == 'nt' else 'clear')
     print("""
 .______   .___________. _______    __                              

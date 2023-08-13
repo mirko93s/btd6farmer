@@ -1,1 +1,1 @@
-python src/main.py --gameplan_path "gameplans/Dark_Castle_Hard_Chimps"
+python src/main.py
