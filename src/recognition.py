@@ -62,8 +62,7 @@ def load_image(img):
     
     return img_cv
 
-
-def locate_all(template_path, confidence=0.9, limit=100, region=None):
+def locate(template_path, confidence=0.9, limit=100, region=None, locate_all=False):
     """
         Template matching a method to match a template to a screenshot taken with mss.
         
@@ -131,13 +130,6 @@ def locate_all(template_path, confidence=0.9, limit=100, region=None):
         if len(matches[0]) == 0:
             return None
         else:
-            return [ (x, y, templateWidth, templateHeight) for x, y in zip(matchesX, matchesY) ]
+            result = [ (x, y, templateWidth, templateHeight) for x, y in zip(matchesX, matchesY) ]
 
-def locate(template_path, confidence=0.9, tries=1):
-    """
-        Locates a template on the screen.
-
-        Note: @tries does not do anything at the moment
-    """
-    result = locate_all(template_path, confidence)
-    return result[0] if result is not None else None
+    return result if locate_all else result[0]
