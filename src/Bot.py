@@ -1,7 +1,6 @@
 import time
 import static
 import json
-import copy
 import re
 import time
 import concurrent.futures
@@ -54,7 +53,7 @@ class Bot():
                 break
             
             # check for next round using images
-            if self.checkFor("rounds/" + str(rounds[r]), confidence=0.99):
+            if self.checkFor(str(rounds[r]), confidence=0.99):
                 current_round = int(rounds[r])
                 if r < len(rounds)-1:
                     r+=1
