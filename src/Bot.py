@@ -444,14 +444,6 @@ class Bot():
 
         log.debug("Out of loading screen, continuing..")
 
-    def waitForRound(self, round) -> None:
-        """Wait for a specific round to start, use this to wait until to execute a gameplan instruction"""
-        pass
-
-    def waitFor(self, images: list[str] | str, confidence: float = 0.9, timeout: int = 10) -> None:
-        """Wait for a image to appear on screen, generic function for multiple things"""
-        pass
-
     def checkFor(self, 
             images: list[str] | str, 
             confidence: float = 0.9, 
