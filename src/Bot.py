@@ -189,11 +189,12 @@ class Bot():
                 # Check for round in game plan
                 if str(current_round) in self.game_plan:
                     
-                    # Handle all instructions in current round
-                    for instruction in self.game_plan[str(current_round)]:
-                        if not "DONE" in instruction:
+
+                    for x, instruction in enumerate(self.game_plan[str(current_round)]):
+                        print(instruction)
+                        if instruction:
                             self.execute_instruction(instruction)
-                            instruction["DONE"] = True
+                            self.game_plan[str(current_round)][x] = None
                             log.debug(f"Current round {current_round}") # Only print current round once
 
     def exit_bot(self): 
@@ -279,11 +280,12 @@ class Bot():
     def execute_instruction(self, instruction):
         """Handles instructions from the gameplan"""
 
-        instruction_type = instruction["INSTRUCTION_TYPE"]
+        instruction = instruction.split()
+        instruction_type = instruction[0]
 
-        if instruction_type == "PLACE_TOWER":
-            tower = instruction["ARGUMENTS"]["MONKEY"]
-            position = instruction["ARGUMENTS"]["LOCATION"]
+        if instruction_type == "PLACE":
+            tower = instruction[1]
+            position = float(instruction[2]), float(instruction[3])
 
             keybind = static.tower_keybinds[tower]
 
@@ -291,43 +293,44 @@ class Bot():
 
             log.debug(f"Tower placed: {tower}")
             
-        elif instruction_type == "REMOVE_TOWER":
-            self.remove_tower(instruction["ARGUMENTS"]["LOCATION"])
-            log.debug(f"Tower removed on: {instruction['ARGUMENTS']['LOCATION']}")
+        elif instruction_type == "SELL":
+            self.remove_tower(instruction[1], instruction[2])
+            log.debug(f"Tower removed on: {position}")
         
         # Upgrade tower
-        elif instruction_type == "UPGRADE_TOWER":
-            position = instruction["ARGUMENTS"]["LOCATION"]
-            upgrade_path = instruction["ARGUMENTS"]["UPGRADE_PATH"]
+        elif instruction_type == "UPGRADE":
+            position = float(instruction[1]), float(instruction[2])
+
+            upgrade_path = list(map(int, [*instruction[3]]))
 
             self.upgrade_tower(position, upgrade_path)
 
-            log.debug(f"Tower upgraded at position: {instruction['ARGUMENTS']['LOCATION']} with the upgrade path {instruction['ARGUMENTS']['UPGRADE_PATH']}")
+            log.debug(f"Tower upgraded at position: {position} with the upgrade path {upgrade_path}")
         
         # Change tower target
-        elif instruction_type == "CHANGE_TARGET":
-            target_type = instruction["ARGUMENTS"]["TYPE"]
-            position = instruction["ARGUMENTS"]["LOCATION"]
-            target = instruction["ARGUMENTS"]["TARGET"]
+        elif instruction_type == "TARGET":
+            target_type = instruction[4]
+            position = position = float(instruction[1]), float(instruction[2])
+            target = instruction[3].split("-")
 
-            if "DELAY" in instruction["ARGUMENTS"]:
-                delay = instruction["ARGUMENTS"]["DELAY"] 
+            if len(instruction) > 5:
+                delay = int(instruction[5])
                 self.change_target(target_type, position, target, delay)
             else:
                 self.change_target(target_type, position, target)
             
 
         # Set static target of a tower
-        elif instruction_type == "SET_STATIC_TARGET":
-            position = instruction["ARGUMENTS"]["LOCATION"]
-            target_position = instruction["ARGUMENTS"]["TARGET"]
+        elif instruction_type == "STATIC_TARGET":
+            position = float(instruction[1]), float(instruction[2])
+            target_position = float(instruction[3]), float(instruction[4])
 
             self.set_static_target(position, target_position)
         
         # Start game
         elif instruction_type == "START":
-            if "ARGUMENTS" in instruction and "FAST_FORWARD " in instruction["ARGUMENTS"]:
-                self.fast_forward = instruction["ARGUMENTS"]["FASTFORWARD"]
+            if len(instruction) > 1:
+                self.fast_forward = True if instruction[1] == "FAST" else False
                 
             self.start_first_round()
 
@@ -335,9 +338,9 @@ class Bot():
 
         # Wait a given time
         elif instruction_type == "WAIT":
-            time.sleep(instruction["ARGUMENTS"]["TIME"])
+            time.sleep(int(instruction[1]))
 
-            log.debug(f"Waiting for {instruction['ARGUMENTS']['TIME']} second(s)")
+            log.debug(f"Waiting for {instruction[1]} second(s)")
         
         else:
             # Maybe raise exception or just ignore?
