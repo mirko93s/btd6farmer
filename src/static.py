@@ -1,18 +1,3 @@
-# Wrappers around static data
-class Heros:
-    pass
-
-class Towers:
-    pass
-
-class Difficulty:
-    pass
-
-class Gamemode:
-    pass
-class Map (Difficulty, Gamemode):
-    pass
-
 button_positions = { # Creates a dictionary of all relative positions needed for monkeys
     "HOME_MENU_START"           : [ 0.438671875 , 0.8666666666666667 ],
     "EXPERT_SELECTION"          : [ 0.69453125 , 0.9055555555555556 ],
