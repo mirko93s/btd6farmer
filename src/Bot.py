@@ -34,15 +34,6 @@ class Bot():
         self.running = True
         self.fast_forward = True
 
-        # why?
-        self.statDict = {
-            "Current_Round": None,
-            "Last_Upgraded": None,
-            "Last_Target_Change": None,
-            "Last_Placement": None,
-            "Uptime": 0
-        }
-
     def handle_time(self, ttime):
         """
             Converts seconds to appropriate unit
