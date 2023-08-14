@@ -433,4 +433,4 @@ class Bot():
 if __name__ == "__main__":
     import time
     time.sleep(2)
-    bot = Bot(instruction_path="")
+    bot = Bot()
