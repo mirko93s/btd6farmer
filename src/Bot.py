@@ -3,7 +3,6 @@ import static
 import json
 import copy
 import re
-import mss
 import time
 import concurrent.futures
 from pathlib import Path
@@ -45,65 +44,6 @@ class Bot():
         else: # No sane person will run this bokk for a week
             return (ttime, "s")
 
-    # Put this somewhere else
-    def log_stats(self, did_win: bool = None, match_time: int | float = 0):
-        # Standard dict which will be used if json loads nothing
-        data = {
-            "wins": 0, 
-            "loses": 0, 
-            "winrate": "0%", 
-            "average_matchtime": "0 s", 
-            "total_time": 0, 
-            "average_matchtime_seconds": 0
-        }
-        
-        # Try to read the file
-        try:
-            with open("stats.json", "r") as infile:
-                try:
-                    # Read json file
-                    str_file = "".join(infile.readlines())
-                    data = json.loads(str_file)
-                # Catch if file format is invalid for json (eg empty file)
-                except json.decoder.JSONDecodeError:
-                    print("invalid stats file while logging stats")
-        # Catch if the file does not exist
-        except IOError:
-            print("stats file does not exist")
-
-
-        if did_win:
-            data["wins"] += 1
-        else:
-            data["loses"] += 1
-        
-        total_matches = (data["wins"] + data["loses"])
-        # winrate = total wins / total matches
-        winrate = data["wins"] / total_matches
-
-        # Convert to procent
-        procentage = round(winrate * 100, 4)
-        
-        # Push procentage to winrate
-        data["winrate"] = f"{procentage}%"
-
-        data["average_matchtime_seconds"] = (data["total_time"]  + match_time) / total_matches
-        
-        # new_total_time = old_total_time + current_match_time in seconds
-        data["total_time"] += match_time
-        
-        # average = total_time / total_matches_played
-        average_converted, unit = self.handle_time(data["average_matchtime_seconds"])
-        
-        # Push average to dictionary
-        data["average_matchtime"] = f"{round(average_converted, 3)} {unit}"
-
-        # Open as write
-        with open("stats.json", "w") as outfile:
-            outfile.write(json.dumps(data, indent=4)) # write stats to file
-        
-        return data
-
     def reset_game_plan(self):
         self.game_plan = copy.deepcopy(self._game_plan_copy)
 
@@ -132,8 +72,6 @@ class Bot():
             if did_win or did_fail:
                 
                 win_or_lose = True if did_win else False # is this correct logic?
-                print(win_or_lose)
-                self.log_stats(did_win=win_or_lose, match_time=(time.time()-self.game_start_time))
 
                 self.exit_level(won=win_or_lose)
 
