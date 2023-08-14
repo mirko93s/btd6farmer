@@ -5,11 +5,8 @@ Handle for monitor related functions, such as
     - TODO: getting main monitor & resolution
 
 """
-from logger import logger as log
- 
-import sys
 import ctypes
-import tkinter
+from logger import logger as log
 
 # Resolutions for for padding
 resolution_list = [
@@ -21,20 +18,10 @@ resolution_list = [
     { "width": 3840, "height": 2160 }
 ]
 
-def get_resolution() -> tuple[int, int]:
-    global width, height
-    print("Getting resolution")
-    try:
-        if sys.platform == "win32":
-            ctypes.windll.shcore.SetProcessDpiAwareness(2) # DPI indipendent
-        tk = tkinter.Tk()
-        width, height = tk.winfo_screenwidth(), tk.winfo_screenheight()
-        return width, height
-    except Exception as e:
-        log.critical("Could not retrieve monitor resolution: \n %d", e)
-        raise Exception("Could not retrieve monitor resolution: \n %d", e)
-
-width, height = get_resolution()
+print("Getting resolution")
+ctypes.windll.shcore.SetProcessDpiAwareness(2)
+width = ctypes.windll.user32.GetSystemMetrics(0)
+height = ctypes.windll.user32.GetSystemMetrics(1)
 
 # Scaling functions for different resolutions support
 def scaling(pos_list):
