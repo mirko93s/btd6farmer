@@ -18,11 +18,8 @@ from winreg import *
 
 # Definently fix this 
 class Bot():
-    def __init__(self, 
-        instruction_path, 
-        game_plan_filename="instructions.json"
-    ):
-        self.game_plan = gameplan.load_from_file(instruction_path / game_plan_filename)
+    def __init__(self):
+        self.game_plan = gameplan.get()
 
         # Something to do with how python handles copying objects
         self._game_plan_copy = copy.deepcopy(self.game_plan)
@@ -152,7 +149,7 @@ class Bot():
                 break
             
             # check for next round using images
-            if self.checkFor("rounds/"+rounds[r],confidence=0.99):
+            if self.checkFor("rounds/" + str(rounds[r]), confidence=0.99):
                 current_round = int(rounds[r])
                 if r < len(rounds)-1:
                     r+=1
@@ -171,14 +168,11 @@ class Bot():
 
                 # Is this necessary?
                 # Check for round in game plan
-                if str(current_round) in self.game_plan:
-                    
-
-                    for x, instruction in enumerate(self.game_plan[str(current_round)]):
-                        print(instruction)
+                if current_round in self.game_plan:
+                    for x, instruction in enumerate(self.game_plan[current_round]):
                         if instruction:
                             self.execute_instruction(instruction)
-                            self.game_plan[str(current_round)][x] = None
+                            self.game_plan[current_round][x] = None
                             log.debug(f"Current round {current_round}") # Only print current round once
 
     def exit_bot(self): 

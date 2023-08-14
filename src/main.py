@@ -13,47 +13,10 @@ import win32gui
 import subprocess
 
 def main():
-
-    def no_gameplan_exception():
-        raise Exception("No valid argument for directory.. 'python main.py --gameplan_path <directory to gameplan>'")
-
-    # Retrives the gameplan from the command line and makes a Path object out of it
-    gameplan_path = (Path(__file__).parent.parent.resolve() / Path("gameplans/Dark_Castle_Hard_Chimps") )
-    print(gameplan_path, Path(__file__).parent.parent.resolve())
-    # Verify directory exist.
-    if not gameplan_path.exists():
-        print("No directory found at: " + str(gameplan_path))
-        no_gameplan_exception()
-    # Verify that it is a directory
-    if not gameplan_path.is_dir():
-        print("Not a directory")
-        no_gameplan_exception()
     
-    bot = Bot(instruction_path=Path("gameplans/Dark_Castle_Hard_Chimps"))
+    bot = Bot()
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("""
-.______   .___________. _______    __                              
-|   _  \  |           ||       \  / /                              
-|  |_)  | `---|  |----`|  .--.  |/ /_                              
-|   _  <      |  |     |  |  |  | '_ \                             
-|  |_)  |     |  |     |  '--'  | (_) |                            
-|______/      |__|     |_______/ \___/                             
- _______    ___      .______      .___  ___.  _______ .______      
-|   ____|  /   \     |   _  \     |   \/   | |   ____||   _  \     
-|  |__    /  ^  \    |  |_)  |    |  \  /  | |  |__   |  |_)  |    
-|   __|  /  /_\  \   |      /     |  |\/|  | |   __|  |      /     
-|  |    /  _____  \  |  |\  \----.|  |  |  | |  |____ |  |\  \----.
-|__|   /__/     \__\ | _| `._____||__|  |__| |_______|| _| `._____|
-Join the discord: https://discord.gg/qyKT6bzqZQ                    
-""")
     print("Setting up Bot...")
-    print("Using gameplan located in: " + str(gameplan_path))
-    print("="*25)
-    print("Hero:", "Obyn")
-    print("Map:", "Dark Castle")
-    print("Difficulty:", "Hard")
-    print("Gamemode:", "Chimps")
-    print("="*25)
 
     print("Finding game process.")
 
