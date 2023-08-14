@@ -1,9 +1,7 @@
 import time
 import sys
-from pathlib import Path
 from Bot import Bot
 from threading import Thread
-from Failsafe import FailSafe
 import mouse
 import simulatedinput
 import monitor
@@ -90,14 +88,8 @@ if __name__ == "__main__":
     bot_thread.start()
 
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
-    try:
-        while mouse.get_position() != (0,0) and bot_thread.is_alive():
-            time.sleep(0.1)
-        
-        if mouse.get_position() == (0, 0):
-            raise FailSafe()
-
-    except FailSafe as exeption_message:
-        print(exeption_message)
-        sys.exit(1)
+    while mouse.get_position() != (0,0) and bot_thread.is_alive():
+        time.sleep(0.1)
     
+    if mouse.get_position() == (0, 0):
+        sys.exit(1)
