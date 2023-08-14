@@ -79,9 +79,6 @@ class Bot():
                             self.execute_instruction(instruction)
                             self.game_plan[current_round][x] = None
 
-    def exit_bot(self): 
-        self.running = False
-
     def place_tower(self, tower_position, keybind):
         simulatedinput.send_key(keybind) # press keybind
         simulatedinput.click(tower_position) # click on decired location
