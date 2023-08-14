@@ -2,7 +2,6 @@ import keyboard
 import mouse
 from time import sleep
 import monitor
-
 import static
 
 
@@ -56,11 +55,6 @@ def click(location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, hold
             So we only apply the .1 delay if the bot has to click on the same spot multiple times
             This is currently used for level selection and levelup screen
         """
-        if amount > 1:
-            sleep(timeout)
-
-    # keep this if or it will wait twice (double the time) if amount is 2+
-    if amount == 1:
         sleep(timeout)
 
     # Move mouse on the bottom right corner so we don't cover the screen with the cursor
