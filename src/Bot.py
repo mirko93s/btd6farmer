@@ -20,16 +20,9 @@ from winreg import *
 class Bot():
     def __init__(self, 
         instruction_path, 
-        game_plan_filename="instructions.json",
-        game_settings_filename="setup.json"
+        game_plan_filename="instructions.json"
     ):
-        is_url_regex = re.compile(r"https?://(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)")
-        if (re.search(is_url_regex, str(instruction_path))):
-            self.settings = gameplan.load_from_url(instruction_path)
-            self.game_plan = gameplan.load_from_url(instruction_path)
-        else:
-            self.settings = gameplan.load_from_file(instruction_path / game_settings_filename)
-            self.game_plan = gameplan.load_from_file(instruction_path / game_plan_filename)
+        self.game_plan = gameplan.load_from_file(instruction_path / game_plan_filename)
 
         # Something to do with how python handles copying objects
         self._game_plan_copy = copy.deepcopy(self.game_plan)
@@ -175,7 +168,7 @@ class Bot():
 
             if current_round != None:
                 # Saftey net; use abilites
-                cooldowns = static.hero_cooldowns[self.settings["HERO"]]
+                cooldowns = static.obyn["COOLDOWNS"]
 
                 if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
                     simulatedinput.send_key("1")
@@ -385,13 +378,13 @@ class Bot():
             
     # select hero if not selected
     def hero_select(self):
-        hero_variants = [f"{self.settings['HERO']}_{i}" for i in range(1, 4)]
+        hero_variants = [f"OBYN_{i}" for i in range(1, 4)]
 
         if not self.checkFor(hero_variants):
-            log.debug(f"Selecting {self.settings['HERO']}")
+            log.debug(f"Selecting OBYN")
 
             simulatedinput.click("HERO_SELECT")
-            simulatedinput.click(static.hero_positions[self.settings["HERO"]], move_timeout=0.2)
+            simulatedinput.click(static.obyn["POSITION"], move_timeout=0.2)
             simulatedinput.click("CONFIRM_HERO")
             simulatedinput.send_key("esc")
 
@@ -418,8 +411,8 @@ class Bot():
         # loop expert map pages until we find dark castle and click it
         self.findDarkCastle()
 
-        simulatedinput.click(self.settings["DIFFICULTY"]) # Select Difficulty
-        simulatedinput.click(self.settings["GAMEMODE"]) # Select Gamemode
+        simulatedinput.click("HARD_MODE")
+        simulatedinput.click("CHIMPS_MODE")
 
         simulatedinput.click("OVERWRITE_SAVE")
 

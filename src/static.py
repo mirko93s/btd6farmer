@@ -41,12 +41,9 @@ button_positions = { # Creates a dictionary of all relative positions needed for
     "STARTUP"                   : [ 0.5, 0.925]
 }
 
-hero_positions = {
-    "OBYN"              : [ 0.04140625 , 0.36944444444444446 ]
-}
-
-hero_cooldowns = {
-    "OBYN"              : [35, 90]       
+obyn = {
+    "COOLDOWNS" : [35, 90],
+    "POSITION" : [0.04140625, 0.36944444444444446]
 }
 
 tower_keybinds = {
