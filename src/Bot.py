@@ -21,28 +21,9 @@ class Bot():
 
         # Something to do with how python handles copying objects
         self._game_plan_copy = copy.deepcopy(self.game_plan)
-        ####
-        
-        self.start_time = time.time()
-        self.game_start_time = time.time()
         
         self.running = True
         self.fast_forward = True
-
-    def handle_time(self, ttime):
-        """
-            Converts seconds to appropriate unit
-        """
-        if ttime >= 60: # Minutes
-            return (ttime / 60, "min")
-        elif (ttime / 60) >= 60: # Hours
-            return (ttime / 3600, "hrs")
-        elif (ttime / 3600) >= 24: # days
-            return (ttime / 86400, "d")
-        elif (ttime / 86400) >= 7: # Weeks
-            return (ttime / 604800, "w")
-        else: # No sane person will run this bokk for a week
-            return (ttime, "s")
 
     def reset_game_plan(self):
         self.game_plan = copy.deepcopy(self._game_plan_copy)
@@ -259,8 +240,6 @@ class Bot():
             simulatedinput.send_key("space", amount=2)
         else:
             simulatedinput.send_key("space", amount=1)
-
-        self.game_start_time = time.time()
 
     def check_for_collection_crates(self):
         # Can this be done better?
