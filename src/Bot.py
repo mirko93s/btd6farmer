@@ -17,16 +17,9 @@ from winreg import *
 # Definently fix this 
 class Bot():
     def __init__(self):
-        self.game_plan = gameplan.get()
-
-        # Something to do with how python handles copying objects
-        self._game_plan_copy = copy.deepcopy(self.game_plan)
-        
+        self.game_plan = gameplan.get()        
         self.running = True
         self.fast_forward = True
-
-    def reset_game_plan(self):
-        self.game_plan = copy.deepcopy(self._game_plan_copy)
 
     def loop(self):
         
@@ -57,7 +50,7 @@ class Bot():
                 self.exit_level(won=win_or_lose)
 
                 finished = True
-                self.reset_game_plan()
+                self.game_plan = gameplan.get()
                 break
             
             # check for next round using images
