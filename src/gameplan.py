@@ -1,16 +1,6 @@
 import json
-from pathlib import Path
 
 def load_from_file(path):
-    return parse_json(path)
-
-def load_from_url(url):
-    # Check if the content is valid 
-    # valid zip -> setup and instructions
-
-    pass
-
-def parse_json(path):
     """
         Will read the @path as a json file load into a dictionary.
     """
