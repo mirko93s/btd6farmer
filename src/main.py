@@ -105,7 +105,7 @@ Join the discord: https://discord.gg/qyKT6bzqZQ
     
     print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")
     
-    bot.initilize() # Initialize the bot (presses alt, etc)
+    simulatedinput.send_key("alt")
     
     if bot.checkFor("english") is False:
         log.info("Setting game to english")

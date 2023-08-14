@@ -41,6 +41,7 @@ class Bot():
         self.running = True
         self.fast_forward = True
 
+        # why?
         self.statDict = {
             "Current_Round": None,
             "Last_Upgraded": None,
@@ -125,11 +126,6 @@ class Bot():
 
     def reset_game_plan(self):
         self.game_plan = copy.deepcopy(self._game_plan_copy)
-
-
-    def initilize(self):
-        simulatedinput.send_key("alt")
-
 
     def loop(self):
         
