@@ -13,7 +13,6 @@ import recognition
 import simulatedinput
 import monitor
 import gameplan
-from logger import logger as log
 from winreg import *
 
 # Definently fix this 
@@ -67,10 +66,10 @@ class Bot():
                     data = json.loads(str_file)
                 # Catch if file format is invalid for json (eg empty file)
                 except json.decoder.JSONDecodeError:
-                    log.error("invalid stats file while logging stats")
+                    print("invalid stats file while logging stats")
         # Catch if the file does not exist
         except IOError:
-            log.error("stats file does not exist")
+            print("stats file does not exist")
 
 
         if did_win:
@@ -131,12 +130,6 @@ class Bot():
             # Check for finished or failed game
             did_win, did_fail = self.checkFor(["victory", "defeat"], return_raw=True)
             if did_win or did_fail:
-                if did_win:
-                    print("We won")
-                    log.info("Victory detected; exiting level")
-                else:
-                    print("We lost")
-                    log.info("Defeat detected on round {}; exiting level".format(current_round))
                 
                 win_or_lose = True if did_win else False # is this correct logic?
                 print(win_or_lose)
@@ -173,7 +166,6 @@ class Bot():
                         if instruction:
                             self.execute_instruction(instruction)
                             self.game_plan[current_round][x] = None
-                            log.debug(f"Current round {current_round}") # Only print current round once
 
     def exit_bot(self): 
         self.running = False
@@ -268,12 +260,9 @@ class Bot():
             keybind = static.tower_keybinds[tower]
 
             self.place_tower(position, keybind)
-
-            log.debug(f"Tower placed: {tower}")
             
         elif instruction_type == "SELL":
             self.remove_tower(instruction[1], instruction[2])
-            log.debug(f"Tower removed on: {position}")
         
         # Upgrade tower
         elif instruction_type == "UPGRADE":
@@ -282,8 +271,6 @@ class Bot():
             upgrade_path = list(map(int, [*instruction[3]]))
 
             self.upgrade_tower(position, upgrade_path)
-
-            log.debug(f"Tower upgraded at position: {position} with the upgrade path {upgrade_path}")
         
         # Change tower target
         elif instruction_type == "TARGET":
@@ -312,20 +299,13 @@ class Bot():
                 
             self.start_first_round()
 
-            log.debug("First Round Started")
-
         # Wait a given time
         elif instruction_type == "WAIT":
             time.sleep(int(instruction[1]))
-
-            log.debug(f"Waiting for {instruction[1]} second(s)")
         
         else:
             # Maybe raise exception or just ignore?
             raise Exception("Instruction type {} is not a valid type".format(instruction_type))
-
-        log.debug(f"executed instruction:\n{instruction}")
-
 
     def abilityAvaliabe(self, last_used, cooldown):
         # TODO: Store if the game is speeded up or not. If it is use the constant (true by default)
@@ -347,7 +327,6 @@ class Bot():
     def check_for_collection_crates(self):
         # Can this be done better?
         if self.checkFor("diamond_case"):
-            log.debug("easter collection detected")
             #c lick collect button
             simulatedinput.click("EVENT_COLLECTION", timeout=1.5)
             # collect instas
@@ -366,8 +345,6 @@ class Bot():
         hero_variants = [f"OBYN_{i}" for i in range(1, 4)]
 
         if not self.checkFor(hero_variants):
-            log.debug(f"Selecting OBYN")
-
             simulatedinput.click("HERO_SELECT")
             simulatedinput.click(static.obyn["POSITION"], move_timeout=0.2)
             simulatedinput.click("CONFIRM_HERO")
@@ -417,13 +394,10 @@ class Bot():
     def wait_for_loading(self):
         still_loading = True
 
-        log.debug("Waiting for loading screen..")
         while still_loading:
             
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             still_loading = self.checkFor("loading_screen")
-
-        log.debug("Out of loading screen, continuing..")
 
     def checkFor(self, 
             images: list[str] | str, 

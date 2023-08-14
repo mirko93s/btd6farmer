@@ -6,7 +6,6 @@ Handle for monitor related functions, such as
 
 """
 import ctypes
-from logger import logger as log
 
 # Resolutions for for padding
 resolution_list = [
@@ -53,8 +52,6 @@ def scaling(pos_list):
     
     y = pos_list[1] * height
     x = x + padding() # Add's the pad to to the curent x position variable
-
-    log.debug("Scaling: {} -> {}".format(pos_list, (int(x), int(y))))
 
     # Return the scaled position as tuple of ints
     return (int(x), int(y))

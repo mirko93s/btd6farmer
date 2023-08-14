@@ -7,7 +7,6 @@ from Failsafe import FailSafe
 import mouse
 import simulatedinput
 import monitor
-from logger import logger as log
 import os
 import win32gui
 import subprocess
@@ -57,21 +56,17 @@ def main():
     # Wait for btd6 home screen or startup screen
     waiting_for_home = False
 
-    log.info("Waiting for home screen..")
     while waiting_for_home is False:
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
         waiting_for_startup, waiting_for_home = bot.checkFor(["startup","home_menu"], return_raw=True)
         if waiting_for_startup:
-            log.info("Startup screen detected")
             simulatedinput.click("STARTUP")
-    log.info("Home screen detected")
     
     print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")
     
     simulatedinput.send_key("alt")
     
     if bot.checkFor("english") is False:
-        log.info("Setting game to english")
         simulatedinput.click("SETTINGS")
         simulatedinput.click("LANGUAGE")
         simulatedinput.click("ENGLISH")
@@ -84,10 +79,8 @@ def main():
     while bot.running:
         bot.check_for_collection_crates()
         # Choose map
-        log.info("Selecting map")
         bot.select_map()   
         # main game loop
-        log.info("Game start")
         bot.loop()
 
 if __name__ == "__main__":
