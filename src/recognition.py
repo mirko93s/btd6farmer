@@ -107,8 +107,8 @@ def locate(template_path, confidence=0.9, limit=100, region=None, locate_all=Fal
             # print("Template scaling to monitor resolution")
             template = cv2.resize(
                 template, 
-                dsize=(int(templateWidth/(1920/monitor.width)), int(templateHeight/(1080/monitor.height))), 
-                interpolation=cv2.INTER_AREA 
+                dsize=(int(templateWidth/(1080/monitor.height)), int(templateHeight/(1080/monitor.height))), 
+                interpolation=cv2.INTER_AREA
             )
         
         # Find all the matches
