@@ -36,9 +36,9 @@ class Bot():
         while not finished:
             # Check for levelup or insta monkey (level 100)
             if self.checkFor(["levelup", "instamonkey"]):
-                simulatedinput.click(middle_of_screen, amount=3, ui=True)
+                simulatedinput.click(middle_of_screen, amount=3)
             elif self.checkFor("monkey_knowledge"):
-                simulatedinput.click(middle_of_screen, amount=1, ui=True)
+                simulatedinput.click(middle_of_screen, amount=1)
 
             # Check for finished or failed game
             did_win, did_fail = self.checkFor(["victory", "defeat"], return_raw=True)
