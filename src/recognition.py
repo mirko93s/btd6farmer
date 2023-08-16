@@ -14,7 +14,7 @@ def find(path, confidence=0.9, return_cords=False, center_on_found=True):
             if cords is not None:
                 left, top, width, height = cords
                 if center_on_found:
-                    return (left + width // 2, top + height // 2) # Return middle of found image   
+                    return ((left + width // 2)/monitor.width, (top + height // 2)/monitor.height) # Return middle of found image   
                 else:
                     return (left, top, width, height)
             else:
