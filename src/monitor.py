@@ -1,80 +1,46 @@
-"""
-Handle for monitor related functions, such as 
-    - scaling and padding for different resolutions
-    - getting the current resolution
-    - TODO: getting main monitor & resolution
-
-"""
 import ctypes
-
-# Resolutions for for padding
-resolution_list = [
-    { "width": 1280, "height": 720  },
-    { "width": 1366, "height": 768  },
-    { "width": 1600, "height": 900  },
-    { "width": 1920, "height": 1080 },
-    { "width": 2560, "height": 1440 },
-    { "width": 3840, "height": 2160 }
-]
 
 print("Getting resolution")
 ctypes.windll.shcore.SetProcessDpiAwareness(2)
 width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
+ratio = round((width/height),2)
 
-# Scaling functions for different resolutions support
-def scaling(pos_list):
-    global width, height, resolution_list
-    """
-        Function takes in width, and height normalized to 1920x1080
-        it will then iterate through the reso_21 list and check if the current resolution height matches any of the entries
-        if it does it will set reso_21 to True and break out of the loop
+def scaling(coords):
+    """Scales coordinates for different screen resolutions"""
 
+    _x, _y = coords
 
-        This function will dynamically calculate the differance between current resolution and designed for 1920x1080
-        it will also add any padding needed to positions to account for 21:9 
+    if ratio == 1.6: # 16:10
+        # below are formulas used only for in game tower palcement coords, from gameplan
+        # they aren't quite perfect, but 99% of the times the coords are good or off by 1 pixel at most...
+        # this can be improved if we calculate exactly how the gameplay area changes from 16:9 to 16:10 in size, position, zoom and origin of zoom
+        x = (_x - (0.018229166666666668 * (0.6942708333333333 - _x)) / 0.6942708333333333) * width
+        y = (_y - (0.013888888888888888 * (0.5 - _y)) / 0.5) * height
 
-        do_padding -- this is used during start 
-    """
+    elif ratio == 1.78: # 16:9
+        x = _x * width
+        y = _y * height
 
-    reso_21 = False
-    # What does it even do?
-    for x in resolution_list: 
-        if height == x['height']:
-            if width != x['width']:
-                reso_21 = True
-                x = pos_list[0]
-                break
-    # As Values are normalized they are never more than 1
+    elif ratio > 1.78: # 21:9, 32:9 (any aspect ratio bigger than 1.77 should be the same, just side bars getting bigger)
+        x = _x * height * 1.7777777777777777 + (width - height * 1.7777777777777777) / 2
+        y = _y * height
 
-    if reso_21 != True:
-        x = pos_list[0] * width
-    
-    y = pos_list[1] * height
-    x = x + padding() # Add's the pad to to the curent x position variable
+    elif ratio == 1.33: # 4:3
+        # to be implemented
+        # tower selection ui on the bottom
+        # no bars
+        pass
 
-    # Return the scaled position as tuple of ints
+    elif ratio == 1.25: # 5:4
+        # to be implemented
+        # tower selection ui on the bottom
+        # bars above and below like in 16:10
+        pass
+
+    else:
+        # resolution should not be supported, try anyway ???
+        pass
+
+    # this are just truncated using int, they may not be always precise to the pixel, round should be better
     return (int(x), int(y))
-
-
-def padding():
-    global width, height, resolution_list
-    """
-        Get's width and height of current resolution
-        we iterate through reso_16 for heights, if current resolution height matches one of the entires 
-        then it will calulate the difference of the width's between current resolution and 16:9 (reso_16) resolution
-        divides by 2 for each side of padding
-
-        Variables Used
-        width -- used to referance current resolution width
-        height -- used to referance current resolution height
-        pad -- used to output how much padding we expect in different resolutions
-        reso_16 -- list that  
-    """
-
-    padding = 0
-    for x in resolution_list: 
-        if height == x['height']:
-            padding = (width - x['width'])/2
-
-    return padding
