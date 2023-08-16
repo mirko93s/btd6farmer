@@ -12,7 +12,6 @@ import subprocess
 def main():
     
     bot = Bot()
-    os.system('cls' if os.name == 'nt' else 'clear')
     print("Setting up Bot...")
 
     print("Finding game process.")
