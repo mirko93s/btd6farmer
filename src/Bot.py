@@ -60,7 +60,7 @@ class Bot():
 
             if current_round != None:
                 # Saftey net; use abilites
-                cooldowns = static.obyn["COOLDOWNS"]
+                cooldowns = [35, 90]
 
                 if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
                     simulatedinput.send_key("1")
@@ -115,9 +115,9 @@ class Bot():
         simulatedinput.click(tower_position)
 
         if "SPIKE" in tower_type:
-            target_order = static.target_order_spike
+            target_order = [ "NORMAL", "CLOSE", "FAR", "SMART" ]
         else:
-            target_order = static.target_order_regular
+            target_order = [ "FIRST", "LAST", "CLOSE", "STRONG" ]
 
         current_target_index = 0
 
@@ -142,14 +142,10 @@ class Bot():
 
         simulatedinput.send_key("esc")
 
+    # TODO: this doesn't work, many towers have different ways to set static targets
+    # examples: ace "centered path" button, wizrd "aim" button, mortar "set target" button, etc.......
     def set_static_target(self, tower_position, target_pos):
-        simulatedinput.click(tower_position)
-        
-        simulatedinput.send_key("tab")
-
-        simulatedinput.click(target_pos)
-
-        simulatedinput.send_key("esc")
+        pass
 
     def remove_tower(self, position):
         simulatedinput.click(position)
@@ -249,59 +245,61 @@ class Bot():
     # select hero if not selected
     def hero_select(self):
         hero_variants = [f"OBYN_{i}" for i in range(1, 4)]
-
         if not self.checkFor(hero_variants):
-            simulatedinput.click("HERO_SELECT")
-            simulatedinput.click(static.obyn["POSITION"], move_timeout=0.2)
-            simulatedinput.click("CONFIRM_HERO")
+            self.findClick("heroes")
+            hero_variants = [f"heroes_obyn_{i}" for i in range(1, 4)]
+            found = False
+            while not found:
+                time.sleep(0.2)
+                found = self.checkFor(hero_variants, return_raw=True)
+            self.findClick("heroes_obyn_"+str(list.index(found, True)+1))
+            self.findClick("select")
             simulatedinput.send_key("esc")
 
     def exit_level(self, won=True):
         if won:
-            simulatedinput.click("VICTORY_CONTINUE")
-            time.sleep(2)
-            simulatedinput.click("VICTORY_HOME")
-        else: # lost
-            simulatedinput.click("DEFEAT_HOME_NO_CONTINUE")
-            time.sleep(2)
+            self.findClick("next")
+        self.findClick("home")
         
-        self.wait_for_loading() # wait for loading screen
+        self.wait_for_loading() # TODO: do we need this???
 
     def select_map(self):
-        
-        time.sleep(1)
-
-        simulatedinput.click("HOME_MENU_START")
+        self.findClick("play")
         # reset map page
-        simulatedinput.click("EXPERT_SELECTION", timeout=0.25)
-        simulatedinput.click("BEGINNER_SELECTION")
-
+        self.findClick("expert")
+        self.findClick("beginner")
         # loop expert map pages until we find dark castle and click it
         self.findDarkCastle()
-
-        simulatedinput.click("HARD_MODE")
-        simulatedinput.click("CHIMPS_MODE")
-
-        simulatedinput.click("OVERWRITE_SAVE")
-
-        self.wait_for_loading() # wait for loading screen
-        # Only need to press confirm button if we play chimps or impoppable
-        time.sleep(1)
-        simulatedinput.send_key("esc", timeout=1)
+        # select gamemode
+        self.findClick("hard")
+        self.findClick("chimps")
+        # checks for overwrite save game
+        self.findClickTimed("ok")
+        # confirm chimps
+        self.findClick("ok")
 
     def findDarkCastle(self):
         mapFound = False
         while not mapFound:
-            simulatedinput.click("EXPERT_SELECTION", timeout=0.25)
+            self.findClick("expert")
             mapFound = self.checkFor("dark_castle", return_cords=True, center_on_found=True)
-        x, y = mapFound
-        simulatedinput.click((x/monitor.width, y/monitor.height))
+        simulatedinput.click(mapFound)
+
+    def findClickTimed(self, image, confidence = 0.9, timeout = 1):
+        """Generic function to check for an image on screen and click it, with a timeout"""
+        found = False
+        _time = time.time() + timeout
+        while not found:
+            if time.time() > _time:
+                break
+            time.sleep(0.2) # avoid spamming the cpu
+            found = self.checkFor(image, confidence, return_cords = True, center_on_found = True)
+        if found: 
+            simulatedinput.click(found)
 
     def wait_for_loading(self):
         still_loading = True
-
         while still_loading:
-            
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             still_loading = self.checkFor("loading_screen")
 
@@ -344,6 +342,14 @@ class Bot():
                 return_cords, 
                 center_on_found
             )
+
+    def findClick(self, image, confidence = 0.9):
+        """Generic function to check for an image on screen and click it"""
+        found = False
+        while not found:
+            time.sleep(0.2) # avoid spamming the cpu
+            found = self.checkFor(image, confidence, return_cords = True, center_on_found = True)
+        simulatedinput.click(found)
         
     def findStore(self):
         # check if game is installed on Steam
