@@ -343,7 +343,7 @@ class Bot():
                 center_on_found
             )
 
-    def findClick(self, image, confidence = 0.9):
+    def findClick(self, image, confidence = 0.85):
         """Generic function to check for an image on screen and click it"""
         found = False
         while not found:
