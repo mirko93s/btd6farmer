@@ -16,7 +16,7 @@ def scaling(coords):
         # they aren't quite perfect, but 99% of the times the coords are good or off by 1 pixel at most...
         # this can be improved if we calculate exactly how the gameplay area changes from 16:9 to 16:10 in size, position, zoom and origin of zoom
         x = (_x - (0.018229166666666668 * (0.6942708333333333 - _x)) / 0.6942708333333333) * width
-        y = (_y - (0.013888888888888888 * (0.5 - _y)) / 0.5) * height
+        y = ((_y - ((height*0.0125/1080) * (0.5 - _y)) / 0.5) * 1080) + (height - 1080)/2
 
     elif ratio == 1.78: # 16:9
         x = _x * width
