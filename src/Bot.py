@@ -260,10 +260,9 @@ class Bot():
         if won:
             self.findClick("next")
         self.findClick("home")
-        
-        self.wait_for_loading() # TODO: do we need this???
 
     def select_map(self):
+        time.sleep(1)
         self.findClick("play")
         # reset map page
         self.findClick("expert")
@@ -296,12 +295,6 @@ class Bot():
             found = self.checkFor(image, confidence, return_cords = True, center_on_found = True)
         if found: 
             simulatedinput.click(found)
-
-    def wait_for_loading(self):
-        still_loading = True
-        while still_loading:
-            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
-            still_loading = self.checkFor("loading_screen")
 
     def checkFor(self, 
             images: list[str] | str, 
