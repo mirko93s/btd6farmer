@@ -102,14 +102,13 @@ def locate(template_path, confidence=0.9, limit=100, region=None, locate_all=Fal
         # width & height of the template
         templateHeight, templateWidth = template.shape[:2]
 
-        # Scale template to screenshot resolution
-        if monitor.width != 1920 or monitor.height != 1080:
-            # print("Template scaling to monitor resolution")
-            template = cv2.resize(
-                template, 
-                dsize=(int(templateWidth/(1080/monitor.height)), int(templateHeight/(1080/monitor.height))), 
-                interpolation=cv2.INTER_AREA
-            )
+        # Scale template to monitor resolution
+        # The game ui gets bigger only if the height gets bigger, we shouldn't care about monitor width != 1920
+        # TODO: 4:3 and 5:4 ???
+        # update all the assets to 4k, it's better to downscale than to upscale
+        if monitor.height != 1080:
+            scale_factor = (int(templateWidth/(1080/monitor.height)), int(templateHeight/(1080/monitor.height)))
+            template = cv2.resize(template, scale_factor, interpolation=cv2.INTER_AREA)
         
         # Find all the matches
         # https://stackoverflow.com/questions/7670112/finding-a-subimage-inside-a-numpy-image/9253805#9253805
