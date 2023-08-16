@@ -36,9 +36,9 @@ class Bot():
         while not finished:
             # Check for levelup or insta monkey (level 100)
             if self.checkFor(["levelup", "instamonkey"]):
-                simulatedinput.click(middle_of_screen, amount=3)
+                simulatedinput.click(middle_of_screen, amount=3, ui=True)
             elif self.checkFor("monkey_knowledge"):
-                simulatedinput.click(middle_of_screen, amount=1)
+                simulatedinput.click(middle_of_screen, amount=1, ui=True)
 
             # Check for finished or failed game
             did_win, did_fail = self.checkFor(["victory", "defeat"], return_raw=True)
@@ -227,7 +227,7 @@ class Bot():
             simulatedinput.send_key("space", amount=1)
 
     def check_for_collection_crates(self):
-        # Can this be done better?
+        # TODO: update to image recognition when the next event comes out!
         if self.checkFor("diamond_case"):
             #c lick collect button
             simulatedinput.click("EVENT_COLLECTION", timeout=1.5)
@@ -282,7 +282,7 @@ class Bot():
         while not mapFound:
             self.findClick("expert")
             mapFound = self.checkFor("dark_castle", return_cords=True, center_on_found=True)
-        simulatedinput.click(mapFound)
+        simulatedinput.click(mapFound, ui=True)
 
     def findClickTimed(self, image, confidence = 0.9, timeout = 1):
         """Generic function to check for an image on screen and click it, with a timeout"""
@@ -294,7 +294,7 @@ class Bot():
             time.sleep(0.2) # avoid spamming the cpu
             found = self.checkFor(image, confidence, return_cords = True, center_on_found = True)
         if found: 
-            simulatedinput.click(found)
+            simulatedinput.click(found, ui=True)
 
     def checkFor(self, 
             images: list[str] | str, 
@@ -342,7 +342,7 @@ class Bot():
         while not found:
             time.sleep(0.2) # avoid spamming the cpu
             found = self.checkFor(image, confidence, return_cords = True, center_on_found = True)
-        simulatedinput.click(found)
+        simulatedinput.click(found, ui=True)
         
     def findStore(self):
         # check if game is installed on Steam
