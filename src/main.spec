@@ -43,5 +43,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='./BTD6_Monkey_Ace.ico'
+    icon='./assets/icon.ico'
 )
