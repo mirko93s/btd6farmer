@@ -7,22 +7,18 @@ import monitor
 #Generic function to see if something is present on the screen
 def find(path, confidence=0.9, return_cords=False, center_on_found=True):
 
-    try:
-        if return_cords:
-            cords = locate(path, confidence=confidence)
+    if return_cords:
+        cords = locate(path, confidence=confidence)
 
-            if cords is not None:
-                left, top, width, height = cords
-                if center_on_found:
-                    return ((left + width // 2), (top + height // 2)) # Return middle of found image   
-                else:
-                    return (left, top, width, height)
+        if cords is not None:
+            left, top, width, height = cords
+            if center_on_found:
+                return ((left + width // 2), (top + height // 2)) # Return middle of found image   
             else:
-                return None
-        return True if locate(path, confidence=confidence) is not None else False
-
-    except Exception as e:
-        raise Exception(e)
+                return (left, top, width, height)
+        else:
+            return None
+    return True if locate(path, confidence=confidence) is not None else False
 
 
 def load_image(img):
