@@ -216,10 +216,10 @@ class Bot():
             
     # select hero if not selected
     def hero_select(self):
-        hero_variants = [f"OBYN_{i}" for i in range(1, 4)]
+        hero_variants = ["OBYN_1", "OBYN_2", "OBYN_3"]
         if not self.checkFor(hero_variants):
             self.findClick("heroes")
-            hero_variants = [f"heroes_obyn_{i}" for i in range(1, 4)]
+            hero_variants = ["heroes_obyn_1", "heroes_obyn_2", "heroes_obyn_3"]
             found = False
             while not found:
                 time.sleep(0.2)
