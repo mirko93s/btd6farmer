@@ -191,10 +191,6 @@ class Bot():
         # Wait a given time
         elif instruction_type == "WAIT":
             time.sleep(int(instruction[1]))
-        
-        else:
-            # Maybe raise exception or just ignore?
-            raise Exception("Instruction type {} is not a valid type".format(instruction_type))
 
     def abilityAvaliabe(self, last_used, cooldown):
         return (time.time() - last_used) >= (cooldown / 3) # fast-forward is x3
