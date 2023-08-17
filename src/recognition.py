@@ -49,13 +49,6 @@ def load_image(img):
         # if grayscale and len(img.shape) == 3:  # and img.shape[2] == 3:
         # else:
         #     img_cv = img
-    elif hasattr(img, 'convert'):
-        # assume its a PIL.Image, convert to cv format
-        img_array = np.array(img.convert('RGB'))
-        img_cv = img_array[:, :, ::-1].copy()  # -1 does RGB -> BGR
-        img_cv = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
-    else:
-        raise TypeError('expected an image filename, OpenCV numpy array, or PIL image')
     
     return img_cv
 
