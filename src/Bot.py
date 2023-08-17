@@ -18,7 +18,6 @@ class Bot():
     def __init__(self):
         self.game_plan = gameplan.get()        
         self.running = True
-        self.fast_forward = True
 
     def loop(self):
         
@@ -198,9 +197,6 @@ class Bot():
         
         # Start game
         elif instruction_type == "START":
-            if len(instruction) > 1:
-                self.fast_forward = True if instruction[1] == "FAST" else False
-                
             self.start_first_round()
 
         # Wait a given time
@@ -212,19 +208,10 @@ class Bot():
             raise Exception("Instruction type {} is not a valid type".format(instruction_type))
 
     def abilityAvaliabe(self, last_used, cooldown):
-        # TODO: Store if the game is speeded up or not. If it is use the constant (true by default)
-        m = 1
-
-        if self.fast_forward:
-            m = 3
-
-        return (time.time() - last_used) >= (cooldown / m)
+        return (time.time() - last_used) >= (cooldown / 3) # fast-forward is x3
 
     def start_first_round(self):
-        if self.fast_forward:
-            simulatedinput.send_key("space", amount=2)
-        else:
-            simulatedinput.send_key("space", amount=1)
+        simulatedinput.send_key("space", amount=2)
 
     def check_for_collection_crates(self):
         # TODO: update to image recognition when the next event comes out!
