@@ -68,10 +68,9 @@ class Bot():
                 # Is this necessary?
                 # Check for round in game plan
                 if current_round in self.game_plan:
-                    for x, instruction in enumerate(self.game_plan[current_round]):
-                        if instruction:
-                            self.execute_instruction(instruction)
-                            self.game_plan[current_round][x] = None
+                    for instruction in self.game_plan[current_round]:
+                        self.execute_instruction(instruction)
+                    self.game_plan.pop(current_round)
 
     def place_tower(self, tower_position, keybind):
         simulatedinput.send_key(keybind) # press keybind
