@@ -22,29 +22,14 @@ def find(path, confidence=0.9, return_cords=False, center_on_found=True):
 
 
 def load_image(img):
-    """
-    TODO
-    """
-    # load images if given Path, or convert as needed to opencv
-    # Alpha layer just causes failures at this point, so flatten to RGB.
-    # RGBA: load with -1 * cv2.CV_LOAD_IMAGE_COLOR to preserve alpha
-    # to matchTemplate, need template and image to be the same wrt having alpha
-    
+
     if isinstance(img, Path):
-        # The function imread loads an image from the specified file and
-        # returns it. If the image cannot be read (because of missing
-        # file, improper permissions, unsupported or invalid format),
-        # the function returns an empty matrix
-        # http://docs.opencv.org/3.0-beta/modules/imgcodecs/doc/reading_and_writing_images.html
+        # this is used to load images and convert them to grayscale
         img_cv = cv2.imread(str(img), cv2.IMREAD_GRAYSCALE)
-        if img_cv is None:
-            raise IOError(f"Failed to read {img} because file is missing, has improper permissions, or is an unsupported or invalid format")
+
     elif isinstance(img, np.ndarray):
+        # this is used for screenshots, it converts them to grayscale
         img_cv = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # don't try to convert an already-gray image to gray
-        # if grayscale and len(img.shape) == 3:  # and img.shape[2] == 3:
-        # else:
-        #     img_cv = img
     
     return img_cv
 
