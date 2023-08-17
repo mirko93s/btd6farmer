@@ -78,22 +78,16 @@ class Bot():
 
 
     def upgrade_tower(self, tower_position, upgrade_path):
-        if not any(isinstance(path, int) for path in upgrade_path) or len(upgrade_path) != 3:
-            raise Exception("Upgrade path must be a list of integers", upgrade_path)
-
-        simulatedinput.click(tower_position)
-
-        # Convert upgrade_path to something usable
+ 
         top, middle, bottom = upgrade_path
+        simulatedinput.click(tower_position)
         
-        for _ in range(top):
-            simulatedinput.send_key("top")
-
-        for _ in range(middle):
-            simulatedinput.send_key("middle")
-
-        for _ in range(bottom):
-            simulatedinput.send_key("bottom")
+        if top:
+            simulatedinput.send_key("top", amount=top)
+        if middle:
+            simulatedinput.send_key("middle", amount=middle)
+        if bottom:
+            simulatedinput.send_key("bottom", amount=bottom)
         
         simulatedinput.send_key("esc")
 
