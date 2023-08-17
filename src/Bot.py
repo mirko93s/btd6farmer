@@ -236,9 +236,6 @@ class Bot():
     def select_map(self):
         time.sleep(1)
         self.findClick("play")
-        # reset map page
-        self.findClick("expert")
-        self.findClick("beginner")
         # loop expert map pages until we find dark castle and click it
         self.findDarkCastle()
         # select gamemode
