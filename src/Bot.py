@@ -9,7 +9,6 @@ from pathlib import Path
 # Local imports
 import recognition
 import simulatedinput
-import monitor
 import gameplan
 from winreg import *
 
@@ -21,6 +20,8 @@ class Bot():
 
     def loop(self):
         
+        # TODO do we want to check for round 6 also???
+        # if so r should be 0, current_round anything < 6 (ideally None or -1)
         rounds = list(self.game_plan.keys())
         r = 1
         current_round = 6
@@ -51,7 +52,7 @@ class Bot():
                     r+=1
 
             if current_round != None:
-                # Saftey net; use abilites
+                # TODO we shouldn't spam abilities. We should use ability on demand using a gameplan instruction
                 cooldowns = [35, 90]
 
                 if current_round >= 7 and self.abilityAvaliabe(ability_one_timer, cooldowns[0]):
@@ -62,8 +63,7 @@ class Bot():
                     simulatedinput.send_key("2")
                     ability_two_timer = time.time()
 
-                # Is this necessary?
-                # Check for round in game plan
+                # Check for round in game plan and execute instructions
                 if current_round in self.game_plan:
                     for instruction in self.game_plan[current_round]:
                         self.execute_instruction(instruction)
@@ -88,6 +88,7 @@ class Bot():
         
         simulatedinput.send_key("esc")
 
+    # TODO this needs a way to remember the old target, we can't always assume it's 0/FIRST
     def change_target(self, tower_type, tower_position, targets: list[str] | str, delay: int | float | list | tuple = 3):
         if not isinstance(targets, (tuple, list)):
             targets = [targets]
@@ -129,6 +130,7 @@ class Bot():
 
     # TODO: this doesn't work, many towers have different ways to set static targets
     # examples: ace "centered path" button, wizrd "aim" button, mortar "set target" button, etc.......
+    # we don't really need it for dark castle atm...
     def set_static_target(self, tower_position, target_pos):
         pass
 
@@ -173,7 +175,7 @@ class Bot():
             else:
                 self.change_target(target_type, position, target)
             
-
+        # TODO change this together with set_static_target() function
         # Set static target of a tower
         elif instruction_type == "STATIC_TARGET":
             position = float(instruction[1]), float(instruction[2])
@@ -197,8 +199,9 @@ class Bot():
 
     def check_for_collection_crates(self):
         # TODO: update to image recognition when the next event comes out!
+        pass
         if self.checkFor("diamond_case"):
-            #c lick collect button
+            # click collect button
             simulatedinput.click("EVENT_COLLECTION", timeout=1.5)
             # collect instas
             simulatedinput.click("LEFT_INSTA", amount=2, timeout=1.5)
@@ -262,6 +265,7 @@ class Bot():
         if found: 
             simulatedinput.click(found, ui=True)
 
+    # TODO clean this?!
     def checkFor(self, 
             images: list[str] | str, 
             confidence: float = 0.9, 

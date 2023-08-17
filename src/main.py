@@ -47,6 +47,7 @@ def main():
         # game process found, focus its window
         if hwnd:
             waiting_for_game = False
+            # TODO sometimes it crashes if the game is already focused
             win32gui.SetForegroundWindow(hwnd)
             print("Game found. Switching to game window.")
 
@@ -89,6 +90,7 @@ if __name__ == "__main__":
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
     while mouse.get_position() != (0,0) and bot_thread.is_alive():
         time.sleep(0.1)
+        # TODO what does this sleep do???
     
     if mouse.get_position() == (0, 0):
         sys.exit(1)

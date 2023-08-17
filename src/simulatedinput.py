@@ -38,6 +38,7 @@ def click(location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, hold
     @param hold_time: time to wait between press and release
     """
 
+    # TODO remove it, we don't use button anymore
     # If location is a string then assume that its a static button
     if isinstance(location, str):
         location = static.button_positions[location]
