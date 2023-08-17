@@ -26,24 +26,21 @@ class Bot():
         current_round = 6
         ability_one_timer = time.time()
         ability_two_timer = time.time()
-        
-        finished = False
 
         middle_of_screen = (0.5, 0.5)
 
         # main ingame loop
-        while not finished:
+        while True:
             # Check for levelup or insta monkey (level 100)
             if self.checkFor(["levelup", "instamonkey"]):
                 simulatedinput.click(middle_of_screen, amount=3)
             elif self.checkFor("monkey_knowledge"):
                 simulatedinput.click(middle_of_screen, amount=1)
 
-            # Check for finished or failed game
+            # Check for finished game
             win, lose = self.checkFor(["victory", "defeat"], return_raw=True)
             if win or lose:
                 self.exit_level(won=win)
-                finished = True
                 self.game_plan = gameplan.get()
                 break
             
