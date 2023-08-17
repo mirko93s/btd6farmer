@@ -40,13 +40,9 @@ class Bot():
                 simulatedinput.click(middle_of_screen, amount=1)
 
             # Check for finished or failed game
-            did_win, did_fail = self.checkFor(["victory", "defeat"], return_raw=True)
-            if did_win or did_fail:
-                
-                win_or_lose = True if did_win else False # is this correct logic?
-
-                self.exit_level(won=win_or_lose)
-
+            win, lose = self.checkFor(["victory", "defeat"], return_raw=True)
+            if win or lose:
+                self.exit_level(won=win)
                 finished = True
                 self.game_plan = gameplan.get()
                 break
