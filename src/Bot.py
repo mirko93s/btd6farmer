@@ -15,7 +15,7 @@ from winreg import *
 # Definently fix this 
 class Bot():
     def __init__(self):
-        self.game_plan = gameplan.get()        
+        self.game_plan = gameplan.get()
         self.running = True
 
     def loop(self):
@@ -196,21 +196,36 @@ class Bot():
         simulatedinput.send_key("space", amount=2)
 
     def check_for_collection_crates(self):
-        # TODO: update to image recognition when the next event comes out!
-        pass
-        if self.checkFor("diamond_case"):
-            # click collect button
-            simulatedinput.click("EVENT_COLLECTION", timeout=1.5)
-            # collect instas
-            simulatedinput.click("LEFT_INSTA", amount=2, timeout=1.5)
-            simulatedinput.click("RIGHT_INSTA", amount=2, timeout=1.5)
-            simulatedinput.click("F_LEFT_INSTA", amount=2, timeout=1.5)
-            simulatedinput.click("MID_INSTA", amount=2, timeout=1.5)
-            simulatedinput.click("F_RIGHT_INSTA", amount=2, timeout=1.5)
-            # click continue and exit to main menu
-            time.sleep(1)
-            simulatedinput.click("EVENT_CONTINUE",timeout=1)
-            simulatedinput.send_key("esc")
+        # TODO: this whole function can be optimized
+        # first check every matched template and save their coords
+        # then redeem them one by one
+        # so we don't loop over and over again unnecessarily checking many templates (in the for loop)
+
+        # wait for either the event screen or the main menu to be sure we don't skip this function while loading
+        event, home = (False, False)
+        while home is False:
+            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+            event, home = self.checkFor(["event_collect","home_menu"], return_raw=True, confidence=0.85)
+            # if we find the event screen (aka event collect button) redeem the crates
+            if event:
+                # click collect button
+                self.findClick("event_collect")
+                _continue = False
+                # loop until the continue button appears on the bottom, so we know we are done redeeming insta monkeys
+                while not _continue:
+                    # loop
+                    for tier in ["common", "uncommon", "rare", "epic", "legendary"]:
+                        found = self.checkFor(f"event_insta_{tier}", return_cords=True, center_on_found=True, confidence=0.85)
+                        if found:
+                            simulatedinput.click(found, ui=True, amount=2, timeout=1)
+                            # we break if we find an insta so we can loop again all tiers, there may be duplicate tiers (up to 3)
+                            break
+                    # check if the continue button appeared if so we can try to exit to main menu
+                    _continue = self.checkFor("event_continue", return_cords=True, center_on_found=True, confidence=0.85)
+                # click continue to go back to the event screen and press esc to go back to the main menu
+                simulatedinput.click(_continue, ui=True, timeout=1)
+                simulatedinput.send_key("esc", timeout=1)
+                # after pressing esc if we didn't exit to main menu it means we have other crates to redeem so we run the main while loop again
             
     # select hero if not selected
     def hero_select(self):

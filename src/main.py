@@ -56,9 +56,12 @@ def main():
 
     while waiting_for_home is False:
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
-        waiting_for_startup, waiting_for_home = bot.checkFor(["startup","home_menu"], return_raw=True)
+        waiting_for_startup, waiting_for_home, collection_event = bot.checkFor(["startup","home_menu","event_collect"], return_raw=True)
         if waiting_for_startup:
             bot.findClick("startup")
+        # check collection event at start in case we alt f4'd without redeeming a crate
+        if collection_event:
+            bot.check_for_collection_crates()
     
     print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")
     
@@ -90,7 +93,6 @@ if __name__ == "__main__":
     # Failsafe option, move mouse to upper left corner (0,0) to instantly kill the bot
     while mouse.get_position() != (0,0) and bot_thread.is_alive():
         time.sleep(0.1)
-        # TODO what does this sleep do???
     
     if mouse.get_position() == (0, 0):
         sys.exit(1)
