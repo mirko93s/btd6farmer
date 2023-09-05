@@ -28,14 +28,16 @@ def move_mouse(location, move_timeout=0.1):
     sleep(move_timeout)
 
 
-def click(location: tuple | tuple, amount=1, timeout=0.5, move_timeout=0.1, hold_time=0.075, _button='left', ui = False):
+def click(location=(0.5, 0.5), amount=1, timeout=0.5, move_timeout=0.1, hold_time=0.075, _button='left', ui = False):
     """
     Method to click on a specific location on the screen
-    @param location: The location to click on
+    @param location: The location to click on, if omitted it defaults to the middle of the screen
     @param amount: amount of clicks to be performed
-    @param timeout: time to wait between clicks
+    @param timeout: time to wait between clicks (after each click to be precise, so this also applies to a single click)
     @param move_timeout: time to wait between move and click
     @param hold_time: time to wait between press and release
+    @param _button: which button to press, defaults to left
+    @param ui: if false scales coordinates according to screen resolution, set to true for coordinates found matching templates
     """
 
     # TODO remove it, we don't use button anymore
