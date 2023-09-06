@@ -203,7 +203,7 @@ class Bot():
 
         # wait for either the event screen or the main menu to be sure we don't skip this function while loading
         event, home = (False, False)
-        while home is False:
+        while not home:
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             event, home = self.checkFor(["event_collect","home_menu"], return_raw=True, confidence=0.85)
             # if we find the event screen (aka event collect button) redeem the crates
