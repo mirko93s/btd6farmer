@@ -52,16 +52,16 @@ def main():
             print("Game found. Switching to game window.")
 
     # Wait for btd6 home screen or startup screen
-    waiting_for_home = False
 
-    while waiting_for_home is False:
+    home = event = False
+    while not home and not event:
         time.sleep(0.2) # add a short timeout to avoid spamming the cpu
-        waiting_for_startup, waiting_for_home, collection_event = bot.checkFor(["startup","home_menu","event_collect"], return_raw=True)
-        if waiting_for_startup:
+        startup, home, event = bot.checkFor(["startup","home_menu","event_collect"], return_raw=True)
+        if startup:
             bot.findClick("startup")
-        # check collection event at start in case we alt f4'd without redeeming a crate
-        if collection_event:
-            bot.check_for_collection_crates()
+    
+    # always check collection event at start in case we alt f4'd without redeeming a crate
+    bot.check_for_collection_crates()
     
     print("Starting bot..\nIf you want to stop the bot, move your mouse to the upper left corner of your screen or press ctrl+c in the terminal")
     

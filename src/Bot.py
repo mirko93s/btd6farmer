@@ -201,8 +201,16 @@ class Bot():
         # then redeem them one by one
         # so we don't loop over and over again unnecessarily checking many templates (in the for loop)
 
+        # double check for home or event screen as a way to wait for the loading screen to go away after a game ended
+        found = False
+        while not found:
+            time.sleep(0.2) # add a short timeout to avoid spamming the cpu
+            found = self.checkFor(["event_collect","home_menu"], confidence=0.85)
+        # sleep here because when you end a game and go back to home the main menu is briefly displayed before the game forces you to the event screen
+        time.sleep(1)
+
         # wait for either the event screen or the main menu to be sure we don't skip this function while loading
-        event, home = (False, False)
+        home = event = False
         while not home:
             time.sleep(0.2) # add a short timeout to avoid spamming the cpu
             event, home = self.checkFor(["event_collect","home_menu"], return_raw=True, confidence=0.85)
@@ -247,7 +255,6 @@ class Bot():
         self.findClick("home")
 
     def select_map(self):
-        time.sleep(1)
         self.findClick("play")
         # loop expert map pages until we find dark castle and click it
         self.findDarkCastle()
