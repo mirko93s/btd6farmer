@@ -3,7 +3,8 @@
 
 block_cipher = None
 added_files = [
-    ( './assets/*', 'assets' )
+    ( 'assets/*', 'assets' ),
+    ( 'gameplan.txt', '.')
 ]
 
 a = Analysis(
